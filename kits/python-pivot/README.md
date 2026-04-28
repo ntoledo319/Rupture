@@ -137,7 +137,7 @@ $ python-pivot iac infra/ --apply
 ▸ IaC patcher · infra/ · APPLY
   23 IaC candidate file(s) scanned
 ℹ [rewrite] infra/template.yaml · sam-cfn-runtime · 8 hit(s)
-ℹ [rewrite] infra/cdk/stack.ts · cdk-ts-runtime-enum · 3 hit(s)
+ℹ [rewrite] infra/cdk/stack.ts · cdk-runtime-enum · 3 hit(s)
 ℹ [rewrite] infra/terraform/main.tf · terraform-runtime · 5 hit(s)
 
 ✓ 16 rewrite(s) across 3 file(s).

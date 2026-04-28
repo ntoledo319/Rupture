@@ -134,7 +134,7 @@ def run(args: argparse.Namespace) -> int:
     for raw in args.paths:
         p = Path(raw)
         if p.is_dir():
-            paths.extend([f for f in p.rglob("*") if f.is_file() and f.suffix in (".sh", ".yaml", ".yml", ".cfg", ".bash") or f.name in ("user-data", "cloud-config")])
+            paths.extend([f for f in p.rglob("*") if f.is_file() and (f.suffix in (".sh", ".yaml", ".yml", ".cfg", ".bash") or f.name in ("user-data", "cloud-config"))])
         else:
             paths.append(p)
 

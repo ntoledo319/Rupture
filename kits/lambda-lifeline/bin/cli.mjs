@@ -114,7 +114,7 @@ async function main() {
         process.exit(2);
     }
   } catch (err) {
-    console.error(`\nāœ— ${err.message}`);
+    console.error(`\n✗ ${err.message}`);
     if (process.env.DEBUG) console.error(err.stack);
     process.exit(1);
   }
