@@ -1,10 +1,10 @@
 // Example Lambda handler that shows every Node 20→22 compatibility hazard we test for.
-import config from './config.json' assert { type: 'json' };
-import settings from './settings.json' assert { type: 'json' };
+import config from './config.json' with { type: 'json' };
+import settings from './settings.json' with { type: 'json' };
 
 // dynamic import with assert — also flagged
 async function loadFeatureFlags() {
-  const flags = await import('./flags.json', { assert: { type: 'json' } });
+  const flags = await import('./flags.json', { with: { type: 'json' } });
   return flags.default;
 }
 

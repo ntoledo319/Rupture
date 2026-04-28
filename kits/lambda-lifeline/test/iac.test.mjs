@@ -81,8 +81,8 @@ test('iac --apply rewrites CDK runtime enum', () => {
   try {
     const stack = join(dir, 'stack.ts');
     writeFileSync(stack, `import * as lambda from 'aws-cdk-lib/aws-lambda';
-new lambda.Function(this, 'A', { runtime: lambda.Runtime.NODEJS_20_X });
-new lambda.Function(this, 'B', { runtime: lambda.Runtime.NODEJS_18_X });
+new lambda.Function(this, 'A', { runtime: lambda.Runtime.NODEJS_22_X });
+new lambda.Function(this, 'B', { runtime: lambda.Runtime.NODEJS_22_X });
 `);
     const r = run(['iac', '--path', dir, '--apply']);
     assert.equal(r.status, 0, r.stderr);

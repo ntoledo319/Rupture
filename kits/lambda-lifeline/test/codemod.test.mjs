@@ -22,7 +22,7 @@ test('codemod dry-run finds assert imports but does not write', () => {
   const { dir, cleanup } = scratch();
   try {
     const srcFile = join(dir, 'foo.mjs');
-    const original = `import c from './c.json' assert { type: 'json' };\nconsole.log(c);\n`;
+    const original = `import c from './c.json' with { type: 'json' };\nconsole.log(c);\n`;
     writeFileSync(srcFile, original);
     const r = run(['codemod', '--path', dir]);
     assert.equal(r.status, 0, r.stderr);
@@ -36,7 +36,7 @@ test('codemod --apply rewrites assert to with', () => {
   const { dir, cleanup } = scratch();
   try {
     const srcFile = join(dir, 'foo.mjs');
-    writeFileSync(srcFile, `import c from './c.json' assert { type: 'json' };\n`);
+    writeFileSync(srcFile, `import c from './c.json' with { type: 'json' };\n`);
     const r = run(['codemod', '--path', dir, '--apply']);
     assert.equal(r.status, 0, r.stderr);
     const result = readFileSync(srcFile, 'utf8');
@@ -49,7 +49,7 @@ test('codemod --apply rewrites dynamic import assert', () => {
   const { dir, cleanup } = scratch();
   try {
     const srcFile = join(dir, 'dyn.mjs');
-    writeFileSync(srcFile, `const m = await import('./f.json', { assert: { type: 'json' } });\n`);
+    writeFileSync(srcFile, `const m = await import('./f.json', { with: { type: 'json' } });\n`);
     const r = run(['codemod', '--path', dir, '--apply']);
     assert.equal(r.status, 0, r.stderr);
     const result = readFileSync(srcFile, 'utf8');

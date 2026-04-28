@@ -13,7 +13,7 @@ Resources:
     Properties:
       CodeUri: src/
       Handler: handler.handler
-      Runtime: nodejs20.x
+      Runtime: nodejs22.x
       Environment:
         Variables:
           STAGE: prod
@@ -23,11 +23,11 @@ Resources:
     Properties:
       CodeUri: src/
       Handler: handler.handler
-      Runtime: nodejs18.x
+      Runtime: nodejs22.x
 
   LegacyCronFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: src/
       Handler: handler.handler
-      Runtime: nodejs16.x
+      Runtime: nodejs22.x

@@ -7,14 +7,14 @@ export class SampleAppStack extends cdk.Stack {
     super(scope, id, props);
 
     new lambda.Function(this, 'OrdersIngest', {
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_22_X,
       handler: 'handler.handler',
       code: lambda.Code.fromAsset('../src'),
       memorySize: 512,
     });
 
     new lambda.Function(this, 'BillingWebhook', {
-      runtime: lambda.Runtime.NODEJS_18_X,
+      runtime: lambda.Runtime.NODEJS_22_X,
       handler: 'handler.handler',
       code: lambda.Code.fromAsset('../src'),
     });

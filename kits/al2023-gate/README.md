@@ -27,6 +27,14 @@ Primary source: <https://aws.amazon.com/amazon-linux-2/faqs/>
 
 ---
 
+## Demo
+
+![al2023-gate demo](docs/demos/demo.svg)
+
+*Live recording — scan → remap → cloudinit diff. Real terminal output, real fixture data. All commands work offline.*
+
+---
+
 ## Install
 
 ```bash

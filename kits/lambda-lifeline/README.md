@@ -14,6 +14,14 @@ If you run Node on Lambda, you are on the clock.
 
 ---
 
+## Demo
+
+![lambda-lifeline demo](docs/demos/demo.svg)
+
+*Live recording — scan → codemod → audit → iac → plan. Real output, no animation tricks. 8 commands, all work offline via fixture mode.*
+
+---
+
 ## What this kit does
 
 Eight integrated tools that take you from "I have no idea how many Node 20 functions we have" to "deployed to Node 22 on a staged canary with auto-rollback":

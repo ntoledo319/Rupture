@@ -16,7 +16,7 @@ resource "aws_lambda_function" "orders_ingest" {
   function_name = "orders-ingest"
   role          = aws_iam_role.lambda_role.arn
   handler       = "handler.handler"
-  runtime       = "nodejs20.x"
+  runtime       = "nodejs22.x"
   filename      = "orders.zip"
 }
 
@@ -24,7 +24,7 @@ resource "aws_lambda_function" "billing_webhook" {
   function_name = "billing-webhook"
   role          = aws_iam_role.lambda_role.arn
   handler       = "handler.handler"
-  runtime       = "nodejs18.x"
+  runtime       = "nodejs22.x"
   filename      = "billing.zip"
 }
 

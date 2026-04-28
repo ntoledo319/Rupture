@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rupture Kits — AWS deprecation migration tools</title>
+<meta name="description" content="Surgical, tested migration kits for AWS platform deprecations. Scan, codemod, patch IaC, deploy canary, rollback. Three live kits covering Lambda Node.js 20, Amazon Linux 2, and Lambda Python 3.9/3.10/3.11.">
+<meta property="og:title" content="Rupture Kits — Every AWS deprecation deadline deserves a kit">
+<meta property="og:description" content="Surgical migration tools for AWS platform deprecations. 116 tests passing across 3 kits.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="#" class="brand">
+      <span class="brand-mark">▸</span> Rupture Kits
+    </a>
+    <nav>
+      <a href="#kits">Kits</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/ntoledo319/Rupture" class="btn-ghost">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow">AWS deprecation migration tools · MIT-licensed · 116 tests passing</div>
+    <h1>Every AWS deprecation deadline<br>deserves a kit.</h1>
+    <p class="lede">
+      Surgical, single-command migration tools for Lambda runtimes, Amazon Linux, and other AWS platform deprecations.
+      Scan your account. Codemod your code. Patch your IaC. Deploy canary with auto-rollback. Ship before the deadline.
+    </p>
+    <div class="cta-row">
+      <a href="https://github.com/ntoledo319/Rupture" class="btn-primary">View on GitHub →</a>
+      <a href="#kits" class="btn-secondary">See the kits</a>
+    </div>
+    <div class="hero-proof">
+      <img src="demos/lambda-lifeline.svg" alt="lambda-lifeline live demo — scan, codemod, audit, iac, plan" loading="lazy" style="width:100%; border-radius:8px;">
+      <div class="demo-caption">▸ <code>lambda-lifeline</code> live demo · click for <a href="demos/al2023-gate.svg">al2023-gate</a> or <a href="demos/python-pivot.svg">python-pivot</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="kits">
+  <div class="container">
+    <h2>Three live kits. Three live deadlines.</h2>
+    <p class="sub">Each kit targets one AWS deprecation with one coherent CLI. Works offline for demos and CI. No AWS creds required to try.</p>
+
+    <div class="kit-grid">
+
+      <div class="kit-card urgent">
+        <div class="kit-deadline">Deadline: 2026-04-30 · <span class="days">2 days</span></div>
+        <h3>lambda-lifeline</h3>
+        <div class="kit-sub">Lambda Node.js 20 → 22</div>
+        <p>Scan all Node Lambdas. Rewrite <code>import assert</code> → <code>import with</code>. Audit native bindings (sharp, bcrypt, canvas). Patch SAM, CDK, Terraform, Serverless. Canary deploy with CloudWatch-alarm auto-rollback.</p>
+        <ul>
+          <li>8 CLI commands · 24 tests passing</li>
+          <li>Node.js 20 LTS · zero dependencies</li>
+          <li>SAM + CDK + Terraform + Serverless</li>
+        </ul>
+        <a class="kit-link" href="https://github.com/ntoledo319/Rupture/tree/main/kits/lambda-lifeline">Read the docs →</a>
+      </div>
+
+      <div class="kit-card">
+        <div class="kit-deadline">Deadline: 2026-06-30 · <span class="days">63 days</span></div>
+        <h3>al2023-gate</h3>
+        <div class="kit-sub">Amazon Linux 2 → AL2023</div>
+        <p>Scan EC2, launch templates, EKS node groups, ECS task defs, Beanstalk for AL2. Translate <code>yum</code> packages to <code>dnf</code> with a 50-package curated table. Generate Packer template, diff cloud-init, patch Ansible. Migration runbooks for ASG / EKS / ECS / EB.</p>
+        <ul>
+          <li>6 CLI commands · 48 tests passing</li>
+          <li>Python 3.9+ · zero runtime deps</li>
+          <li>Packer HCL + Ansible patcher</li>
+        </ul>
+        <a class="kit-link" href="https://github.com/ntoledo319/Rupture/tree/main/kits/al2023-gate">Read the docs →</a>
+      </div>
+
+      <div class="kit-card">
+        <div class="kit-deadline">Deadline: 2026-10-31 · <span class="days">186 days</span></div>
+        <h3>python-pivot</h3>
+        <div class="kit-sub">Lambda Python 3.9/3.10/3.11 → 3.12</div>
+        <p>Scan Python Lambdas by severity and days-to-EOL. Codemod collections.abc, distutils, asyncio, datetime.utcnow(). Audit requirements.txt for cp312 wheel availability (30+ package table). Patch IaC. Canary deploy + rollback.</p>
+        <ul>
+          <li>6 CLI commands · 44 tests passing</li>
+          <li>Python 3.9+ · zero runtime deps</li>
+          <li>boto3 optional for live scan</li>
+        </ul>
+        <a class="kit-link" href="https://github.com/ntoledo319/Rupture/tree/main/kits/python-pivot">Read the docs →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section dark" id="how">
+  <div class="container">
+    <h2>How every kit works</h2>
+    <p class="sub">One consistent shape across all three: scan → fix → test → deploy → rollback. Pick any step. Skip any step. Re-run any step.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <h4>Scan</h4>
+        <p>Read-only API calls find every resource on the deprecated runtime. Output as table / JSON / CSV / Markdown. Fixture mode works offline.</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <h4>Fix</h4>
+        <p>Narrow, mechanically-safe code rewrites. Everything ambiguous is flagged for human review, not auto-changed. Always dry-run by default.</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <h4>Test</h4>
+        <p>Native test suite on every kit (node --test / pytest). 116 tests total. Every command, every format, every exit code.</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <h4>Deploy</h4>
+        <p>Staged canary: 5% → 25% → 50% → 100%. Every stage checks a CloudWatch alarm. Trip = instant auto-rollback.</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">5</div>
+        <h4>Rollback</h4>
+        <p>Tested rollback path on every kit. Alias re-point for Lambda. Launch Template revert for EC2. Blue/green node-group swap for EKS.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="container">
+    <h2>Pricing</h2>
+    <p class="sub">The kits are MIT-licensed — fork, use, resell. Paid tiers add the stuff that's painful to build yourself: printable runbooks, captioned videos, expanded tables, custom rules, priority support.</p>
+
+    <div class="pricing-grid">
+
+      <div class="price-card">
+        <h3>Solo</h3>
+        <div class="price">$499 <span class="per">/ kit</span></div>
+        <ul>
+          <li>MIT-licensed kit (everything on GitHub)</li>
+          <li>Printable PDF migration playbook</li>
+          <li>Email support · 7 days</li>
+        </ul>
+        <a class="btn-outline" href="#checkout">Get Solo</a>
+      </div>
+
+      <div class="price-card featured">
+        <div class="badge">Most popular</div>
+        <h3>Team</h3>
+        <div class="price">$999 <span class="per">/ kit</span></div>
+        <ul>
+          <li>Everything in Solo</li>
+          <li>2-hour captioned video walkthrough</li>
+          <li>Expanded dependency / remap tables</li>
+          <li>3 custom rules for your codebase</li>
+          <li>Priority Slack channel · 7 days</li>
+        </ul>
+        <a class="btn-primary" href="#checkout">Get Team</a>
+      </div>
+
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <div class="price">$2,499 <span class="per">/ kit</span></div>
+        <ul>
+          <li>Everything in Team</li>
+          <li>Unlimited custom rules</li>
+          <li>Priority Slack · 30 days</li>
+          <li>2 × 90-min live pairing sessions</li>
+          <li>On-call during cutover</li>
+        </ul>
+        <a class="btn-outline" href="#checkout">Get Enterprise</a>
+      </div>
+
+    </div>
+
+    <div class="bundle">
+      <h3>Bundle all 3 kits · save up to $2,500</h3>
+      <div class="bundle-grid">
+        <div><strong>Solo bundle</strong> · $999 <span class="muted">(save $498)</span></div>
+        <div><strong>Team bundle</strong> · $1,999 <span class="muted">(save $998)</span></div>
+        <div><strong>Enterprise bundle</strong> · $4,997 <span class="muted">(save $2,500)</span></div>
+      </div>
+      <a class="btn-primary" href="#checkout">Get the bundle</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="container faq">
+    <h2>FAQ</h2>
+
+    <details open>
+      <summary>Are the kits actually free?</summary>
+      <p>Yes. Every line of code on <a href="https://github.com/ntoledo319/Rupture">GitHub</a> is MIT. You can run the CLI, scan your account, codemod your code, patch your IaC, and deploy without paying us a cent. Paid tiers only add the docs/videos/consulting around the kits.</p>
+    </details>
+
+    <details>
+      <summary>How is this different from CloudQuery / AWS Migration Hub / custom scripts?</summary>
+      <p>CloudQuery gives you the inventory. We give you the inventory <em>plus</em> the codemod <em>plus</em> the IaC patch <em>plus</em> the staged deploy <em>plus</em> the tested rollback — scoped to one specific deprecation. AWS Migration Hub is for lift-and-shift between regions/accounts, not runtime upgrades. Custom scripts exist, but nobody has tested-end-to-end-with-rollback custom scripts for these exact deadlines.</p>
+    </details>
+
+    <details>
+      <summary>Will the codemods break my code?</summary>
+      <p>They're designed not to. Every kit rewrites only the narrow, mechanically-safe patterns (like <code>import assert</code> → <code>import with</code>) and <em>lints</em> everything ambiguous so you decide. Every kit defaults to dry-run. Every apply has a dry-run preview first. And every kit ships with a full test suite covering both modes.</p>
+    </details>
+
+    <details>
+      <summary>What if the canary deploy fails?</summary>
+      <p>That's the point. Every kit's <code>deploy</code> command requires a CloudWatch alarm ARN with <code>--apply</code>. At every canary stage it checks the alarm state. If the alarm is in <code>ALARM</code> state, it instantly reverts the alias to the previous stable version and exits non-zero. You get rollback whether you wanted one or not.</p>
+    </details>
+
+    <details>
+      <summary>What's the company behind this?</summary>
+      <p>A small independent shop. No VC. No pivot. We ship one kit per deadline. If we can't ship it at kit quality in one week, it doesn't ship.</p>
+    </details>
+
+    <details>
+      <summary>Which kit should I buy first?</summary>
+      <p>The one whose deadline is closest. If you're running Lambda on Node 20, start with <code>lambda-lifeline</code> — deadline 2026-04-30. Running EC2 on Amazon Linux 2? <code>al2023-gate</code>, deadline 2026-06-30. Running Python Lambdas? <code>python-pivot</code>. Running all three? Bundle.</p>
+    </details>
+
+    <details>
+      <summary>Do you offer refunds?</summary>
+      <p>Yes. If a kit doesn't do what it says it does on a real project, email us within 14 days and we'll refund in full, no questions.</p>
+    </details>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="brand"><span class="brand-mark">▸</span> Rupture Kits</div>
+        <p class="muted">Every AWS deprecation deadline deserves a kit.</p>
+      </div>
+      <div>
+        <h5>Kits</h5>
+        <a href="https://github.com/ntoledo319/Rupture/tree/main/kits/lambda-lifeline">lambda-lifeline</a><br>
+        <a href="https://github.com/ntoledo319/Rupture/tree/main/kits/al2023-gate">al2023-gate</a><br>
+        <a href="https://github.com/ntoledo319/Rupture/tree/main/kits/python-pivot">python-pivot</a>
+      </div>
+      <div>
+        <h5>Resources</h5>
+        <a href="https://github.com/ntoledo319/Rupture">GitHub</a><br>
+        <a href="#faq">FAQ</a><br>
+        <a href="#pricing">Pricing</a>
+      </div>
+    </div>
+    <div class="muted small">© 2026 Rupture Kits · MIT-licensed kits · built for operators</div>
+  </div>
+</footer>
+
+</body>
+</html>

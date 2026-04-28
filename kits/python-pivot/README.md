@@ -28,6 +28,14 @@ Primary source: <https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.ht
 
 ---
 
+## Demo
+
+![python-pivot demo](docs/demos/demo.svg)
+
+*Live recording — scan → audit → deploy plan. Real terminal output. All commands work offline via fixture mode.*
+
+---
+
 ## Install
 
 ```bash

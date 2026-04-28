@@ -42,7 +42,7 @@ function patchSAM(content, from, to) {
   return { changed, hits };
 }
 
-// CDK: lambda.Runtime.NODEJS_20_X → lambda.Runtime.NODEJS_22_X
+// CDK: lambda.Runtime.NODEJS_22_X → lambda.Runtime.NODEJS_22_X
 function patchCDK(content, from, to) {
   const fromVers = from.map(r => r.match(/nodejs(\d+)/)[1]);
   const toVer = to.match(/nodejs(\d+)/)[1];

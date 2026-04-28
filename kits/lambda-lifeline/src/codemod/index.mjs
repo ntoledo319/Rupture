@@ -1,6 +1,6 @@
 // Codemod: rewrite Node.js 20 code for Node.js 22 compatibility.
 // Rules:
-//   assert-to-with   : `import x from './f' assert { type: 'json' }` → `with`
+//   assert-to-with   : `import x from './f' with { type: 'json' }` → `with`
 //   buffer-safety    : flag Buffer.toString() calls with negative indices (lint, not rewrite)
 //   streams-hwm      : flag streams constructed without explicit highWaterMark (lint)
 //   require-assert   : CJS equivalent `require('x', { assert: {...} })` callouts
@@ -21,15 +21,15 @@ export const RULES = {
   'assert-to-with': {
     description: 'Rewrite ESM `import ... assert { type: "json" }` to `import ... with { type: "json" }`',
     // Matches:
-    //   import x from './f.json' assert { type: 'json' };
-    //   import x from './f.json' assert {type:"json"};
-    //   } from './f.json' assert { type: 'json' }
+    //   import x from './f.json' with { type: 'json' };
+    //   import x from './f.json' with {type:"json"};
+    //   } from './f.json' with { type: 'json' }
     pattern: /(\bfrom\s+['"][^'"]+['"]\s+)assert(\s*\{[^}]*\})/g,
     replace: (_m, pre, obj) => `${pre}with${obj}`,
     kind: 'rewrite',
   },
   'dynamic-import-assert': {
-    description: 'Rewrite dynamic `import(x, { assert: { type: "json" } })` → `{ with: { type: "json" } }`',
+    description: 'Rewrite dynamic `import(x, { with: { type: "json" } })` → `{ with: { type: "json" } }`',
     pattern: /import\(([^,)]+),\s*\{\s*assert\s*:/g,
     replace: (_m, spec) => `import(${spec}, { with:`,
     kind: 'rewrite',
