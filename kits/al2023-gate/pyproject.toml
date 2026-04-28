@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "al2023-gate"
+version = "1.0.0"
+description = "Amazon Linux 2 → AL2023 migration kit. Scan AMIs, remap packages (yum→dnf), diff cloud-init, patch Ansible playbooks, generate Packer templates, and swap ECS/EKS AMIs safely before Jun 30, 2026 EOL."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Rupture Kits" }]
+keywords = ["aws", "amazon-linux", "al2", "al2023", "migration", "eol", "packer", "ansible", "ec2", "eks"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = []
+
+[project.optional-dependencies]
+aws = ["boto3>=1.28.0"]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+al2023-gate = "al2023_gate.cli:main"
+
+[project.urls]
+Homepage = "https://rupture-kits.vercel.app"
+Repository = "https://github.com/ntoledo319/Rupture"
+
+[tool.setuptools.packages.find]
+where = ["src"]

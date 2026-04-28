@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-pivot"
+version = "1.0.0"
+description = "AWS Lambda Python 3.9/3.10/3.11 → 3.12 migration kit. Scan functions, codemod source, audit native wheels, patch IaC, deploy canary, rollback safely."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Rupture Kits" }]
+keywords = ["aws", "lambda", "python", "migration", "eol", "3.12", "boto3"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Build Tools",
+]
+dependencies = []
+
+[project.optional-dependencies]
+aws = ["boto3>=1.28.0"]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+python-pivot = "python_pivot.cli:main"
+
+[project.urls]
+Homepage = "https://rupture-kits.vercel.app"
+Repository = "https://github.com/ntoledo319/Rupture"
+
+[tool.setuptools.packages.find]
+where = ["src"]

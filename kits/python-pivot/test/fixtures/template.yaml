@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Runtime: python3.9
+    Timeout: 30
+
+Resources:
+  PaymentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/payment/
+      Handler: handler.lambda_handler
+      Runtime: python3.9
+
+  AnalyticsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/analytics/
+      Handler: handler.lambda_handler
+      Runtime: python3.10
+
+  SlackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/slack/
+      Handler: handler.lambda_handler
+      Runtime: python3.12   # Already migrated — should not change

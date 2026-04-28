@@ -1,0 +1,12 @@
+# Sample requirements with native wheels that need version bumps for py3.12
+boto3==1.26.0
+numpy==1.24.0
+pandas==2.0.3
+cryptography==40.0.0
+bcrypt==4.0.1
+pillow==9.5.0
+lxml==4.9.2
+requests==2.31.0
+pyyaml==5.4.1
+psycopg2-binary==2.9.5
+python-snappy==0.6.1

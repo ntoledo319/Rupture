@@ -1,0 +1,28 @@
+---
+- name: Sample AL2 playbook
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update all packages
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+
+    - name: Install nginx via extras
+      ansible.builtin.command: amazon-linux-extras install nginx1 -y
+
+    - name: Install Python 2
+      yum:
+        name: python2
+        state: present
+
+    - name: Ensure ntpd running
+      service:
+        name: ntpd
+        state: started
+        enabled: yes
+
+    - name: Configure SELinux permissive
+      selinux:
+        policy: targeted
+        state: permissive

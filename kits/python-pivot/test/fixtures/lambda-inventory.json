@@ -1,0 +1,40 @@
+{
+  "functions": [
+    {
+      "FunctionName": "payment-webhook",
+      "Runtime": "python3.9",
+      "Region": "us-east-1",
+      "FunctionArn": "arn:aws:lambda:us-east-1:123456789012:function:payment-webhook"
+    },
+    {
+      "FunctionName": "analytics-daily",
+      "Runtime": "python3.8",
+      "Region": "us-east-1",
+      "FunctionArn": "arn:aws:lambda:us-east-1:123456789012:function:analytics-daily"
+    },
+    {
+      "FunctionName": "image-resize",
+      "Runtime": "python3.10",
+      "Region": "us-east-2",
+      "FunctionArn": "arn:aws:lambda:us-east-2:123456789012:function:image-resize"
+    },
+    {
+      "FunctionName": "slack-notify",
+      "Runtime": "python3.11",
+      "Region": "us-east-1",
+      "FunctionArn": "arn:aws:lambda:us-east-1:123456789012:function:slack-notify"
+    },
+    {
+      "FunctionName": "order-fulfillment",
+      "Runtime": "python3.12",
+      "Region": "us-east-1",
+      "FunctionArn": "arn:aws:lambda:us-east-1:123456789012:function:order-fulfillment"
+    },
+    {
+      "FunctionName": "legacy-etl",
+      "Runtime": "python3.7",
+      "Region": "eu-west-1",
+      "FunctionArn": "arn:aws:lambda:eu-west-1:123456789012:function:legacy-etl"
+    }
+  ]
+}

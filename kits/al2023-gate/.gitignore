@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual envs
+venv/
+env/
+ENV/
+.venv/
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Packer build artifacts
+*.pkr.hcl.lock
+packer_cache/
+manifest.json
+
+# Kit-generated outputs
+/build/
+/out/
+findings.json
+remap-report.md
+
+# OS
+.DS_Store
+Thumbs.db
