@@ -1,0 +1,15 @@
+{
+  "name": "sample-app",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "sharp": "^0.32.6",
+    "bcrypt": "^5.0.1",
+    "better-sqlite3": "^10.0.0",
+    "aws-sdk": "^2.1692.0"
+  },
+  "devDependencies": {
+    "node-sass": "^7.0.3",
+    "grpc": "^1.24.11"
+  }
+}

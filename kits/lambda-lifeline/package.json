@@ -1,0 +1,45 @@
+{
+  "name": "lambda-lifeline",
+  "version": "1.0.0",
+  "description": "Scan, upgrade, test, and safely deploy AWS Lambda Node.js functions off the nodejs20.x runtime before the April 30, 2026 EOL. Codemods, IaC patchers, native-binary audit, CA cert fix, staged canary deploys, rollback.",
+  "keywords": [
+    "aws",
+    "lambda",
+    "nodejs20",
+    "nodejs22",
+    "migration",
+    "eol",
+    "deprecation",
+    "codemod",
+    "terraform",
+    "cdk",
+    "sam"
+  ],
+  "license": "MIT",
+  "author": "Rupture Kits",
+  "homepage": "https://rupture-kits.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ntoledo319/lambda-lifeline"
+  },
+  "type": "module",
+  "bin": {
+    "lambda-lifeline": "./bin/cli.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "scan": "node bin/cli.mjs scan",
+    "codemod": "node bin/cli.mjs codemod",
+    "audit": "node bin/cli.mjs audit",
+    "plan": "node bin/cli.mjs plan",
+    "deploy": "node bin/cli.mjs deploy",
+    "rollback": "node bin/cli.mjs rollback"
+  },
+  "dependencies": {
+    "@aws-sdk/client-lambda": "^3.658.0",
+    "@aws-sdk/client-sts": "^3.658.0"
+  }
+}

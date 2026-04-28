@@ -1,0 +1,70 @@
+{
+  "Functions": [
+    {
+      "FunctionName": "api-orders-ingest",
+      "FunctionArn": "arn:aws:lambda:us-east-1:111122223333:function:api-orders-ingest",
+      "Runtime": "nodejs20.x",
+      "Handler": "index.handler",
+      "MemorySize": 512,
+      "CodeSize": 2048576,
+      "LastModified": "2025-11-02T08:14:02Z",
+      "PackageType": "Zip",
+      "Architectures": ["x86_64"],
+      "Region": "us-east-1",
+      "AccountId": "111122223333"
+    },
+    {
+      "FunctionName": "billing-webhook-processor",
+      "FunctionArn": "arn:aws:lambda:us-east-1:111122223333:function:billing-webhook-processor",
+      "Runtime": "nodejs18.x",
+      "Handler": "src/handler.main",
+      "MemorySize": 256,
+      "CodeSize": 1048576,
+      "LastModified": "2024-07-12T11:00:11Z",
+      "PackageType": "Zip",
+      "Architectures": ["arm64"],
+      "Region": "us-east-1",
+      "AccountId": "111122223333"
+    },
+    {
+      "FunctionName": "legacy-cron-cleanup",
+      "FunctionArn": "arn:aws:lambda:us-west-2:111122223333:function:legacy-cron-cleanup",
+      "Runtime": "nodejs16.x",
+      "Handler": "cleanup.handler",
+      "MemorySize": 128,
+      "LastModified": "2023-04-01T00:00:00Z",
+      "Region": "us-west-2",
+      "AccountId": "111122223333"
+    },
+    {
+      "FunctionName": "image-thumbnailer",
+      "FunctionArn": "arn:aws:lambda:us-east-1:111122223333:function:image-thumbnailer",
+      "Runtime": "nodejs22.x",
+      "Handler": "index.handler",
+      "MemorySize": 2048,
+      "LastModified": "2026-02-15T09:00:00Z",
+      "Region": "us-east-1",
+      "AccountId": "111122223333"
+    },
+    {
+      "FunctionName": "report-generator",
+      "FunctionArn": "arn:aws:lambda:us-east-1:111122223333:function:report-generator",
+      "Runtime": "python3.10",
+      "Handler": "report.lambda_handler",
+      "MemorySize": 1024,
+      "LastModified": "2025-09-20T14:22:00Z",
+      "Region": "us-east-1",
+      "AccountId": "111122223333"
+    },
+    {
+      "FunctionName": "ruby-legacy-processor",
+      "FunctionArn": "arn:aws:lambda:us-east-1:111122223333:function:ruby-legacy-processor",
+      "Runtime": "ruby3.2",
+      "Handler": "app.handler",
+      "MemorySize": 512,
+      "LastModified": "2024-12-01T00:00:00Z",
+      "Region": "us-east-1",
+      "AccountId": "111122223333"
+    }
+  ]
+}

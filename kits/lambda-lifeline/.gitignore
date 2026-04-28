@@ -1,0 +1,11 @@
+node_modules/
+*.log
+.DS_Store
+.env
+.env.local
+scan.json
+scan.md
+scan.csv
+dist/
+coverage/
+*.zip

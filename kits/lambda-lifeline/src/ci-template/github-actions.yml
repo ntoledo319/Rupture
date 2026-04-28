@@ -1,0 +1,49 @@
+# .github/workflows/lambda-lifeline.yml
+# Drop into your repo to gate merges on Node 22 readiness.
+name: lambda-lifeline
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'infra/**'
+      - 'template.yaml'
+      - '*.tf'
+  workflow_dispatch:
+
+jobs:
+  lifeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # optional — only if using OIDC for live scan
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+
+      - name: Install lambda-lifeline
+        run: npx -y lambda-lifeline --version
+
+      - name: Codemod dry-run (fails if rewrites pending)
+        run: npx lambda-lifeline codemod --path ./src --strict
+
+      - name: Native-binary audit
+        run: npx lambda-lifeline audit --path . --strict
+
+      - name: IaC sweep
+        run: |
+          npx lambda-lifeline iac --path . --from nodejs16.x,nodejs18.x,nodejs20.x --to nodejs22.x --strict
+
+      # Optional: live scan of all accounts/regions. Requires OIDC + IAM role
+      # with lambda:ListFunctions and sts:GetCallerIdentity.
+      # - name: Configure AWS
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: arn:aws:iam::YOUR_ACCOUNT:role/lambda-lifeline-scan
+      #     aws-region: us-east-1
+      # - name: Live multi-region scan
+      #   run: npx lambda-lifeline scan --regions us-east-1,us-west-2,eu-west-1 --format md --out scan.md
+      # - uses: actions/upload-artifact@v4
+      #   with: { name: scan-report, path: scan.md }
