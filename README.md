@@ -2,7 +2,7 @@
 
 > CLIs for the real AWS deprecation deadlines that break production: **Lambda Node.js 20**, **Amazon Linux 2**, **Lambda Python 3.9/3.10/3.11**.
 
-[![landing](https://img.shields.io/badge/landing-live-brightgreen)](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/0eb07112/index.html)
+[![landing](https://img.shields.io/badge/landing-live-brightgreen)](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/35eb5c15/index.html)
 [![tests](https://img.shields.io/badge/tests-116%20passing-brightgreen)](#tests)
 [![license](https://img.shields.io/badge/license-MIT%20(open%20core)-blue)](#license)
 
@@ -84,7 +84,7 @@ What you get:
 - Free updates for current deprecation phase
 - Bundle = every future kit we ship, forever
 
-**[→ Pricing page](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/0eb07112/index.html#pricing)**
+**[→ Pricing page](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/35eb5c15/index.html#pricing)**
 
 ---
 
@@ -137,7 +137,7 @@ Open-core: the CLI code in this repo is MIT-licensed. The paid tiers include CI/
 
 ## Links
 
-- 🌐 [Landing page](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/0eb07112/index.html)
+- 🌐 [Landing page](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/35eb5c15/index.html)
 - 🚀 [Show HN draft](./launch/show-hn-draft.md)
 - 📝 [Blog post: Migrating Lambda Node.js 20 → 22](./launch/blog-post.md)
 - 💬 Issues: use the repo tracker

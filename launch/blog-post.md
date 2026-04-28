@@ -264,4 +264,4 @@ It's MIT-licensed. Fork it, use it, resell it.
 
 ---
 
-*If you work at a company that runs Lambda on Node 20 and needs help migrating, the `lambda-lifeline` kit is free. The [Team and Enterprise tiers](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/0eb07112/index.html) add a printable PDF runbook, a captioned video walkthrough, expanded dependency tables, custom codemod rules for your codebase, and priority Slack support.*
+*If you work at a company that runs Lambda on Node 20 and needs help migrating, the `lambda-lifeline` kit is free. The [Team and Enterprise tiers](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/35eb5c15/index.html) add a printable PDF runbook, a captioned video walkthrough, expanded dependency tables, custom codemod rules for your codebase, and priority Slack support.*

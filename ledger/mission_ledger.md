@@ -17,7 +17,7 @@ Offline fixture mode + live boto3 mode. Dry-run default. Strict exit codes for C
 
 ### Landing page
 - `rupture/landing/index.html` + `style.css` — dark-mode, professional, embedded animated SVG demo
-- Deployed: https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/0eb07112/index.html
+- Deployed: https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/35eb5c15/index.html
 - Also prepared `docs/` folder for GitHub Pages (served from repo)
 
 ### Demo recordings

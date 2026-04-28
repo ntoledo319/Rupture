@@ -92,7 +92,7 @@ custom rules for your codebase, and priority Slack / live pairing for Enterprise
 I'm transparent about this: the open kits are 100% functional. The paid tier is 
 support + docs + custom rules, not gated features.
 
-Landing: https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/0eb07112/index.html
+Landing: https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/35eb5c15/index.html
 Repo:    https://github.com/ntoledo319/Rupture
 
 Happy to answer questions about the migration surface, the codemod safety model, or 
