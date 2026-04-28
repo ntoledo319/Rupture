@@ -22,7 +22,7 @@ test('codemod dry-run finds assert imports but does not write', () => {
   const { dir, cleanup } = scratch();
   try {
     const srcFile = join(dir, 'foo.mjs');
-    const original = `import c from './c.json' with { type: 'json' };\nconsole.log(c);\n`;
+    const original = `import c from './c.json' assert { type: 'json' };\nconsole.log(c);\n`;
     writeFileSync(srcFile, original);
     const r = run(['codemod', '--path', dir]);
     assert.equal(r.status, 0, r.stderr);
