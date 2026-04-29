@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    
+    <!-- Main pages -->
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/docs</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/audit</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/pack</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <!-- Pricing page -->
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/#pricing</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- Deprecation migration guides -->
+    {% for dep in deprecations %}
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/migrate/{{ dep.slug }}</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    {% endfor %}
+    
+    <!-- Legal pages -->
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/legal/terms</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/legal/privacy</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/legal/dpa</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/legal/security</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    
+    <!-- Status pages -->
+    <url>
+        <loc>https://ntoledo319.github.io/Rupture/status</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>hourly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <!-- GitHub repository -->
+    <url>
+        <loc>https://github.com/ntoledo319/Rupture</loc>
+        <lastmod>{{ now }}</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+</urlset>

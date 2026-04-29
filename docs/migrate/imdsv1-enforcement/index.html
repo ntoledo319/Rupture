@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMDSv1 Enforcement - AWS Deprecation Guide | Rupture</title>
+    <meta name="description" content="Complete migration guide for IMDSv1 Enforcement. Deadline: 2025-12-31. Free CLI tools and automated migration available.">
+    <link rel="canonical" href="https://ntoledo319.github.io/Rupture/migrate/imdsv1-enforcement">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="IMDSv1 Enforcement - AWS Deprecation Guide">
+    <meta property="og:description" content="Migration guide and tools for IMDSv1 Enforcement. EOL: 2025-12-31">
+    <meta property="og:url" content="https://ntoledo319.github.io/Rupture/migrate/imdsv1-enforcement">
+    <meta property="og:type" content="article">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="IMDSv1 Enforcement - Migration Guide">
+    <meta name="twitter:description" content="Complete migration guide for IMDSv1 Enforcement">
+    
+    <!-- Schema.org Article markup -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "IMDSv1 Enforcement - AWS Deprecation Migration Guide",
+        "description": "Complete migration guide for IMDSv1 Enforcement",
+        "datePublished": "",
+        "dateModified": "",
+        "author": {
+            "@type": "Organization",
+            "name": "Rupture"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Rupture",
+            "url": "https://ntoledo319.github.io/Rupture"
+        }
+    }
+    </script>
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --critical: #dc2626;
+            --high: #ea580c;
+            --warning: #ca8a04;
+            --success: #16a34a;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #1f2937;
+        }
+        
+        .deadline-banner {
+            background: linear-gradient(135deg, var(--critical), var(--high));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .deadline-banner h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+        }
+        
+        .countdown {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .severity-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .severity-critical { background: #fef2f2; color: var(--critical); }
+        .severity-high { background: #fff7ed; color: var(--high); }
+        .severity-medium { background: #fefce8; color: var(--warning); }
+        .severity-low { background: #f0fdf4; color: var(--success); }
+        
+        .breaking-changes {
+            background: #fef2f2;
+            border-left: 4px solid var(--critical);
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .breaking-changes h3 {
+            color: var(--critical);
+            margin-top: 0;
+        }
+        
+        .breaking-changes ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        
+        .breaking-changes li {
+            margin: 0.5rem 0;
+        }
+        
+        .migration-steps {
+            counter-reset: step;
+        }
+        
+        .step {
+            position: relative;
+            padding-left: 3rem;
+            margin: 1.5rem 0;
+        }
+        
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .code-block {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .code-block code {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+        }
+        
+        .cta {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 1rem 0.5rem 0 0;
+            font-weight: 600;
+        }
+        
+        .cta-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .pricing-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .pricing-card h3 {
+            margin-top: 0;
+        }
+        
+        .price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        nav.breadcrumb {
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        nav.breadcrumb a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .faq {
+            margin-top: 3rem;
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+        }
+        
+        .faq-question {
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="breadcrumb">
+        <a href="/">Home</a> / <a href="/deprecations">Deprecations</a> / IMDSv1 Enforcement
+    </nav>
+
+    <article>
+        <div class="deadline-banner">
+            <span class="severity-badge severity-high">high</span>
+            <h1>IMDSv1 Enforcement</h1>
+            <p>End of Life Deadline</p>
+            <div class="countdown" data-deadline="2025-12-31">2025-12-31</div>
+        </div>
+
+        <h2>What is being deprecated?</h2>
+        <p>IMDSv1 access will be blocked by default on new instance launches.</p>
+        
+        <p><strong>Service:</strong> EC2</p>
+        <p><strong>Affected Resources:</strong> instance|launch-template</p>
+        
+        
+        <p><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html" target="_blank" rel="noopener">Official AWS Documentation →</a></p>
+        
+
+        <div class="breaking-changes">
+            <h3>⚠️ Breaking Changes</h3>
+            <ul>
+                
+                <li>IMDSv1 requests fail</li>
+                
+                <li>Must use IMDSv2 with session tokens</li>
+                
+                <li>SSM agent must be updated</li>
+                
+            </ul>
+        </div>
+
+        <h2>Migration Steps</h2>
+        <div class="migration-steps">
+            <div class="step">
+                <h4>Scan Your Infrastructure</h4>
+                <p>Identify all affected resources using the Rupture CLI:</p>
+                <div class="code-block">
+                    <code>pip install None<br>None scan --region us-east-1</code>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h4>Review Findings</h4>
+                <p>The scan will output a table of affected resources sorted by severity × blast radius.</p>
+            </div>
+            
+            <div class="step">
+                <h4>Apply Automated Fixes</h4>
+                <p>Run codemods to apply safe transformations:</p>
+                <div class="code-block">
+                    <code>None apply --dry-run<br>None apply</code>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h4>Deploy with Canary</h4>
+                <p>Use the included canary deployment plan to minimize risk:</p>
+                <div class="code-block">
+                    <code>aws cloudformation deploy --template-file canary.yaml</code>
+                </div>
+            </div>
+        </div>
+
+        <h2>Need Help?</h2>
+        
+        <div class="pricing-card">
+            <h3>Audit PDF Report</h3>
+            <div class="price">$299</div>
+            <p>Professional PDF report with hash-anchored verification and executive summary.</p>
+            <a href="https://ntoledo319.github.io/Rupture/audit" class="cta">Order Audit</a>
+        </div>
+        
+        <div class="pricing-card">
+            <h3>Migration Pack</h3>
+            <div class="price">$1499</div>
+            <p>Automated PR opened on your repository. Includes codemods, IaC patches, and canary plan.</p>
+            <p><strong>Refund guarantee:</strong> Auto-refund if CI fails within 7 days.</p>
+            <a href="https://ntoledo319.github.io/Rupture/pack" class="cta">Get Migration Pack</a>
+            <a href="https://github.com/ntoledo319/Rupture/discussions" class="cta cta-secondary">Ask Questions</a>
+        </div>
+
+        <div class="faq">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <p class="faq-question">What happens if I don't migrate by the deadline?</p>
+                <p>AWS will block updates to affected resources. Existing resources may continue running but cannot be modified.</p>
+            </div>
+            
+            <div class="faq-item">
+                <p class="faq-question">Is the CLI free to use?</p>
+                <p>Yes. All Rupture kits are MIT licensed and free. Paid tiers add automation and professional reports.</p>
+            </div>
+            
+            <div class="faq-item">
+                <p class="faq-question">Will the codemods break my code?</p>
+                <p>No. All codemods are dry-run by default. Review changes before applying. Each kit includes 100+ tests.</p>
+            </div>
+        </div>
+    </article>
+
+    <footer>
+        <p>Generated by Rupture | <a href="https://ntoledo319.github.io/Rupture">ntoledo319.github.io/Rupture</a></p>
+        <p><a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a> · <a href="/legal/security">Security</a></p>
+    </footer>
+
+    <script>
+        // Simple countdown timer
+        function updateCountdown() {
+            const countdownEl = document.querySelector('.countdown');
+            if (!countdownEl) return;
+            
+            const deadline = new Date(countdownEl.dataset.deadline);
+            const now = new Date();
+            const diff = deadline - now;
+            
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                countdownEl.textContent = days + ' days remaining';
+            }
+        }
+        updateCountdown();
+    </script>
+</body>
+</html>

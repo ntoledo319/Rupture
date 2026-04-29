@@ -1,0 +1,37 @@
+# Build artifacts
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+*.tsbuildinfo
+.wrangler/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Lambda-lifeline package-lock (operator preference)
+kits/lambda-lifeline/package-lock.json
+
+# ledger/internal/ is tracked but not linked from public pages.
+
+# Local feed signing scratch
+/tmp/rupture_pack.*

@@ -9,7 +9,6 @@
 <meta property="og:description" content="Surgical migration tools for AWS platform deprecations. 116 tests passing across 3 kits.">
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="style.css">
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
 <body>
 
@@ -60,7 +59,7 @@
         <p>Scan all Node Lambdas. Rewrite <code>import assert</code> → <code>import with</code>. Audit native bindings (sharp, bcrypt, canvas). Patch SAM, CDK, Terraform, Serverless. Canary deploy with CloudWatch-alarm auto-rollback.</p>
         <ul>
           <li>8 CLI commands · 24 tests passing</li>
-          <li>Node.js 20 LTS · zero dependencies</li>
+          <li>Node.js 20 LTS · MIT licensed</li>
           <li>SAM + CDK + Terraform + Serverless</li>
         </ul>
         <a class="kit-link" href="https://github.com/ntoledo319/Rupture/tree/main/kits/lambda-lifeline">Read the docs →</a>
@@ -134,58 +133,57 @@
 <section class="section" id="pricing">
   <div class="container">
     <h2>Pricing</h2>
-    <p class="sub">The kits are MIT-licensed — fork, use, resell. Paid tiers add the stuff that's painful to build yourself: printable runbooks, captioned videos, expanded tables, custom rules, priority support.</p>
+    <p class="sub">The CLIs are MIT-licensed — fork, use, resell. Paid tiers handle the parts that matter to a busy team: hash-anchored audit reports, real PRs opened on your repo, org-wide licenses, and continuous drift monitoring.</p>
 
     <div class="pricing-grid">
 
       <div class="price-card">
-        <h3>Solo</h3>
-        <div class="price">$499 <span class="per">/ kit</span></div>
+        <h3>CLI (Free)</h3>
+        <div class="price">$0</div>
         <ul>
-          <li>MIT-licensed kit (everything on GitHub)</li>
-          <li>Printable PDF migration playbook</li>
-          <li>Email support · 7 days</li>
+          <li>All three kits, MIT licensed</li>
+          <li>Unlimited runs, no limits</li>
+          <li>Full source on GitHub</li>
+          <li>Community support via GitHub Discussions</li>
         </ul>
-        <a class="btn-outline" href="#checkout">Get Solo</a>
+        <a class="btn-outline" href="https://github.com/ntoledo319/Rupture">git clone →</a>
       </div>
 
       <div class="price-card featured">
         <div class="badge">Most popular</div>
-        <h3>Team</h3>
-        <div class="price">$999 <span class="per">/ kit</span></div>
+        <h3>Audit PDF</h3>
+        <div class="price">$299 <span class="per"> base</span></div>
         <ul>
-          <li>Everything in Solo</li>
-          <li>2-hour captioned video walkthrough</li>
-          <li>Expanded dependency / remap tables</li>
-          <li>3 custom rules for your codebase</li>
-          <li>Priority Slack channel · 7 days</li>
+          <li>Hash-anchored deterministic report</li>
+          <li>Severity × blast-radius scoring</li>
+          <li>Cost-of-not-fixing estimate</li>
+          <li>Roll-forward roadmap</li>
+          <li>Surge pricing: $399 (within 30 days), $599 (within 7 days)</li>
         </ul>
-        <a class="btn-primary" href="#checkout">Get Team</a>
+        <a class="btn-primary" href="/audit">Get Audit →</a>
       </div>
 
       <div class="price-card">
-        <h3>Enterprise</h3>
-        <div class="price">$2,499 <span class="per">/ kit</span></div>
+        <h3>Migration Pack</h3>
+        <div class="price">$1,499</div>
         <ul>
-          <li>Everything in Team</li>
-          <li>Unlimited custom rules</li>
-          <li>Priority Slack · 30 days</li>
-          <li>2 × 90-min live pairing sessions</li>
-          <li>On-call during cutover</li>
+          <li>Real PR opened on your repo</li>
+          <li>Codemods + IaC patches</li>
+          <li>Canary plan + rollback script</li>
+          <li>Refund auto-fires if CI fails</li>
         </ul>
-        <a class="btn-outline" href="#checkout">Get Enterprise</a>
+        <a class="btn-outline" href="/pack">Get Migration Pack →</a>
       </div>
 
     </div>
 
     <div class="bundle">
-      <h3>Bundle all 3 kits · save up to $2,500</h3>
+      <h3>Enterprise Options</h3>
       <div class="bundle-grid">
-        <div><strong>Solo bundle</strong> · $999 <span class="muted">(save $498)</span></div>
-        <div><strong>Team bundle</strong> · $1,999 <span class="muted">(save $998)</span></div>
-        <div><strong>Enterprise bundle</strong> · $4,997 <span class="muted">(save $2,500)</span></div>
+        <div><strong>Org License</strong> · $14,999/yr <span class="muted">— live rule-pack feed, private rules, unlimited runs</span></div>
+        <div><strong>Drift Watch</strong> · $19/mo <span class="muted">— weekly re-scan, delta PDFs, auto-PR on new deprecations</span></div>
       </div>
-      <a class="btn-primary" href="#checkout">Get the bundle</a>
+      <a class="btn-primary" href="/license">Contact for Enterprise →</a>
     </div>
   </div>
 </section>
@@ -226,7 +224,7 @@
 
     <details>
       <summary>Do you offer refunds?</summary>
-      <p>Yes. If a kit doesn't do what it says it does on a real project, email us within 14 days and we'll refund in full, no questions.</p>
+      <p>Yes. Migration Pack purchases auto-refund if the opened PR's CI fails within 7 days. Audit PDFs include a verification URL to confirm authenticity.</p>
     </details>
   </div>
 </section>

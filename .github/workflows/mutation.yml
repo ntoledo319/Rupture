@@ -1,0 +1,103 @@
+name: Mutation Testing (C3)
+
+on:
+  schedule:
+    - cron: '0 3 * * 0'  # Weekly on Sunday at 3am
+  workflow_dispatch:
+
+jobs:
+  python-mutmut:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        kit: [al2023-gate, python-pivot]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          cd kits/${{ matrix.kit }}
+          pip install -e ".[dev]"
+          pip install mutmut
+      
+      - name: Run mutation tests
+        run: |
+          cd kits/${{ matrix.kit }}
+          mutmut run || true
+          mutmut results > mutation_report.txt
+          
+          # Extract score
+          SCORE=$(grep -oP 'Score: \K[0-9]+' mutation_report.txt || echo "0")
+          echo "mutation_score=$SCORE" >> $GITHUB_ENV
+      
+      - name: Check threshold
+        run: |
+          if [ "$mutation_score" -lt 80 ]; then
+            echo "::error::Mutation score $mutation_score% is below 80% threshold"
+            echo "Creating quality debt issue..."
+            exit 1
+          fi
+          echo "Mutation score $mutation_score% meets threshold"
+      
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-report-${{ matrix.kit }}
+          path: kits/${{ matrix.kit }}/mutation_report.txt
+
+  node-stryker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: |
+          cd kits/lambda-lifeline
+          npm ci
+          npm install -g @stryker-mutator/core
+      
+      - name: Run Stryker
+        run: |
+          cd kits/lambda-lifeline
+          npx stryker run || true
+      
+      - name: Check score
+        run: |
+          SCORE=$(cat kits/lambda-lifeline/reports/mutation/mutation.json | jq -r '.metrics.mutationScore' || echo "0")
+          if [ "$SCORE" = "null" ]; then SCORE="0"; fi
+          echo "mutation_score=$SCORE" >> $GITHUB_ENV
+          
+          if [ "$SCORE" -lt 80 ]; then
+            echo "::error::Mutation score $SCORE% is below 80% threshold"
+            exit 1
+          fi
+          echo "Mutation score $SCORE% meets threshold"
+
+  quality-debt-issue:
+    runs-on: ubuntu-latest
+    needs: [python-mutmut, node-stryker]
+    if: failure()
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create quality debt issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Quality Debt: Mutation score below 80%',
+              body: `Mutation testing detected quality regression.\n\nSee workflow run: ${context.payload.repository.html_url}/actions/runs/${context.runId}`,
+              labels: ['quality-debt', 'mutation-testing']
+            });

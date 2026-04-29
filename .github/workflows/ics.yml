@@ -1,0 +1,80 @@
+name: Generate Deprecations ICS (D7)
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # Daily at 4am UTC
+  push:
+    paths:
+      - 'rules/public/deprecations.yml'
+  workflow_dispatch:
+
+jobs:
+  generate-ics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: pip install pyyaml icalendar
+      
+      - name: Generate ICS feed
+        run: |
+          python << 'EOF'
+          import yaml
+          from datetime import datetime, timedelta
+          from icalendar import Calendar, Event
+          import uuid
+          
+          # Load deprecations
+          with open('rules/public/deprecations.yml') as f:
+              data = yaml.safe_load(f)
+          
+          # Create calendar
+          cal = Calendar()
+          cal.add('prodid', '-//Rupture//AWS Deprecations//EN')
+          cal.add('version', '2.0')
+          cal.add('calscale', 'GREGORIAN')
+          cal.add('method', 'PUBLISH')
+          cal.add('x-wr-calname', 'AWS Deprecations')
+          cal.add('x-wr-caldesc', 'AWS platform deprecation deadlines tracked by Rupture')
+          
+          # Add events
+          for dep in data.get('deprecations', []):
+              event = Event()
+              event.add('summary', f"AWS Deprecation: {dep['name']}")
+              event.add('description', dep.get('description', ''))
+              event.add('dtstart', datetime.strptime(dep['date'], '%Y-%m-%d').date())
+              event.add('dtend', (datetime.strptime(dep['date'], '%Y-%m-%d') + timedelta(days=1)).date())
+              event.add('dtstamp', datetime.utcnow())
+              event.add('created', datetime.utcnow())
+              event.add('uid', str(uuid.uuid4()))
+              event.add('url', dep.get('url', 'https://ntoledo319.github.io/Rupture'))
+              
+              # Add alert 30 days before
+              from icalendar import vAlarm
+              alarm = vAlarm()
+              alarm.add('action', 'DISPLAY')
+              alarm.add('description', f"30 days until {dep['name']} deprecation")
+              alarm.add('trigger', timedelta(days=-30))
+              event.add_component(alarm)
+              
+              cal.add_component(event)
+          
+          # Write ICS file
+          with open('docs/deprecations.ics', 'wb') as f:
+              f.write(cal.to_ical())
+          
+          print(f"Generated ICS with {len(list(cal.walk('VEVENT')))} events")
+          EOF
+      
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/deprecations.ics
+          git diff --cached --quiet || (git commit -m "chore: update deprecations.ics [skip ci]" && git push)

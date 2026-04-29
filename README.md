@@ -2,7 +2,7 @@
 
 > CLIs for the real AWS deprecation deadlines that break production: **Lambda Node.js 20**, **Amazon Linux 2**, **Lambda Python 3.9/3.10/3.11**.
 
-[![landing](https://img.shields.io/badge/landing-live-brightgreen)](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/35eb5c15/index.html)
+[![landing](https://img.shields.io/badge/landing-live-brightgreen)](https://ntoledo319.github.io/Rupture)
 [![tests](https://img.shields.io/badge/tests-116%20passing-brightgreen)](#tests)
 [![license](https://img.shields.io/badge/license-MIT%20(open%20core)-blue)](#license)
 
@@ -16,9 +16,9 @@ AWS is killing runtimes on a hard schedule. When a deadline passes, deploys fail
 
 | Kit | Deadline | What breaks | Status |
 |---|---|---|---|
-| [**lambda-lifeline**](./kits/lambda-lifeline) | **Apr 30, 2026** — Lambda Node.js 20 EOL (Phase 1) | `require()`, `aws-sdk` v2, `URL` globals, OpenSSL 3 hashes | 🔥 Ship-ready |
-| [**al2023-gate**](./kits/al2023-gate) | **Jun 30, 2026** — Amazon Linux 2 EOL | `yum`, `amazon-linux-extras`, `ntpd`, `iptables`, Python 2 | 🔥 Ship-ready |
-| [**python-pivot**](./kits/python-pivot) | **Lambda Python 3.9/3.10/3.11** EOL waves | `distutils`, `imp`, `collections.Mapping`, native wheels | 🔥 Ship-ready |
+| [**lambda-lifeline**](./kits/lambda-lifeline) | **Apr 30, 2026** — Lambda Node.js 20 EOL (Phase 1) | `require()`, `aws-sdk` v2, `URL` globals, OpenSSL 3 hashes | Ready |
+| [**al2023-gate**](./kits/al2023-gate) | **Jun 30, 2026** — Amazon Linux 2 EOL | `yum`, `amazon-linux-extras`, `ntpd`, `iptables`, Python 2 | Ready |
+| [**python-pivot**](./kits/python-pivot) | **Lambda Python 3.9/3.10/3.11** EOL waves | `distutils`, `imp`, `collections.Mapping`, native wheels | Ready |
 
 Every kit ships the same 6 pillars:
 
@@ -71,20 +71,15 @@ See [kits/lambda-lifeline/README.md](./kits/lambda-lifeline) for the full walkth
 
 ## Pricing
 
-Each kit is sold standalone. A bundle covers all current + all future kits.
-
-| Tier | Solo | Team | Enterprise |
+| SKU | Price | What you get | Delivery |
 |---|---|---|---|
-| **Single kit** | $499 | $999 | $2,499 |
-| **All-kits bundle** (lifetime) | $999 | $1,999 | $4,997 |
+| **CLI (free)** | $0 | All three kits, MIT, no limits | `git clone` |
+| **Audit PDF** | $299 (surge to $399 inside 30 days, $599 inside 7 days) | A hash-anchored, deterministic report scoring every finding by severity × blast-radius, with a roll-forward roadmap and cost-of-not-fixing estimate | Email within 5 minutes |
+| **Migration Pack** | $1,499 | A real PR opened on your repo with codemods + IaC patches + canary plan + rollback. Refund auto-fires if CI fails | GitHub App opens PR within 5 minutes |
+| **Org License** | $14,999 / yr | Live rule-pack feed, private rule extensions, unlimited runs, one-year validity | License key emailed |
+| **Drift Watch** | $19 / mo | Weekly re-scan of a read-only IAM role; delta PDF on change; auto-PR on new deprecation | Cron-driven |
 
-What you get:
-- Source + CI recipes + canary templates + runbooks
-- Email support for 90 days (Solo) / 1 year (Team) / forever (Enterprise)
-- Free updates for current deprecation phase
-- Bundle = every future kit we ship, forever
-
-**[→ Pricing page](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/35eb5c15/index.html#pricing)**
+**[→ Pricing page](https://ntoledo319.github.io/Rupture#pricing)**
 
 ---
 
@@ -92,7 +87,7 @@ What you get:
 
 AWS publishes deprecation notices on a blog. Your deploys will fail on a Tuesday. The fix is usually not one-line — it's native wheels that don't exist for the new runtime, OpenSSL 3 hashes your code depended on, an IMDSv1 call that's now blocked, an `iptables` rule that no longer works on nftables.
 
-Rupture is what we built the third time we had to migrate a fleet by hand. It's opinionated, well-tested (116 tests across 3 kits), and safe — everything is dry-run by default, everything has a rollback path.
+Rupture automates AWS migrations off deprecated runtimes — deterministically, safely, and before the deadline. It's opinionated, well-tested (116 tests across 3 kits), and safe — everything is dry-run by default, everything has a rollback path.
 
 ---
 
@@ -131,17 +126,17 @@ Each new kit is free forever for bundle customers.
 
 ## License
 
-Open-core: the CLI code in this repo is MIT-licensed. The paid tiers include CI/CD templates, enterprise canary recipes, private issue tracker, and 1:1 support.
+Open-core: the CLI code in this repo is MIT-licensed. The paid tiers include hash-anchored audit reports, automated PR bots, and rule-pack feeds.
 
 ---
 
 ## Links
 
-- 🌐 [Landing page](https://sites.super.myninja.ai/a51b9893-5170-4e08-87ed-c7db56f6885b/35eb5c15/index.html)
+- 🌐 [Landing page](https://ntoledo319.github.io/Rupture)
 - 🚀 [Show HN draft](./launch/show-hn-draft.md)
 - 📝 [Blog post: Migrating Lambda Node.js 20 → 22](./launch/blog-post.md)
 - 💬 Issues: use the repo tracker
 
 ---
 
-*Rupture is built by operators who have lived through these migrations. If you find a bug, open an issue. If you need a kit for a deprecation we haven't shipped, tell us and we'll build it.*
+*Rupture migrates AWS workloads off deprecated runtimes — automatically, deterministically, and before the deadline.*

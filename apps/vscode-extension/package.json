@@ -1,0 +1,117 @@
+{
+  "name": "rupture-vscode",
+  "displayName": "Rupture - AWS Deprecation Scanner",
+  "description": "Real-time AWS deprecation detection in VS Code",
+  "version": "1.0.0",
+  "publisher": "ntoledo319",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters",
+    "Debuggers",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "aws",
+    "lambda",
+    "deprecation",
+    "migration",
+    "nodejs",
+    "python"
+  ],
+  "activationEvents": [
+    "onLanguage:yaml",
+    "onLanguage:json",
+    "onLanguage:javascript",
+    "onLanguage:python"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "rupture.scanWorkspace",
+        "title": "Rupture: Scan Workspace for Deprecations",
+        "icon": "$(search)"
+      },
+      {
+        "command": "rupture.showReport",
+        "title": "Rupture: Show Deprecation Report",
+        "icon": "$(output)"
+      },
+      {
+        "command": "rupture.getAudit",
+        "title": "Rupture: Get Full Audit Report",
+        "icon": "$(link-external)"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "rupture.scanWorkspace",
+          "group": "2_workspace@5",
+          "when": "explorerResourceIsFolder"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Rupture",
+      "properties": {
+        "rupture.enabledKits": {
+          "type": "array",
+          "default": ["lambda-lifeline", "al2023-gate", "python-pivot"],
+          "description": "Which Rupture kits to enable",
+          "items": {
+            "type": "string",
+            "enum": ["lambda-lifeline", "al2023-gate", "python-pivot"]
+          }
+        },
+        "rupture.severityThreshold": {
+          "type": "string",
+          "default": "medium",
+          "description": "Minimum severity to report",
+          "enum": ["low", "medium", "high", "critical"]
+        },
+        "rupture.autoScan": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically scan on file save"
+        }
+      }
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "rupture.deprecations",
+          "name": "AWS Deprecations",
+          "when": "rupture.hasDeprecations"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "@vscode/vsce": "^2.22.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ntoledo319/Rupture.git",
+    "directory": "apps/vscode-extension"
+  },
+  "license": "MIT",
+  "icon": "icon.png"
+}

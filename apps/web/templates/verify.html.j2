@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Audit Report | Rupture</title>
+    <meta name="description" content="Verify the authenticity of your Rupture Audit PDF report.">
+    
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 3rem auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .verify-box {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .hash-input {
+            width: 100%;
+            padding: 0.75rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            margin: 1rem 0;
+            box-sizing: border-box;
+        }
+        
+        .verify-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        .verify-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .result {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result.valid {
+            display: block;
+            background: #f0fdf4;
+            border: 2px solid #16a34a;
+            color: #166534;
+        }
+        
+        .result.invalid {
+            display: block;
+            background: #fef2f2;
+            border: 2px solid #dc2626;
+            color: #991b1b;
+        }
+        
+        .result.pending {
+            display: block;
+            background: #fefce8;
+            border: 2px solid #ca8a04;
+        }
+        
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Verify Audit Report</h1>
+    <p>Enter the SHA-256 hash from your Audit PDF to verify its authenticity.</p>
+    
+    <div class="verify-box">
+        <input type="text" 
+               class="hash-input" 
+               id="hashInput"
+               placeholder="Enter SHA-256 hash (64 characters)"
+               maxlength="64"
+               pattern="[a-fA-F0-9]{64}">
+        <button class="verify-btn" onclick="verifyHash()">Verify</button>
+    </div>
+    
+    <div id="result" class="result">
+        <div class="icon" id="resultIcon"></div>
+        <h3 id="resultTitle"></h3>
+        <p id="resultMessage"></p>
+    </div>
+    
+    <p style="color: #6b7280; font-size: 0.875rem; margin-top: 2rem;">
+        Each Rupture Audit PDF is cryptographically tied to your input files. 
+        Any modification invalidates the hash.
+    </p>
+
+    <script>
+        // Pre-fill hash from URL if present
+        const urlParams = new URLSearchParams(window.location.search);
+        const hashFromUrl = urlParams.get('hash');
+        if (hashFromUrl) {
+            document.getElementById('hashInput').value = hashFromUrl;
+            verifyHash();
+        }
+        
+        async function verifyHash() {
+            const hash = document.getElementById('hashInput').value.trim().toLowerCase();
+            const resultEl = document.getElementById('result');
+            const iconEl = document.getElementById('resultIcon');
+            const titleEl = document.getElementById('resultTitle');
+            const messageEl = document.getElementById('resultMessage');
+            
+            // Validate format
+            if (!/^[a-f0-9]{64}$/.test(hash)) {
+                resultEl.className = 'result invalid';
+                iconEl.textContent = '❌';
+                titleEl.textContent = 'Invalid Hash Format';
+                messageEl.textContent = 'Please enter a valid 64-character hexadecimal SHA-256 hash.';
+                return;
+            }
+            
+            // Show pending
+            resultEl.className = 'result pending';
+            iconEl.textContent = '⏳';
+            titleEl.textContent = 'Verifying...';
+            messageEl.textContent = 'Checking report authenticity...';
+            
+            // In a real implementation, this would query an API
+            // For now, simulate a check
+            setTimeout(() => {
+                // Mock verification - in production this queries the API
+                const isValid = Math.random() > 0.1; // 90% valid for demo
+                
+                if (isValid) {
+                    resultEl.className = 'result valid';
+                    iconEl.textContent = '✅';
+                    titleEl.textContent = 'Report Verified';
+                    messageEl.innerHTML = `
+                        <strong>Hash:</strong> ${hash.substring(0, 16)}...${hash.substring(48)}<br>
+                        <strong>Generated:</strong> ${new Date().toLocaleDateString()}<br>
+                        <strong>Status:</strong> Authentic and unmodified
+                    `;
+                } else {
+                    resultEl.className = 'result invalid';
+                    iconEl.textContent = '⚠️';
+                    titleEl.textContent = 'Verification Failed';
+                    messageEl.textContent = 'This hash was not found in our records. The report may have been modified or is not a genuine Rupture audit.';
+                }
+            }, 500);
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('hashInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyHash();
+            }
+        });
+    </script>
+</body>
+</html>

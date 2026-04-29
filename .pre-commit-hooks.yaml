@@ -1,0 +1,23 @@
+- id: rupture-lambda-lifeline
+  name: Rupture — Lambda Node.js deprecation scan
+  description: Scan IaC and source files for Lambda Node.js runtime deprecations.
+  entry: lambda-lifeline scan --strict
+  language: python
+  files: \.(yaml|yml|json|tf|js|ts|mjs)$
+  pass_filenames: false
+
+- id: rupture-al2023-gate
+  name: Rupture — Amazon Linux 2 deprecation scan
+  description: Scan AMI/Packer/Ansible files for AL2 EOL exposure.
+  entry: al2023-gate scan --strict
+  language: python
+  files: \.(yaml|yml|json|tf|pkr\.hcl|tpl)$
+  pass_filenames: false
+
+- id: rupture-python-pivot
+  name: Rupture — Lambda Python deprecation scan
+  description: Scan IaC and source files for Lambda Python runtime deprecations.
+  entry: python-pivot scan --strict
+  language: python
+  files: \.(yaml|yml|json|tf|py)$
+  pass_filenames: false

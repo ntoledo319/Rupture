@@ -1,0 +1,83 @@
+# Rupture SKU Pricing Configuration
+# This file is read by both the static site generator and the Cloudflare Worker
+
+skus:
+  cli:
+    name: "CLI (Free)"
+    description: "All three kits, MIT licensed, no limits"
+    price_usd: 0
+    stripe_product: null  # Free, no Stripe product needed
+    delivery: "git clone"
+    
+  audit:
+    name: "Audit PDF"
+    description: "Hash-anchored deterministic report with severity scoring"
+    stripe_product: "prod_audit_pdf"
+    tiers:
+      - name: "surge_7d"
+        max_days: 7
+        price_usd: 599
+        description: "Within 7 days of deadline"
+      - name: "surge_30d"
+        max_days: 30
+        price_usd: 399
+        description: "Within 30 days of deadline"
+      - name: "standard"
+        max_days: 9999
+        price_usd: 299
+        description: "Standard pricing"
+    delivery: "Email within 5 minutes"
+    
+  migration_pack:
+    name: "Migration Pack"
+    description: "Real PR opened on your repo with codemods + IaC patches + canary plan + rollback"
+    stripe_product: "prod_migration_pack"
+    price_usd: 1499
+    delivery: "GitHub App opens PR within 5 minutes"
+    refund_window_days: 7
+    refund_condition: "ci_failure"
+    
+  org_license:
+    name: "Org License"
+    description: "Live rule-pack feed, private rule extensions, unlimited runs, one-year validity"
+    stripe_product: "prod_org_license"
+    price_usd: 14999
+    interval: year
+    delivery: "License key emailed"
+    
+  drift_watch:
+    name: "Drift Watch"
+    description: "Weekly re-scan of a read-only IAM role; delta PDF on change; auto-PR on new deprecation"
+    stripe_product: "prod_drift_watch"
+    price_usd: 19
+    interval: month
+    delivery: "Cron-driven"
+
+# Free-tier infrastructure caps (from updateplan.md section 5.E)
+caps:
+  cloudflare_workers_requests_per_day: 100000
+  cloudflare_r2_storage_gb: 10
+  cloudflare_r2_reads_per_month: 1000000
+  cloudflare_r2_writes_per_month: 10000000
+  cloudflare_queues_ops_per_month: 1000000
+  cloudflare_workers_ai_neurons_per_day: 10000
+  cloudflare_kv_reads_per_day: 100000
+  cloudflare_kv_writes_per_day: 1000
+  resend_emails_per_month: 3000
+  resend_emails_per_day: 100
+
+# Public-facing URLs (update these when domain changes)
+urls:
+  landing: "https://ntoledo319.github.io/Rupture"
+  audit: "https://ntoledo319.github.io/Rupture/audit"
+  pack: "https://ntoledo319.github.io/Rupture/pack"
+  license: "https://ntoledo319.github.io/Rupture/license"
+  status: "https://ntoledo319.github.io/Rupture/status"
+  github_repo: "https://github.com/ntoledo319/Rupture"
+  discussions: "https://github.com/ntoledo319/Rupture/discussions"
+
+# Stripe configuration (populated by setup_stripe.ts)
+stripe:
+  test_mode: true  # Flip to false when live key provided
+  account_id: null  # Filled by setup script
+  webhook_secret: null  # Set via wrangler secret

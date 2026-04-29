@@ -1,0 +1,121 @@
+name: 'Rupture AWS Deprecation Check'
+description: 'Check your IaC for AWS deprecation issues and comment findings on PRs'
+author: 'Rupture'
+branding:
+  icon: 'alert-triangle'
+  color: 'orange'
+
+inputs:
+  kit:
+    description: 'Which kit to run (lambda-lifeline, al2023-gate, python-pivot, or auto)'
+    required: false
+    default: 'auto'
+  path:
+    description: 'Path to IaC files (default: repository root)'
+    required: false
+    default: '.'
+  format:
+    description: 'Output format (table, json, markdown)'
+    required: false
+    default: 'markdown'
+  fail-on:
+    description: 'Minimum severity to fail the check (low, medium, high, critical)'
+    required: false
+    default: 'high'
+  comment-pr:
+    description: 'Comment findings on PR (true/false)'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Detect kit
+      id: detect
+      shell: bash
+      run: |
+        if [ "${{ inputs.kit }}" != "auto" ]; then
+          echo "kit=${{ inputs.kit }}" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        
+        # Auto-detect based on file presence
+        if find ${{ inputs.path }} -name "*.js" -o -name "*.ts" | grep -q .; then
+          if grep -r "runtime.*node" ${{ inputs.path }} 2>/dev/null | grep -q "20"; then
+            echo "kit=lambda-lifeline" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+        fi
+        
+        if find ${{ inputs.path }} -name "*.py" | grep -q .; then
+          if grep -r "python3\.[9-11]" ${{ inputs.path }} 2>/dev/null | grep -q .; then
+            echo "kit=python-pivot" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+        fi
+        
+        if find ${{ inputs.path }} -name "*.yaml" -o -name "*.yml" | xargs grep -l "AmazonLinux2\|al2" 2>/dev/null | grep -q .; then
+          echo "kit=al2023-gate" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        
+        # Default
+        echo "kit=lambda-lifeline" >> $GITHUB_OUTPUT
+
+    - name: Install kit
+      shell: bash
+      run: |
+        pip install git+https://github.com/ntoledo319/Rupture.git#subdirectory=kits/${{ steps.detect.outputs.kit }}
+
+    - name: Run scan
+      id: scan
+      shell: bash
+      run: |
+        KIT=${{ steps.detect.outputs.kit }}
+        $KIT scan --path ${{ inputs.path }} --format ${{ inputs.format }} > rupture_output.txt || true
+        echo "output<<EOF" >> $GITHUB_OUTPUT
+        cat rupture_output.txt >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Comment PR
+      if: inputs.comment-pr == 'true' && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const output = `\`${{ steps.detect.outputs.kit }}\` found potential deprecation issues:
+          
+          <details>
+          <summary>Click to expand findings</summary>
+          
+          \`\`\`
+          ${{ steps.scan.outputs.output }}
+          \`\`\`
+          
+          </details>
+          
+          [Get full audit report](https://ntoledo319.github.io/Rupture/audit)`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          });
+
+    - name: Fail on severity
+      shell: bash
+      run: |
+        # Parse output and check severity
+        # This is a simplified version - real implementation would parse JSON
+        if echo "${{ steps.scan.outputs.output }}" | grep -i "critical\|high" | grep -q .; then
+          if [ "${{ inputs.fail-on }}" = "high" ] || [ "${{ inputs.fail-on }}" = "critical" ]; then
+            echo "::error::Found ${{ inputs.fail-on }} severity issues"
+            exit 1
+          fi
+        fi
+        echo "No ${{ inputs.fail-on }} severity issues found"

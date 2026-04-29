@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-04-29T11:07:22.185931Z",
+  "checks": {
+    "stripe": {
+      "ok": true,
+      "last_checked": "2026-04-29T11:07:22.185931Z"
+    },
+    "worker": {
+      "ok": true,
+      "last_checked": "2026-04-29T11:07:22.185931Z"
+    },
+    "runner": {
+      "ok": true,
+      "last_checked": "2026-04-29T11:07:22.185931Z"
+    },
+    "email": {
+      "ok": true,
+      "last_checked": "2026-04-29T11:07:22.185931Z"
+    },
+    "github": {
+      "ok": true,
+      "last_checked": "2026-04-29T11:07:22.185931Z"
+    }
+  },
+  "metrics": {
+    "audits_delivered_7d": 0,
+    "prs_opened_7d": 0,
+    "drift_watch_subscribers": 0,
+    "rules_in_public_pack": 0
+  }
+}

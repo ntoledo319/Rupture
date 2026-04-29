@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rupture vs {{ competitor.name }} - AWS Deprecation Scanner Comparison</title>
+    <meta name="description" content="Compare Rupture vs {{ competitor.name }} for AWS deprecation scanning. Features, pricing, and integration comparison.">
+    <link rel="canonical" href="https://ntoledo319.github.io/Rupture/vs/{{ competitor.slug }}">
+    
+    <meta property="og:title" content="Rupture vs {{ competitor.name }}">
+    <meta property="og:description" content="Feature and pricing comparison of Rupture vs {{ competitor.name }}">
+    
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #1f2937;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .vs-badge {
+            display: inline-block;
+            background: #e5e7eb;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            color: #6b7280;
+        }
+        
+        table.comparison {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+        
+        table.comparison th,
+        table.comparison td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        table.comparison th {
+            background: #f9fafb;
+            font-weight: 600;
+        }
+        
+        table.comparison td:first-child {
+            font-weight: 500;
+        }
+        
+        .check { color: #16a34a; font-weight: bold; }
+        .cross { color: #dc2626; }
+        .partial { color: #ca8a04; }
+        
+        .cta-section {
+            background: #eff6ff;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .cta-section h2 {
+            margin-top: 0;
+        }
+        
+        .cta-btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0.5rem;
+        }
+        
+        .cta-btn.secondary {
+            background: white;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+        }
+        
+        .highlight {
+            background: #fef3c7;
+            padding: 0.125rem 0.25rem;
+            border-radius: 4px;
+        }
+        
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav style="margin-bottom: 1rem; font-size: 0.875rem;">
+        <a href="/">Home</a> / <a href="/vs">Comparisons</a> / {{ competitor.name }}
+    </nav>
+
+    <div class="hero">
+        <h1>Rupture <span class="vs-badge">VS</span> {{ competitor.name }}</h1>
+        <p>{{ competitor.tagline }}</p>
+    </div>
+
+    <table class="comparison">
+        <thead>
+            <tr>
+                <th>Feature</th>
+                <th>Rupture</th>
+                <th>{{ competitor.name }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CLI License</td>
+                <td class="check">MIT (Free)</td>
+                <td>{{ competitor.cli_license }}</td>
+            </tr>
+            <tr>
+                <td>Offline Operation</td>
+                <td class="check">✓ Yes</td>
+                <td>{{ competitor.offline }}</td>
+            </tr>
+            <tr>
+                <td>Auto-Fix (Codemods)</td>
+                <td class="check">✓ Built-in</td>
+                <td>{{ competitor.codemods }}</td>
+            </tr>
+            <tr>
+                <td>GitHub Action</td>
+                <td class="check">✓ Free</td>
+                <td>{{ competitor.github_action }}</td>
+            </tr>
+            <tr>
+                <td>Pre-commit Hook</td>
+                <td class="check">✓ Yes</td>
+                <td>{{ competitor.precommit }}</td>
+            </tr>
+            <tr>
+                <td>VS Code Extension</td>
+                <td class="check">✓ Yes</td>
+                <td>{{ competitor.vscode }}</td>
+            </tr>
+            <tr>
+                <td>Auto-PR Bot</td>
+                <td class="check">✓ Available</td>
+                <td>{{ competitor.autopr }}</td>
+            </tr>
+            <tr>
+                <td>Refund Guarantee</td>
+                <td class="check">✓ Auto-refund on CI fail</td>
+                <td>{{ competitor.refund }}</td>
+            </tr>
+            <tr>
+                <td>Pricing Model</td>
+                <td><span class="highlight">$0 seed - pay only when you buy</span></td>
+                <td>{{ competitor.pricing_model }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Why Teams Choose Rupture</h2>
+    <ul>
+        <li><strong>Deterministic builds:</strong> Same input = same output, guaranteed</li>
+        <li><strong>Zero seed cost:</strong> No paid services until revenue arrives</li>
+        <li><strong>Open source:</strong> All CLI tools are MIT licensed</li>
+        <li><strong>AWS-native:</strong> Built specifically for AWS deprecation patterns</li>
+        <li><strong>CI-gated quality:</strong> 80%+ mutation score required for release</li>
+    </ul>
+
+    <div class="cta-section">
+        <h2>Ready to migrate from {{ competitor.name }}?</h2>
+        <p>Rupture is designed for teams who want control over their migration tooling.</p>
+        <a href="https://github.com/ntoledo319/Rupture" class="cta-btn">View on GitHub</a>
+        <a href="/docs/migration-guide" class="cta-btn secondary">Migration Guide</a>
+    </div>
+
+    <footer>
+        <p>Last updated: {{ last_updated }}</p>
+        <p><a href="/">Rupture</a> · <a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a></p>
+    </footer>
+</body>
+</html>

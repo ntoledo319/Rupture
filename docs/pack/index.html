@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Migration Pack — Rupture</title>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:800px;margin:0 auto;padding:2rem;line-height:1.6}
+.brand{color:#2563eb;font-weight:600}
+h1{margin-top:0}
+.price{font-size:3rem;font-weight:700;color:#059669}
+.guarantee{background:#ecfdf5;border:2px solid #059669;border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+.guarantee h3{margin-top:0;color:#059669}
+button{background:#2563eb;color:white;border:none;padding:0.75rem 1.5rem;border-radius:6px;font-size:1rem;cursor:pointer}
+button:hover{background:#1d4ed8}
+.steps{background:#f9fafb;border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+.steps ol{margin:0;padding-left:1.5rem}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b7280;font-size:0.875rem}
+</style>
+</head>
+<body>
+<a href="/" class="brand">← Rupture</a>
+<h1>Migration Pack</h1>
+<p class="price">$1,499</p>
+<p>A real PR opened on your repository with codemods, IaC patches, canary plan, and rollback script.</p>
+
+<div class="guarantee">
+  <h3>Refund Guarantee</h3>
+  <p>If your CI fails on the migration PR within 7 days, you are automatically refunded. No questions, no human in the loop.</p>
+</div>
+
+<div class="steps">
+  <h3>What you get</h3>
+  <ol>
+    <li><strong>GitHub App Install</strong> — Grant read/write access to your repo</li>
+    <li><strong>Automated Analysis</strong> — We scan for deprecated patterns</li>
+    <li><strong>PR Created</strong> — Real PR with codemods and IaC patches within 5 minutes</li>
+    <li><strong>CI Check</strong> — Run your existing tests</li>
+    <li><strong>Auto-Refund</strong> — If CI fails and no override label added</li>
+  </ol>
+</div>
+
+<h3>Install GitHub App</h3>
+<p>First, install the Rupture Migration Bot on your repository:</p>
+<p><a href="/pack/install" style="display:inline-block;background:#24292f;color:white;padding:0.75rem 1.5rem;border-radius:6px;text-decoration:none;font-weight:600">Install GitHub App</a></p>
+
+<h3>Or Purchase Now</h3>
+<form action="/api/pack/checkout" method="POST">
+  <p><input type="email" name="email" placeholder="your@email.com" required style="padding:0.5rem;width:300px"></p>
+  <p><input type="text" name="repo" placeholder="owner/repo" required style="padding:0.5rem;width:300px"></p>
+  <button type="submit">Purchase Migration Pack — $1,499</button>
+</form>
+
+<footer>
+  <p>Refund auto-fires if CI fails within 7 days. <a href="/legal/terms">Terms</a> apply.</p>
+  <p><a href="/">Home</a> · <a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a></p>
+</footer>
+</body>
+</html>

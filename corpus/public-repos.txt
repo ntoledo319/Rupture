@@ -1,0 +1,18 @@
+# Curated corpus of public repos with AWS-deprecation-relevant IaC.
+# Each entry: <owner/name>@<commit-or-branch> # one-line note
+# To propose changes, open an issue tagged `corpus`. PRs touching this file
+# are merged only after the proposed repo is verified to have a public
+# license that permits static analysis (effectively all OSI-approved).
+
+# AWS samples (Apache-2.0)
+aws-samples/aws-lambda-runtime-update-helper@main # AWS official runtime-flip helper
+aws-samples/aws-cdk-examples@main # CDK examples in TS/Python
+aws-samples/serverless-patterns@main # SAM patterns
+
+# Public Lambda demo apps
+serverless/examples@main # serverless framework public examples
+
+# Amazon Linux references
+amazonlinux/container-images@main # AL2/AL2023 base images
+
+# Add additional repos below; benchmark workflow reads this list.

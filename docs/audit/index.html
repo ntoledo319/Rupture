@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audit PDF — Rupture</title>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:800px;margin:0 auto;padding:2rem;line-height:1.6}
+.brand{color:#2563eb;font-weight:600}
+h1{margin-top:0}
+.pricing{border:2px solid #e5e7eb;border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+.price{font-size:2rem;font-weight:700;color:#059669}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0}
+.tier{border:1px solid #d1d5db;border-radius:6px;padding:1rem;text-align:center}
+.tier.urgent{border-color:#dc2626;background:#fef2f2}
+.tier.soon{border-color:#f59e0b;background:#fffbeb}
+button{background:#2563eb;color:white;border:none;padding:0.75rem 1.5rem;border-radius:6px;font-size:1rem;cursor:pointer}
+button:hover{background:#1d4ed8}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b7280;font-size:0.875rem}
+</style>
+</head>
+<body>
+<a href="/" class="brand">← Rupture</a>
+<h1>Audit PDF</h1>
+<p>Upload your IaC files, get a hash-anchored deterministic report scoring every finding by severity × blast-radius.</p>
+
+<div class="pricing">
+  <h2>Pricing</h2>
+  <div class="tiers">
+    <div class="tier">
+      <strong>Standard</strong>
+      <div class="price">$299</div>
+      <p>More than 30 days until deadline</p>
+    </div>
+    <div class="tier soon">
+      <strong>Surge (30d)</strong>
+      <div class="price">$399</div>
+      <p>Within 30 days of deadline</p>
+    </div>
+    <div class="tier urgent">
+      <strong>Urgent (7d)</strong>
+      <div class="price">$599</div>
+      <p>Within 7 days of deadline</p>
+    </div>
+  </div>
+  <p><small>All tiers include: hash-anchored PDF, verification URL, severity scoring, roll-forward roadmap, cost estimate</small></p>
+</div>
+
+<h2>How it works</h2>
+<ol>
+  <li>Upload your SAM/CDK/Terraform/Serverless files</li>
+  <li>We scan for deprecated runtimes and breaking changes</li>
+  <li>Receive PDF via email within 5 minutes</li>
+  <li>Verify authenticity at <code>/verify/&lt;sha&gt;</code></li>
+</ol>
+
+<form action="/api/audit/checkout" method="POST">
+  <h3>Start Audit</h3>
+  <p><input type="email" name="email" placeholder="your@email.com" required style="padding:0.5rem;width:300px"></p>
+  <p><input type="file" name="files" multiple accept=".yaml,.yml,.json,.tf,.js,.ts,.py"></p>
+  <button type="submit">Proceed to Checkout</button>
+</form>
+
+<footer>
+  <p>Delivery within 5 minutes. Reports include SHA-256 hash of inputs for verification.</p>
+  <p><a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a></p>
+</footer>
+</body>
+</html>

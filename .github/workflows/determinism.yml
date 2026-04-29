@@ -1,0 +1,66 @@
+name: Determinism CI Gate (C1)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * *'  # Nightly at 2am
+
+jobs:
+  determinism:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        kit: [lambda-lifeline, al2023-gate, python-pivot]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install kit
+        run: |
+          cd kits/${{ matrix.kit }}
+          pip install -e ".[dev]"
+      
+      - name: Run kit twice on same fixture
+        run: |
+          cd kits/${{ matrix.kit }}
+          
+          # Run first time
+          python -m ${{ matrix.kit }}.cli scan --fixture test/fixtures/sample.json --format json > /tmp/run1.json
+          
+          # Run second time
+          python -m ${{ matrix.kit }}.cli scan --fixture test/fixtures/sample.json --format json > /tmp/run2.json
+          
+          # Compare outputs (normalize timestamps)
+          jq 'walk(if type == "object" then del(.timestamp, .generated_at) else . end)' /tmp/run1.json > /tmp/run1_normalized.json
+          jq 'walk(if type == "object" then del(.timestamp, .generated_at) else . end)' /tmp/run2.json > /tmp/run2_normalized.json
+          
+          # Diff must be empty
+          diff /tmp/run1_normalized.json /tmp/run2_normalized.json || exit 1
+      
+      - name: Test PDF determinism
+        if: matrix.kit == 'lambda-lifeline'
+        run: |
+          cd kits/${{ matrix.kit }}
+          
+          # Generate PDF twice
+          python -m ${{ matrix.kit }}.cli audit --fixture test/fixtures/sample.json --output /tmp/audit1.pdf || true
+          python -m ${{ matrix.kit }}.cli audit --fixture test/fixtures/sample.json --output /tmp/audit2.pdf || true
+          
+          # Strip PDF metadata (CreationDate, ModDate, ID)
+          if command -v qpdf &> /dev/null; then
+            qpdf --linearize /tmp/audit1.pdf /tmp/audit1_stripped.pdf
+            qpdf --linearize /tmp/audit2.pdf /tmp/audit2_stripped.pdf
+            diff /tmp/audit1_stripped.pdf /tmp/audit2_stripped.pdf || exit 1
+          else
+            echo "qpdf not available, skipping PDF determinism check"
+          fi
+      
+      - name: Report success
+        run: echo "Determinism check passed for ${{ matrix.kit }}"

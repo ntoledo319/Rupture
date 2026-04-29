@@ -1,0 +1,17 @@
+{
+  "schema": "rupture.feed.v1",
+  "generated_at": "2026-04-29T11:06:56.069429+00:00",
+  "public_valid_after": "2026-05-06T11:06:56.069429+00:00",
+  "public_delay_days": 7,
+  "packs": [
+    {
+      "name": "deprecations",
+      "filename": "deprecations.yml",
+      "sha256": "bf5ede44d42bc9689f13fcacb60ce5ec92d7e6f6ba842cdade8f3e3ab4b85ca4",
+      "signed": false,
+      "url": "public/deprecations.yml",
+      "sig_url": "public/deprecations.yml.sig",
+      "valid_after": "2026-05-06T11:06:56.069429+00:00"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+name: Submit Sitemap to Search Console
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/sitemap.xml'
+  workflow_dispatch:
+
+jobs:
+  submit-sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Submit sitemap to Google
+        run: |
+          # Submit sitemap to Google Search Console
+          # This requires a Google Search Console API key
+          
+          if [ -n "${{ secrets.GSC_API_KEY }}" ]; then
+            curl -X POST \
+              "https://www.googleapis.com/webmasters/v3/sites/https%3A%2F%2Fntoledo319.github.io%2FRupture%2F/sitemaps/submit" \
+              -H "Authorization: Bearer ${{ secrets.GSC_API_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "sitemapUrl": "https://ntoledo319.github.io/Rupture/sitemap.xml"
+              }' || echo "GSC submission failed (non-blocking)"
+          else
+            echo "GSC_API_KEY not configured, skipping submission"
+          fi
+      
+      - name: Ping search engines
+        run: |
+          # Ping Google
+          curl -s "https://www.google.com/ping?sitemap=https://ntoledo319.github.io/Rupture/sitemap.xml" || true
+          
+          # Ping Bing
+          curl -s "https://www.bing.com/webmaster/ping.aspx?siteMap=https://ntoledo319.github.io/Rupture/sitemap.xml" || true
+          
+          echo "Sitemap pings sent"

@@ -1,0 +1,43 @@
+name: Blog auto-loop
+
+on:
+  schedule:
+    - cron: '0 14 * * 1'  # Mondays 14:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate weekly entry
+        run: |
+          mkdir -p docs/blog
+          DATE=$(date -u +%Y-%m-%d)
+          SLUG=ops-$(date -u +%Y%m%d)
+          PRS=$(git log --since='7 days ago' --grep='Migration Pack' --oneline | wc -l | xargs)
+          COMMITS=$(git log --since='7 days ago' --oneline | wc -l | xargs)
+          cat > docs/blog/$SLUG.html <<HTML
+          <!doctype html><html><head><meta charset="utf-8"><title>Weekly ops — $DATE</title>
+          <style>body{font-family:system-ui,sans-serif;max-width:780px;margin:0 auto;padding:2rem;line-height:1.6}</style></head>
+          <body><a href="/">← Rupture</a><h1>Week of $DATE</h1>
+          <ul><li>Commits this week: $COMMITS</li><li>Migration-Pack-related commits: $PRS</li></ul>
+          <p>Auto-published from CI by .github/workflows/blog-loop.yml.</p></body></html>
+          HTML
+      - name: Commit
+        run: |
+          git config user.name "rupture-bot"
+          git config user.email "rupture-bot@users.noreply.github.com"
+          git add docs/blog
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(blog): weekly entry"
+            git push
+          fi

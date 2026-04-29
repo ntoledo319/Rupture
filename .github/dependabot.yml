@@ -1,0 +1,30 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/kits/al2023-gate"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/kits/python-pivot"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "pip"
+    directory: "/kits/lambda-lifeline"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/apps/worker"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/apps/vscode-extension"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/apps/runner"
+    schedule:
+      interval: "weekly"

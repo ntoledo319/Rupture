@@ -1,0 +1,27 @@
+{
+  "name": "Rupture Migration Bot",
+  "url": "https://ntoledo319.github.io/Rupture",
+  "hook_attributes": {
+    "url": "https://rupture-worker.ntoledo319.workers.dev/webhook/github"
+  },
+  "redirect_url": "https://ntoledo319.github.io/Rupture/pack/installed",
+  "callback_urls": [
+    "https://ntoledo319.github.io/Rupture/pack/callback"
+  ],
+  "setup_url": "https://ntoledo319.github.io/Rupture/pack/setup",
+  "setup_on_install": true,
+  "public": true,
+  "default_permissions": {
+    "contents": "write",
+    "pull_requests": "write",
+    "metadata": "read",
+    "checks": "read"
+  },
+  "default_events": [
+    "push",
+    "pull_request",
+    "check_run",
+    "installation",
+    "installation_repositories"
+  ]
+}

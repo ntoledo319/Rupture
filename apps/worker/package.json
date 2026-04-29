@@ -1,0 +1,23 @@
+{
+  "name": "rupture-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker for Rupture payment processing and webhooks",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240401.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.5.0",
+    "wrangler": "^3.0.0"
+  }
+}

@@ -1,0 +1,32 @@
+name: Property-based tests (C2)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  python-properties:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        kit: [al2023-gate, python-pivot, lambda-lifeline]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install kit
+        run: |
+          if [ -f kits/${{ matrix.kit }}/pyproject.toml ] || [ -f kits/${{ matrix.kit }}/setup.py ]; then
+            pip install -e kits/${{ matrix.kit }} || true
+          fi
+          pip install hypothesis pytest
+      - name: Run property tests
+        run: |
+          if find kits/${{ matrix.kit }} -name 'test_propert*' | grep -q .; then
+            pytest kits/${{ matrix.kit }} -k property -q
+          else
+            echo "no property tests yet for ${{ matrix.kit }} — skipping"
+          fi

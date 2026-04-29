@@ -1,0 +1,57 @@
+name: Status synthetic check
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Every 5 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  synth:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe endpoints
+        id: probe
+        run: |
+          set +e
+          PAGES_URL="${{ vars.PAGES_URL || 'https://ntoledo319.github.io/Rupture' }}"
+          WORKER_URL="${{ vars.WORKER_URL }}"
+          NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          status() { curl -s -o /dev/null -w '%{http_code}' --max-time 8 "$1"; }
+          PAGES_CODE=$(status "$PAGES_URL/status/")
+          PACK_CODE=$(status "$PAGES_URL/pack/")
+          AUDIT_CODE=$(status "$PAGES_URL/audit/")
+          ICS_CODE=$(status "$PAGES_URL/deprecations.ics")
+          WORKER_CODE=000
+          if [ -n "$WORKER_URL" ]; then WORKER_CODE=$(status "$WORKER_URL/health"); fi
+          ok() { [ "$1" = "200" ] && echo true || echo false; }
+          mkdir -p docs/status
+          cat > docs/status/data.json <<JSON
+          {
+            "generated_at": "$NOW",
+            "checks": {
+              "pages": {"ok": $(ok $PAGES_CODE), "code": $PAGES_CODE, "last_checked": "$NOW"},
+              "audit_page": {"ok": $(ok $AUDIT_CODE), "code": $AUDIT_CODE, "last_checked": "$NOW"},
+              "pack_page": {"ok": $(ok $PACK_CODE), "code": $PACK_CODE, "last_checked": "$NOW"},
+              "ics_feed": {"ok": $(ok $ICS_CODE), "code": $ICS_CODE, "last_checked": "$NOW"},
+              "worker": {"ok": $(ok $WORKER_CODE), "code": $WORKER_CODE, "last_checked": "$NOW"}
+            },
+            "metrics": {
+              "audits_delivered_7d": 0,
+              "prs_opened_7d": 0,
+              "drift_watch_subscribers": 0
+            }
+          }
+          JSON
+      - name: Commit if changed
+        run: |
+          git config user.name "rupture-bot"
+          git config user.email "rupture-bot@users.noreply.github.com"
+          git add docs/status/data.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(status): synthetic check $(date -u +%FT%TZ)"
+            git push
+          fi

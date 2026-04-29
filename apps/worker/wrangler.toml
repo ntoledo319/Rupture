@@ -1,0 +1,58 @@
+name = "rupture-worker"
+main = "src/index.ts"
+compatibility_date = "2024-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Free tier configuration
+# See pricing.yml for cap tracking
+
+[[kv_namespaces]]
+binding = "IDEMPOTENCY"
+id = "idempotency-kv"
+preview_id = "idempotency-kv-preview"
+
+[[kv_namespaces]]
+binding = "RATE_LIMITS"
+id = "ratelimit-kv"
+preview_id = "ratelimit-kv-preview"
+
+[[kv_namespaces]]
+binding = "DAILY_CAPS"
+id = "caps-kv"
+preview_id = "caps-kv-preview"
+
+[[r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "rupture-uploads"
+preview_bucket_name = "rupture-uploads-preview"
+
+[[queues.producers]]
+binding = "JOBS"
+queue = "rupture-jobs"
+
+[[queues.consumers]]
+queue = "rupture-jobs"
+max_batch_size = 1
+max_batch_timeout = 30
+max_retries = 3
+dead_letter_queue = "rupture-jobs-dlq"
+
+[[queues.producers]]
+binding = "JOBS_DLQ"
+queue = "rupture-jobs-dlq"
+
+# AI binding for support bot
+[[ai]]
+binding = "AI"
+
+[vars]
+ENVIRONMENT = "production"
+STRIPE_WEBHOOK_PATH = "/webhook/stripe"
+GITHUB_WEBHOOK_PATH = "/webhook/github"
+
+# Secrets (set via wrangler secret put)
+# STRIPE_KEY = "sk_test_..." or "sk_live_..."
+# STRIPE_WEBHOOK_SECRET = "whsec_..."
+# RESEND_API_KEY = "re_..."
+# GITHUB_APP_PRIVATE_KEY = "-----BEGIN RSA PRIVATE KEY-----..."
+# GITHUB_APP_ID = "123456"

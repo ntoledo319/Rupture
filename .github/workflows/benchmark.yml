@@ -1,0 +1,131 @@
+name: Nightly Public Benchmark
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2am UTC
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install all kits
+        run: |
+          pip install -e kits/lambda-lifeline
+          pip install -e kits/al2023-gate
+          pip install -e kits/python-pivot
+      
+      - name: Load public repo list
+        id: repos
+        run: |
+          # Curated list of public repos with IaC files
+          cat > /tmp/repos.txt << 'EOF'
+          https://github.com/aws-samples/aws-cdk-examples
+          https://github.com/aws-samples/serverless-patterns
+          EOF
+          echo "repo_count=$(wc -l < /tmp/repos.txt)" >> $GITHUB_OUTPUT
+      
+      - name: Run benchmarks
+        run: |
+          mkdir -p /tmp/benchmarks
+          
+          while IFS= read -r repo; do
+            repo_name=$(basename "$repo")
+            echo "Benchmarking $repo_name..."
+            
+            # Clone
+            git clone --depth 1 "$repo" /tmp/repo 2>/dev/null || continue
+            
+            # Run all kits
+            for kit in lambda-lifeline al2023-gate python-pivot; do
+              echo "  Running $kit..."
+              $kit scan --path /tmp/repo --format json > "/tmp/benchmarks/${repo_name}_${kit}.json" 2>/dev/null || true
+            done
+            
+            rm -rf /tmp/repo
+          done < /tmp/repos.txt
+      
+      - name: Aggregate results
+        run: |
+          python << 'EOF'
+          import json
+          import glob
+          from datetime import datetime
+          from pathlib import Path
+          
+          results = {
+              'date': datetime.utcnow().isoformat(),
+              'total_repos': 0,
+              'kits': {
+                  'lambda-lifeline': {'pass': 0, 'fail': 0, 'warn': 0},
+                  'al2023-gate': {'pass': 0, 'fail': 0, 'warn': 0},
+                  'python-pivot': {'pass': 0, 'fail': 0, 'warn': 0},
+              },
+              'findings': []
+          }
+          
+          for file in glob.glob('/tmp/benchmarks/*.json'):
+              try:
+                  with open(file) as f:
+                      data = json.load(f)
+                  
+                  kit = Path(file).stem.split('_')[-1]
+                  findings = len(data.get('findings', []))
+                  
+                  if findings == 0:
+                      results['kits'][kit]['pass'] += 1
+                  elif findings < 5:
+                      results['kits'][kit]['warn'] += 1
+                  else:
+                      results['kits'][kit]['fail'] += 1
+                  
+                  results['findings'].append({
+                      'repo': Path(file).stem.rsplit('_', 1)[0],
+                      'kit': kit,
+                      'findings': findings
+                  })
+                  
+                  results['total_repos'] += 1
+              except Exception as e:
+                  print(f"Error processing {file}: {e}")
+          
+          with open('docs/status/benchmark.json', 'w') as f:
+              json.dump(results, f, indent=2)
+          
+          # Generate markdown report
+          with open('BENCHMARK.md', 'w') as f:
+              f.write(f"""# Rupture Public Benchmark
+
+Last updated: {results['date']}
+
+## Results Summary
+
+| Kit | Pass | Warn | Fail |
+|-----|------|------|------|
+| lambda-lifeline | {results['kits']['lambda-lifeline']['pass']} | {results['kits']['lambda-lifeline']['warn']} | {results['kits']['lambda-lifeline']['fail']} |
+| al2023-gate | {results['kits']['al2023-gate']['pass']} | {results['kits']['al2023-gate']['warn']} | {results['kits']['al2023-gate']['fail']} |
+| python-pivot | {results['kits']['python-pivot']['pass']} | {results['kits']['python-pivot']['warn']} | {results['kits']['python-pivot']['fail']} |
+
+## Details
+
+Total repositories scanned: {results['total_repos']}
+
+*Note: This benchmark scans public repositories only. No private code is included.*
+""")
+          
+          print("Benchmark complete")
+          EOF
+      
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add BENCHMARK.md docs/status/benchmark.json
+          git diff --cached --quiet || (git commit -m "chore: update benchmark results [skip ci]" && git push)

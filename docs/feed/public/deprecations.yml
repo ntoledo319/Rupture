@@ -1,0 +1,106 @@
+# AWS Deprecations Tracked by Rupture
+# This file is the source of truth for:
+# - The public ICS calendar feed
+# - SEO /migrate/<deprecation> page generation
+# - Deadline calculations for surge pricing
+
+deprecations:
+  - name: "Lambda Node.js 20 Phase 1"
+    service: "AWS Lambda"
+    resource_type: "function"
+    date: "2026-04-30"
+    description: "Lambda functions using Node.js 20 runtime will fail to update. Phase 1: CreateFunction and UpdateFunctionConfiguration blocked."
+    severity: critical
+    kit: lambda-lifeline
+    url: "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
+    tags: [lambda, nodejs, runtime]
+    breaking_changes:
+      - "CreateFunction and UpdateFunctionConfiguration API calls fail"
+      - "aws-sdk v2 not available (use v3)"
+      - "OpenSSL 3 hash changes"
+      - "URL vs require() for imports"
+
+  - name: "Amazon Linux 2 EOL"
+    service: "EC2, EKS, ECS, Elastic Beanstalk"
+    resource_type: "ami|launch-template|container-image"
+    date: "2026-06-30"
+    description: "Amazon Linux 2 reaches end of life. No more security patches, AMI publishing, or extras updates."
+    severity: critical
+    kit: al2023-gate
+    url: "https://aws.amazon.com/blogs/aws/update-on-amazon-linux-2-end-of-life/"
+    tags: [ec2, eks, ecs, beanstalk, os, al2]
+    breaking_changes:
+      - "No security patches after EOL"
+      - "yum replaced with dnf"
+      - "amazon-linux-extras not available"
+      - "ntpd replaced with chronyd"
+      - "iptables replaced with nftables"
+      - "Python 2 no longer available"
+
+  - name: "Lambda Python 3.9 EOL"
+    service: "AWS Lambda"
+    resource_type: "function"
+    date: "2026-10-31"
+    description: "Lambda functions using Python 3.9 runtime deprecated."
+    severity: high
+    kit: python-pivot
+    url: "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
+    tags: [lambda, python, runtime]
+    breaking_changes:
+      - "distutils module removed"
+      - "imp module removed"
+      - "collections.Mapping deprecated"
+      - "Native wheels may not be available"
+
+  - name: "Lambda Python 3.10 EOL"
+    service: "AWS Lambda"
+    resource_type: "function"
+    date: "2027-04-30"
+    description: "Lambda functions using Python 3.10 runtime deprecated."
+    severity: medium
+    kit: python-pivot
+    url: "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
+    tags: [lambda, python, runtime]
+    breaking_changes:
+      - "datetime.utcnow() deprecated"
+      - "Various typing changes"
+
+  - name: "Lambda Python 3.11 EOL"
+    service: "AWS Lambda"
+    resource_type: "function"
+    date: "2027-10-31"
+    description: "Lambda functions using Python 3.11 runtime deprecated."
+    severity: low
+    kit: python-pivot
+    url: "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html"
+    tags: [lambda, python, runtime]
+    breaking_changes:
+      - "TOML parsing changes"
+
+  - name: "IMDSv1 Enforcement"
+    service: "EC2"
+    resource_type: "instance|launch-template"
+    date: "2025-12-31"
+    description: "IMDSv1 access will be blocked by default on new instance launches."
+    severity: high
+    kit: null  # Planned: imds-v2-gate
+    url: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html"
+    tags: [ec2, imds, security]
+    breaking_changes:
+      - "IMDSv1 requests fail"
+      - "Must use IMDSv2 with session tokens"
+      - "SSM agent must be updated"
+
+# Historical deprecations (for reference)
+historical:
+  - name: "Lambda Node.js 14"
+    service: "AWS Lambda"
+    date: "2023-11-27"
+    kit: null
+    tags: [lambda, nodejs, historical]
+
+  - name: "Lambda Node.js 16"
+    service: "AWS Lambda"
+    date: "2024-06-12"
+    kit: null
+    tags: [lambda, nodejs, historical]

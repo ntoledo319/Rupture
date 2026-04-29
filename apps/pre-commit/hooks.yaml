@@ -1,0 +1,42 @@
+# Rupture Pre-commit Hooks
+# Add to your .pre-commit-config.yaml:
+#
+# - repo: https://github.com/ntoledo319/Rupture
+#   rev: v1.0.0
+#   hooks:
+#     - id: rupture-lambda-lifeline
+#     - id: rupture-al2023-gate
+#     - id: rupture-python-pivot
+
+- id: rupture-lambda-lifeline
+  name: Rupture Lambda Node.js Deprecation Check
+  description: Scan for Lambda Node.js 20 deprecation issues
+  entry: lambda-lifeline scan
+  language: python
+  additional_dependencies: ['git+https://github.com/ntoledo319/Rupture.git#subdirectory=kits/lambda-lifeline']
+  files: \.(yaml|yml|json|tf)$
+  pass_filenames: false
+  always_run: true
+  args: ['--path', '.', '--format', 'table']
+
+- id: rupture-al2023-gate
+  name: Rupture Amazon Linux 2 Deprecation Check
+  description: Scan for Amazon Linux 2 to AL2023 migration issues
+  entry: al2023-gate scan
+  language: python
+  additional_dependencies: ['git+https://github.com/ntoledo319/Rupture.git#subdirectory=kits/al2023-gate']
+  files: \.(yaml|yml|json|tf|hcl)$
+  pass_filenames: false
+  always_run: true
+  args: ['--path', '.', '--format', 'table']
+
+- id: rupture-python-pivot
+  name: Rupture Lambda Python Deprecation Check
+  description: Scan for Lambda Python 3.9/3.10/3.11 deprecation issues
+  entry: python-pivot scan
+  language: python
+  additional_dependencies: ['git+https://github.com/ntoledo319/Rupture.git#subdirectory=kits/python-pivot']
+  files: \.(yaml|yml|json|tf)$
+  pass_filenames: false
+  always_run: true
+  args: ['--path', '.', '--format', 'table']

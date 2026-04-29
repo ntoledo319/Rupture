@@ -1,0 +1,128 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-kits:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        kit: [lambda-lifeline, al2023-gate, python-pivot]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          cd kits/${{ matrix.kit }}
+          pip install -e ".[dev]"
+      
+      - name: Run tests
+        run: |
+          cd kits/${{ matrix.kit }}
+          pytest -v --cov=. --cov-report=xml
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./kits/${{ matrix.kit }}/coverage.xml
+          flags: ${{ matrix.kit }}
+
+  test-worker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: |
+          cd apps/worker
+          npm ci
+      
+      - name: Type check
+        run: |
+          cd apps/worker
+          npx tsc --noEmit
+      
+      - name: Run tests
+        run: |
+          cd apps/worker
+          npm test
+
+  test-runner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          cd apps/runner
+          pip install -r requirements.txt
+      
+      - name: Run tests
+        run: |
+          cd apps/runner
+          pytest -v
+
+  test-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install Jinja2
+        run: pip install jinja2 pyyaml
+      
+      - name: Build site
+        run: |
+          python apps/web/build.py
+      
+      - name: Check outputs exist
+        run: |
+          test -f docs/audit/index.html
+          test -f docs/pack/index.html
+          test -f docs/license/index.html
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install linting tools
+        run: |
+          pip install ruff black mypy
+      
+      - name: Lint with ruff
+        run: ruff check kits/
+      
+      - name: Format check with black
+        run: black --check kits/
+      
+      - name: Type check with mypy
+        run: mypy kits/ --ignore-missing-imports

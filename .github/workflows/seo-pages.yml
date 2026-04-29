@@ -1,0 +1,32 @@
+name: SEO pages regeneration
+
+on:
+  schedule:
+    - cron: '17 4 * * *'  # Nightly
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install jinja2 pyyaml
+      - name: Rebuild static site
+        run: python apps/web/build.py
+      - name: Commit if changed
+        run: |
+          git config user.name "rupture-bot"
+          git config user.email "rupture-bot@users.noreply.github.com"
+          git add docs/migrate docs/vs docs/sitemap.xml docs/deprecations.ics
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(seo): nightly regeneration"
+            git push
+          else
+            echo "no SEO changes"
+          fi

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Org License — Rupture</title>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:800px;margin:0 auto;padding:2rem;line-height:1.6}
+.brand{color:#2563eb;font-weight:600}
+h1{margin-top:0}
+.price{font-size:3rem;font-weight:700;color:#7c3aed}
+button{background:#2563eb;color:white;border:none;padding:0.75rem 1.5rem;border-radius:6px;font-size:1rem;cursor:pointer}
+button:hover{background:#1d4ed8}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin:1.5rem 0}
+.feature{background:#f9fafb;border-radius:8px;padding:1rem}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b7280;font-size:0.875rem}
+</style>
+</head>
+<body>
+<a href="/" class="brand">← Rupture</a>
+<h1>Organization License</h1>
+<p class="price">$14,999<span style="font-size:1rem;font-weight:normal;color:#6b7280">/year</span></p>
+<p>Unlimited runs, live rule-pack feed, and private rule extensions for your entire organization.</p>
+
+<div class="features">
+  <div class="feature">
+    <h3>Live Rule Feed</h3>
+    <p>Get new deprecation rules the moment they're published — no 7-day delay.</p>
+  </div>
+  <div class="feature">
+    <h3>Private Rules</h3>
+    <p>Define custom rules specific to your organization's infrastructure patterns.</p>
+  </div>
+  <div class="feature">
+    <h3>Unlimited Runs</h3>
+    <p>No caps on scans, audits, or PRs across all your repositories.</p>
+  </div>
+  <div class="feature">
+    <h3>License Key</h3>
+    <p>One key activates all features across your CI/CD pipelines.</p>
+  </div>
+</div>
+
+<h3>Request License</h3>
+<p>Organization licenses are provisioned manually after verification:</p>
+<form action="/api/license/inquiry" method="POST">
+  <p><input type="email" name="email" placeholder="your@company.com" required style="padding:0.5rem;width:300px"></p>
+  <p><input type="text" name="company" placeholder="Company name" required style="padding:0.5rem;width:300px"></p>
+  <p><input type="number" name="repos" placeholder="Estimated repositories" style="padding:0.5rem;width:300px"></p>
+  <button type="submit">Request License</button>
+</form>
+
+<footer>
+  <p>License valid for one year from purchase. Auto-renewal optional.</p>
+  <p><a href="/">Home</a> · <a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a></p>
+</footer>
+</body>
+</html>
