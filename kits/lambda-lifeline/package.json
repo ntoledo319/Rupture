@@ -30,7 +30,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test 'test/*.test.mjs'",
     "scan": "node bin/cli.mjs scan",
     "codemod": "node bin/cli.mjs codemod",
     "audit": "node bin/cli.mjs audit",

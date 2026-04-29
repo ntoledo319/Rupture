@@ -33,9 +33,9 @@ RULES: List[RewriteRule] = [
         pattern=re.compile(rf"(Globals\s*:\s*\n(?:[^\n]*\n)*?\s*Runtime\s*:\s*){DEPRECATED_PY}", re.MULTILINE),
         replacement=r"\g<1>" + TARGET_RUNTIME,
     ),
-    # CDK TypeScript: runtime: Runtime.PYTHON_3_9  OR  runtime: lambda.Runtime.PYTHON_3_9
+    # CDK (TypeScript and Python): Runtime.PYTHON_3_9, lambda.Runtime.PYTHON_3_9, _lambda.Runtime.PYTHON_3_9
     RewriteRule(
-        name="cdk-ts-runtime-enum",
+        name="cdk-runtime-enum",
         pattern=re.compile(r"(Runtime\.PYTHON_3_)(7|8|9|10|11)\b"),
         replacement=r"\g<1>12",
     ),
@@ -50,12 +50,6 @@ RULES: List[RewriteRule] = [
         name="serverless-runtime",
         pattern=re.compile(rf"(^\s*runtime\s*:\s*){DEPRECATED_PY}(\s*$)", re.MULTILINE),
         replacement=r"\g<1>" + TARGET_RUNTIME + r"\g<2>",
-    ),
-    # CDK Python: runtime=_lambda.Runtime.PYTHON_3_9
-    RewriteRule(
-        name="cdk-python-runtime-enum",
-        pattern=re.compile(r"(Runtime\.PYTHON_3_)(7|8|9|10|11)\b"),
-        replacement=r"\g<1>12",
     ),
 ]
 

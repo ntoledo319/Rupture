@@ -159,8 +159,8 @@ def run(args: argparse.Namespace) -> int:
     util.hdr(f"Packer template generator · {args.out}")
     src_packages = []
     if args.packages:
-        src_packages = [p.strip() for p in Path(args.packages).read_text().splitlines()
-                        if p.strip() and not p.startswith("#")]
+        src_packages = [s for s in (p.strip() for p in Path(args.packages).read_text().splitlines())
+                        if s and not s.startswith("#")]
     elif args.from_list:
         src_packages = [p.strip() for p in args.from_list.split(",") if p.strip()]
     else:
