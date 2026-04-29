@@ -1,31 +1,15 @@
 {
-  "generated_at": "2026-04-29T11:07:22.185931Z",
+  "generated_at": "2026-04-29T23:11:11Z",
   "checks": {
-    "stripe": {
-      "ok": true,
-      "last_checked": "2026-04-29T11:07:22.185931Z"
-    },
-    "worker": {
-      "ok": true,
-      "last_checked": "2026-04-29T11:07:22.185931Z"
-    },
-    "runner": {
-      "ok": true,
-      "last_checked": "2026-04-29T11:07:22.185931Z"
-    },
-    "email": {
-      "ok": true,
-      "last_checked": "2026-04-29T11:07:22.185931Z"
-    },
-    "github": {
-      "ok": true,
-      "last_checked": "2026-04-29T11:07:22.185931Z"
-    }
+    "pages": {"ok": false, "code": 404, "last_checked": "2026-04-29T23:11:11Z"},
+    "audit_page": {"ok": false, "code": 404, "last_checked": "2026-04-29T23:11:11Z"},
+    "pack_page": {"ok": false, "code": 404, "last_checked": "2026-04-29T23:11:11Z"},
+    "ics_feed": {"ok": false, "code": 404, "last_checked": "2026-04-29T23:11:11Z"},
+    "worker": {"ok": false, "code": 000, "last_checked": "2026-04-29T23:11:11Z"}
   },
   "metrics": {
     "audits_delivered_7d": 0,
     "prs_opened_7d": 0,
-    "drift_watch_subscribers": 0,
-    "rules_in_public_pack": 0
+    "drift_watch_subscribers": 0
   }
 }
