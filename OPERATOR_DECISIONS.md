@@ -17,7 +17,7 @@
 ## [DECISION-3] Stripe account
 - **Status:** BLOCKING (live mode); RESOLVED for test mode
 - **Test mode:** `STRIPE_KEY=sk_test_dummy_for_setup` placeholder; checkout flows render with test cards
-- **Live mode prerequisite:** operator runs `stripe login` then sets `STRIPE_KEY` (restricted: write products/prices/payment_links/checkout/refunds; read events) via `wrangler secret put STRIPE_KEY`
+- **Live mode prerequisite:** operator runs `stripe login` then sets `STRIPE_KEY` (standard live key `sk_live_...` or restricted key) via `wrangler secret put STRIPE_KEY`
 - **Once live key lands:** the agent runs `apps/worker/scripts/setup_stripe.ts` to provision products, prices, payment links — idempotent
 
 ## [DECISION-4] Cloudflare account

@@ -17,10 +17,10 @@ export interface Env {
   IDEMPOTENCY: KVNamespace;
   RATE_LIMITS: KVNamespace;
   DAILY_CAPS: KVNamespace;
-  UPLOADS: R2Bucket;
-  JOBS: Queue;
-  JOBS_DLQ: Queue;
-  AI: Ai;
+  UPLOADS?: R2Bucket;
+  JOBS?: Queue;
+  JOBS_DLQ?: Queue;
+  AI: any;
   STRIPE_KEY: string;
   STRIPE_WEBHOOK_SECRET: string;
   RESEND_API_KEY?: string;
@@ -138,12 +138,16 @@ export default {
       } catch (error) {
         console.error('Job failed:', error);
         if (message.attempts >= 3) {
-          // Move to DLQ
-          await env.JOBS_DLQ.send({
-            ...message.body,
-            error: error.message,
-            failedAt: new Date().toISOString(),
-          });
+          // Move to DLQ if available
+          if (env.JOBS_DLQ) {
+            await env.JOBS_DLQ.send({
+              ...message.body,
+              error: error.message,
+              failedAt: new Date().toISOString(),
+            });
+          } else {
+            console.error('No DLQ configured, message dropped after 3 attempts');
+          }
           message.ack();
         } else {
           message.retry();

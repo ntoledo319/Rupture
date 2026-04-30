@@ -166,7 +166,7 @@ async function generateInstallUrl(env: Env): Promise<Response> {
     url: 'https://ntoledo319.github.io/Rupture',
     callback_urls: ['https://ntoledo319.github.io/Rupture/pack/callback'],
     setup_url: 'https://ntoledo319.github.io/Rupture/pack/setup',
-    webhook_url: 'https://rupture-worker.ntoledo319.workers.dev/webhook/github',
+    webhook_url: 'https://rupture-worker.toledonick98.workers.dev/webhook/github',
     redirect_url: 'https://ntoledo319.github.io/Rupture/pack/installed',
     setup_on_install: true,
     default_permissions: {

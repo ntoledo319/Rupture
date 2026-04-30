@@ -8,41 +8,38 @@ compatibility_flags = ["nodejs_compat"]
 
 [[kv_namespaces]]
 binding = "IDEMPOTENCY"
-id = "idempotency-kv"
-preview_id = "idempotency-kv-preview"
+id = "b19bf5f7b9b94c1490e88d5743ffef4e"
 
 [[kv_namespaces]]
 binding = "RATE_LIMITS"
-id = "ratelimit-kv"
-preview_id = "ratelimit-kv-preview"
+id = "c27aefa8ea9444cea5f015294c376e99"
 
 [[kv_namespaces]]
 binding = "DAILY_CAPS"
-id = "caps-kv"
-preview_id = "caps-kv-preview"
+id = "d8bb87ce9838456dae59e335aeee9418"
 
-[[r2_buckets]]
-binding = "UPLOADS"
-bucket_name = "rupture-uploads"
-preview_bucket_name = "rupture-uploads-preview"
+# R2 and Queues are disabled until operator enables them in dashboard
+# [[r2_buckets]]
+# binding = "UPLOADS"
+# bucket_name = "rupture-uploads"
 
-[[queues.producers]]
-binding = "JOBS"
-queue = "rupture-jobs"
+# [[queues.producers]]
+# binding = "JOBS"
+# queue = "rupture-jobs"
 
-[[queues.consumers]]
-queue = "rupture-jobs"
-max_batch_size = 1
-max_batch_timeout = 30
-max_retries = 3
-dead_letter_queue = "rupture-jobs-dlq"
+# [[queues.consumers]]
+# queue = "rupture-jobs"
+# max_batch_size = 1
+# max_batch_timeout = 30
+# max_retries = 3
+# dead_letter_queue = "rupture-jobs-dlq"
 
-[[queues.producers]]
-binding = "JOBS_DLQ"
-queue = "rupture-jobs-dlq"
+# [[queues.producers]]
+# binding = "JOBS_DLQ"
+# queue = "rupture-jobs-dlq"
 
 # AI binding for support bot
-[[ai]]
+[ai]
 binding = "AI"
 
 [vars]

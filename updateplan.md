@@ -48,7 +48,7 @@ The agent presents these as a single block at the start of execution. Defaults a
   Override only if: the operator buys a domain themselves and provides the name.
 
 [DECISION-3] Stripe account
-  Required: operator must create a free Stripe account (https://stripe.com/register) and provide a restricted API key (write: products, prices, payment_links, checkout, refunds; read: events).
+  Required: operator must create a free Stripe account (https://stripe.com/register) and provide an API key (standard `sk_live_...` or restricted).
   Blocking: this is the one credential the agent cannot self-issue. Until it lands, the agent runs the entire system in Stripe TEST MODE and proves the end-to-end flow with test cards. Switch to live mode is a single env-var flip the moment the key arrives.
 
 [DECISION-4] Cloudflare account

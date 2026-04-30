@@ -11,10 +11,12 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "js-yaml": "^4.1.1",
     "stripe": "^14.0.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240401.0",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.0.0",
     "typescript": "^5.4.0",
     "vitest": "^1.5.0",
