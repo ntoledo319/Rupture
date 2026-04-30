@@ -1,36 +1,11 @@
 {
-<<<<<<< HEAD
-  "generated_at": "2026-04-30T06:18:30Z",
+  "generated_at": "2026-04-30T07:13:51Z",
   "checks": {
-    "pages": {"ok": false, "code": 404, "last_checked": "2026-04-30T06:18:30Z"},
-    "audit_page": {"ok": false, "code": 404, "last_checked": "2026-04-30T06:18:30Z"},
-    "pack_page": {"ok": false, "code": 404, "last_checked": "2026-04-30T06:18:30Z"},
-    "ics_feed": {"ok": false, "code": 404, "last_checked": "2026-04-30T06:18:30Z"},
-    "worker": {"ok": false, "code": 000, "last_checked": "2026-04-30T06:18:30Z"}
-=======
-  "generated_at": "2026-04-30T06:42:20.996953Z",
-  "checks": {
-    "stripe": {
-      "ok": true,
-      "last_checked": "2026-04-30T06:42:20.996953Z"
-    },
-    "worker": {
-      "ok": true,
-      "last_checked": "2026-04-30T06:42:20.996953Z"
-    },
-    "runner": {
-      "ok": true,
-      "last_checked": "2026-04-30T06:42:20.996953Z"
-    },
-    "email": {
-      "ok": true,
-      "last_checked": "2026-04-30T06:42:20.996953Z"
-    },
-    "github": {
-      "ok": true,
-      "last_checked": "2026-04-30T06:42:20.996953Z"
-    }
->>>>>>> 8abebe5 (chore: provision live Stripe products and update worker configuration)
+    "pages": {"ok": false, "code": 404, "last_checked": "2026-04-30T07:13:51Z"},
+    "audit_page": {"ok": false, "code": 404, "last_checked": "2026-04-30T07:13:51Z"},
+    "pack_page": {"ok": false, "code": 404, "last_checked": "2026-04-30T07:13:51Z"},
+    "ics_feed": {"ok": false, "code": 404, "last_checked": "2026-04-30T07:13:51Z"},
+    "worker": {"ok": false, "code": 000, "last_checked": "2026-04-30T07:13:51Z"}
   },
   "metrics": {
     "audits_delivered_7d": 0,
