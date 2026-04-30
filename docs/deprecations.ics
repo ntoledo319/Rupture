@@ -7,7 +7,7 @@ X-WR-CALNAME:AWS Deprecation Deadlines (Rupture)
 X-WR-TIMEZONE:UTC
 BEGIN:VEVENT
 UID:lambda-node.js-20-phase-1@rupture
-DTSTAMP:20260429T110722Z
+DTSTAMP:20260430T052910Z
 DTSTART;VALUE=DATE:20260430
 DTEND;VALUE=DATE:20260501
 SUMMARY:Lambda Node.js 20 Phase 1
@@ -16,7 +16,7 @@ URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 END:VEVENT
 BEGIN:VEVENT
 UID:amazon-linux-2-eol@rupture
-DTSTAMP:20260429T110722Z
+DTSTAMP:20260430T052910Z
 DTSTART;VALUE=DATE:20260630
 DTEND;VALUE=DATE:20260701
 SUMMARY:Amazon Linux 2 EOL
@@ -25,7 +25,7 @@ URL:https://aws.amazon.com/blogs/aws/update-on-amazon-linux-2-end-of-life/
 END:VEVENT
 BEGIN:VEVENT
 UID:lambda-python-3.9-eol@rupture
-DTSTAMP:20260429T110722Z
+DTSTAMP:20260430T052910Z
 DTSTART;VALUE=DATE:20261031
 DTEND;VALUE=DATE:20261101
 SUMMARY:Lambda Python 3.9 EOL
@@ -34,7 +34,7 @@ URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 END:VEVENT
 BEGIN:VEVENT
 UID:lambda-python-3.10-eol@rupture
-DTSTAMP:20260429T110722Z
+DTSTAMP:20260430T052910Z
 DTSTART;VALUE=DATE:20270430
 DTEND;VALUE=DATE:20270501
 SUMMARY:Lambda Python 3.10 EOL
@@ -43,7 +43,7 @@ URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 END:VEVENT
 BEGIN:VEVENT
 UID:lambda-python-3.11-eol@rupture
-DTSTAMP:20260429T110722Z
+DTSTAMP:20260430T052910Z
 DTSTART;VALUE=DATE:20271031
 DTEND;VALUE=DATE:20271101
 SUMMARY:Lambda Python 3.11 EOL
@@ -52,7 +52,7 @@ URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 END:VEVENT
 BEGIN:VEVENT
 UID:imdsv1-enforcement@rupture
-DTSTAMP:20260429T110722Z
+DTSTAMP:20260430T052910Z
 DTSTART;VALUE=DATE:20251231
 DTEND;VALUE=DATE:20260101
 SUMMARY:IMDSv1 Enforcement
