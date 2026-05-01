@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-05-01T15:56:23Z",
+  "generated_at": "2026-05-01T16:24:25Z",
   "checks": {
-    "pages": {"ok": false, "code": 404, "last_checked": "2026-05-01T15:56:23Z"},
-    "audit_page": {"ok": false, "code": 404, "last_checked": "2026-05-01T15:56:23Z"},
-    "pack_page": {"ok": false, "code": 404, "last_checked": "2026-05-01T15:56:23Z"},
-    "ics_feed": {"ok": false, "code": 404, "last_checked": "2026-05-01T15:56:23Z"},
-    "worker": {"ok": false, "code": 000, "last_checked": "2026-05-01T15:56:23Z"}
+    "pages": {"ok": false, "code": 404, "last_checked": "2026-05-01T16:24:25Z"},
+    "audit_page": {"ok": false, "code": 404, "last_checked": "2026-05-01T16:24:25Z"},
+    "pack_page": {"ok": false, "code": 404, "last_checked": "2026-05-01T16:24:25Z"},
+    "ics_feed": {"ok": false, "code": 404, "last_checked": "2026-05-01T16:24:25Z"},
+    "worker": {"ok": false, "code": 000, "last_checked": "2026-05-01T16:24:25Z"}
   },
   "metrics": {
     "audits_delivered_7d": 0,
