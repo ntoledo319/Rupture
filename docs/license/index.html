@@ -17,7 +17,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 </style>
 </head>
 <body>
-<a href="/" class="brand">← Rupture</a>
+<a href="/Rupture/" class="brand">← Rupture</a>
 <h1>Organization License</h1>
 <p class="price">$14,999<span style="font-size:1rem;font-weight:normal;color:#6b7280">/year</span></p>
 <p>Unlimited runs, live rule-pack feed, and private rule extensions for your entire organization.</p>
@@ -43,7 +43,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 
 <h3>Request License</h3>
 <p>Organization licenses are provisioned manually after verification:</p>
-<form action="/api/license/inquiry" method="POST">
+<form action="https://rupture-worker.rupture-kits.workers.dev/api/license/inquiry" method="POST">
   <p><input type="email" name="email" placeholder="your@company.com" required style="padding:0.5rem;width:300px"></p>
   <p><input type="text" name="company" placeholder="Company name" required style="padding:0.5rem;width:300px"></p>
   <p><input type="number" name="repos" placeholder="Estimated repositories" style="padding:0.5rem;width:300px"></p>
@@ -52,7 +52,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 
 <footer>
   <p>License valid for one year from purchase. Auto-renewal optional.</p>
-  <p><a href="/">Home</a> · <a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a></p>
+  <p><a href="/Rupture/">Home</a> · <a href="/Rupture/legal/terms">Terms</a> · <a href="/Rupture/legal/privacy">Privacy</a></p>
 </footer>
 </body>
 </html>

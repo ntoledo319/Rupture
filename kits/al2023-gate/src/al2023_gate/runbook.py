@@ -2,6 +2,7 @@
 Runbook generator: emits a step-by-step executable migration checklist tailored
 to the resource type (EC2 ASG, EKS node group, ECS task, Beanstalk env).
 """
+
 from __future__ import annotations
 import argparse
 from pathlib import Path
@@ -55,7 +56,6 @@ aws autoscaling update-auto-scaling-group --auto-scaling-group-name {name} \\
   --launch-template "LaunchTemplateId=$LT_ID,Version=<previous-version>"
 ```
 """,
-
     "eks": """# EKS managed node group — AL2 → AL2023
 
 Target: Cluster `{cluster}` · NodeGroup `{name}` · Region `{region}`.
@@ -96,7 +96,6 @@ Approach: blue/green node group (safer than in-place amiType swap).
 Keep old NG until AL2023 NG is stable for ≥7 days. To roll back, scale old NG
 back up and drain the new NG.
 """,
-
     "ecs": """# ECS — task container base image AL2 → AL2023
 
 Target: Task definition family `{name}` · Region `{region}`.
@@ -126,7 +125,6 @@ Approach: update container base image, publish new task def revision, rolling de
 ## Rollback
 Update service back to previous task definition revision.
 """,
-
     "beanstalk": """# Elastic Beanstalk — AL2 → AL2023 platform swap
 
 Target: Environment `{name}` · Region `{region}`.
@@ -164,7 +162,9 @@ Swap CNAMEs back. Keep old env running for ≥72h as insurance.
 def run(args: argparse.Namespace) -> int:
     target = args.kind
     if target not in RUNBOOKS:
-        util.err(f"Unknown runbook kind: {target}. Choose one of: {', '.join(RUNBOOKS.keys())}")
+        util.err(
+            f"Unknown runbook kind: {target}. Choose one of: {', '.join(RUNBOOKS.keys())}"
+        )
         return 2
     content = RUNBOOKS[target].format(
         name=args.name or "<NAME>",

@@ -2,7 +2,7 @@
   "name": "Rupture Migration Bot",
   "url": "https://ntoledo319.github.io/Rupture",
   "hook_attributes": {
-    "url": "https://rupture-worker.toledonick98.workers.dev/webhook/github"
+    "url": "https://rupture-worker.rupture-kits.workers.dev/webhook/github"
   },
   "redirect_url": "https://ntoledo319.github.io/Rupture/pack/installed",
   "callback_urls": [

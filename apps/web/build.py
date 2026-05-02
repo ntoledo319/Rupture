@@ -4,12 +4,12 @@ Rupture Static Site Generator
 Builds docs/ from templates and rule-pack data.
 """
 
-import os
 import sys
 import json
+import re
 import yaml
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 # Jinja2 is the only external dependency
 try:
@@ -17,6 +17,7 @@ try:
 except ImportError:
     print("Installing jinja2...")
     import subprocess
+
     subprocess.check_call([sys.executable, "-m", "pip", "install", "jinja2"])
     from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -25,6 +26,13 @@ BASE_DIR = Path(__file__).parent
 TEMPLATE_DIR = BASE_DIR / "templates"
 DOCS_DIR = BASE_DIR.parent.parent / "docs"
 PRICING_FILE = BASE_DIR.parent.parent / "pricing.yml"
+PROJECT_BASE_PATH = "/Rupture"
+ROOT_RELATIVE_ATTR_RE = re.compile(
+    r'(?P<prefix>\b(?:href|src|action)=["\'])(?P<path>/(?!/|Rupture(?:/|["\'])))'
+)
+ROOT_RELATIVE_FETCH_RE = re.compile(
+    r"(?P<prefix>fetch\([\"'])(?P<path>/(?!/|Rupture(?:/|[\"'])))"
+)
 
 
 def load_pricing():
@@ -33,12 +41,22 @@ def load_pricing():
         return yaml.safe_load(f)
 
 
+def normalize_project_links(html):
+    """Make root-relative links work on the /Rupture GitHub Pages project path."""
+
+    def replace(match):
+        return f"{match.group('prefix')}{PROJECT_BASE_PATH}{match.group('path')}"
+
+    html = ROOT_RELATIVE_ATTR_RE.sub(replace, html)
+    return ROOT_RELATIVE_FETCH_RE.sub(replace, html)
+
+
 def get_days_until_deadline(deadline_str):
     """Calculate days until a deadline."""
     try:
-        deadline = datetime.strptime(deadline_str, "%Y-%m-%d")
-        return (deadline - datetime.now()).days
-    except:
+        deadline = datetime.strptime(deadline_str, "%Y-%m-%d").replace(tzinfo=UTC)
+        return (deadline - datetime.now(UTC)).days
+    except Exception:
         return 999
 
 
@@ -109,7 +127,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
   <li>Verify authenticity at <code>/verify/&lt;sha&gt;</code></li>
 </ol>
 
-<form action="/api/audit/checkout" method="POST">
+<form action="https://rupture-worker.rupture-kits.workers.dev/api/audit/checkout" method="POST">
   <h3>Start Audit</h3>
   <p><input type="email" name="email" placeholder="your@email.com" required style="padding:0.5rem;width:300px"></p>
   <p><input type="file" name="files" multiple accept=".yaml,.yml,.json,.tf,.js,.ts,.py"></p>
@@ -171,10 +189,10 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 
 <h3>Install GitHub App</h3>
 <p>First, install the Rupture Migration Bot on your repository:</p>
-<p><a href="/pack/install" style="display:inline-block;background:#24292f;color:white;padding:0.75rem 1.5rem;border-radius:6px;text-decoration:none;font-weight:600">Install GitHub App</a></p>
+<p><a href="https://rupture-worker.rupture-kits.workers.dev/pack/install" style="display:inline-block;background:#24292f;color:white;padding:0.75rem 1.5rem;border-radius:6px;text-decoration:none;font-weight:600">Install GitHub App</a></p>
 
 <h3>Or Purchase Now</h3>
-<form action="/api/pack/checkout" method="POST">
+<form action="https://rupture-worker.rupture-kits.workers.dev/api/pack/checkout" method="POST">
   <p><input type="email" name="email" placeholder="your@email.com" required style="padding:0.5rem;width:300px"></p>
   <p><input type="text" name="repo" placeholder="owner/repo" required style="padding:0.5rem;width:300px"></p>
   <button type="submit">Purchase Migration Pack — $1,499</button>
@@ -236,7 +254,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 
 <h3>Request License</h3>
 <p>Organization licenses are provisioned manually after verification:</p>
-<form action="/api/license/inquiry" method="POST">
+<form action="https://rupture-worker.rupture-kits.workers.dev/api/license/inquiry" method="POST">
   <p><input type="email" name="email" placeholder="your@company.com" required style="padding:0.5rem;width:300px"></p>
   <p><input type="text" name="company" placeholder="Company name" required style="padding:0.5rem;width:300px"></p>
   <p><input type="number" name="repos" placeholder="Estimated repositories" style="padding:0.5rem;width:300px"></p>
@@ -258,49 +276,53 @@ def load_deprecations():
     if deprecations_file.exists():
         with open(deprecations_file) as f:
             return yaml.safe_load(f)
-    return {'deprecations': []}
+    return {"deprecations": []}
 
 
 def slugify(name):
     """Convert name to URL slug."""
-    return name.lower().replace(' ', '-').replace('(', '').replace(')', '').replace('/', '-')
+    return (
+        name.lower()
+        .replace(" ", "-")
+        .replace("(", "")
+        .replace(")", "")
+        .replace("/", "-")
+    )
 
 
 def build_migration_pages(deprecations, full_pricing):
     """Build SEO pages for each deprecation."""
     env = Environment(
         loader=FileSystemLoader(TEMPLATE_DIR),
-        autoescape=select_autoescape(['html', 'xml'])
+        autoescape=select_autoescape(["html", "xml"]),
     )
 
     try:
-        template = env.get_template('migrate.html.j2')
-    except:
+        template = env.get_template("migrate.html.j2")
+    except Exception:
         # Fallback if template doesn't exist
         return {}
 
     # Template references pricing.audit_pdf.base and pricing.migration_pack.base
-    skus = full_pricing.get('skus', full_pricing)
+    skus = full_pricing.get("skus", full_pricing)
     audit_base = 299
-    if 'audit' in skus:
-        tiers = skus['audit'].get('tiers', [])
+    if "audit" in skus:
+        tiers = skus["audit"].get("tiers", [])
         for t in tiers:
-            if t.get('name') == 'standard':
-                audit_base = t['price_usd']
+            if t.get("name") == "standard":
+                audit_base = t["price_usd"]
                 break
-    pack_base = skus.get('migration_pack', {}).get('price_usd', 1499)
+    pack_base = skus.get("migration_pack", {}).get("price_usd", 1499)
     pricing_view = {
-        'audit_pdf': {'base': audit_base},
-        'migration_pack': {'base': pack_base},
+        "audit_pdf": {"base": audit_base},
+        "migration_pack": {"base": pack_base},
     }
 
     pages = {}
-    for dep in deprecations.get('deprecations', []):
-        dep['slug'] = slugify(dep['name'])
+    for dep in deprecations.get("deprecations", []):
+        dep["slug"] = slugify(dep["name"])
         html = template.render(
-            deprecation=dep,
-            pricing=pricing_view,
-            now=datetime.utcnow().isoformat()
+            deprecation=dep, pricing=pricing_view, now=datetime.now(UTC).isoformat()
         )
         pages[f"migrate/{dep['slug']}/index.html"] = html
 
@@ -311,21 +333,21 @@ def build_sitemap(deprecations):
     """Build sitemap.xml."""
     env = Environment(
         loader=FileSystemLoader(TEMPLATE_DIR),
-        autoescape=select_autoescape(['html', 'xml'])
+        autoescape=select_autoescape(["html", "xml"]),
     )
-    
+
     try:
-        template = env.get_template('sitemap.xml.j2')
-    except:
+        template = env.get_template("sitemap.xml.j2")
+    except Exception:
         return None
-    
+
     # Add slugs to deprecations
-    for dep in deprecations.get('deprecations', []):
-        dep['slug'] = slugify(dep['name'])
-    
+    for dep in deprecations.get("deprecations", []):
+        dep["slug"] = slugify(dep["name"])
+
     return template.render(
-        deprecations=deprecations.get('deprecations', []),
-        now=datetime.utcnow().strftime('%Y-%m-%d')
+        deprecations=deprecations.get("deprecations", []),
+        now=datetime.now(UTC).strftime("%Y-%m-%d"),
     )
 
 
@@ -333,13 +355,13 @@ def build_verify_page():
     """Build the verification page."""
     env = Environment(
         loader=FileSystemLoader(TEMPLATE_DIR),
-        autoescape=select_autoescape(['html', 'xml'])
+        autoescape=select_autoescape(["html", "xml"]),
     )
-    
+
     try:
-        template = env.get_template('verify.html.j2')
+        template = env.get_template("verify.html.j2")
         return template.render()
-    except:
+    except Exception:
         return None
 
 
@@ -362,7 +384,7 @@ def build_partners_page():
 <li>Add a DNS TXT record we provide to verify domain ownership (anti-impersonation).</li>
 <li>Stripe Connect Express onboarding (one-time, ~3 minutes, handled by Stripe).</li>
 <li>Call <code>POST /partners/&lt;your-slug&gt;/audit</code> from your tooling. We deliver a co-branded PDF and split the payment 70/30.</li></ol></div>
-<form action="/partners/signup" method="POST">
+<form action="https://rupture-worker.rupture-kits.workers.dev/partners/signup" method="POST">
 <p><input type="email" name="email" placeholder="contact@yourcompany.com" required style="padding:.5rem;width:300px"></p>
 <p><input type="text" name="display_name" placeholder="Display name" required style="padding:.5rem;width:300px"></p>
 <p><input type="text" name="domain" placeholder="yourcompany.com" required style="padding:.5rem;width:300px"></p>
@@ -396,7 +418,7 @@ fetch('/status/data.json').then(r=>r.json()).then(d=>{
 
 
 def build_status_data_seed():
-    now = datetime.utcnow().isoformat() + "Z"
+    now = datetime.now(UTC).isoformat().replace("+00:00", "Z")
     return json.dumps(
         {
             "generated_at": now,
@@ -442,7 +464,7 @@ def build_vs_index(competitors):
 
 
 def build_vs_page(competitor):
-    today = datetime.utcnow().strftime("%Y-%m-%d")
+    today = datetime.now(UTC).strftime("%Y-%m-%d")
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rupture vs {competitor["name"]} — comparison</title>
 <meta name="description" content="Factual comparison of Rupture and {competitor["name"]} for AWS deprecation migrations. As of {today}.">
 <link rel="canonical" href="https://ntoledo319.github.io/Rupture/vs/{slugify(competitor["name"])}/">
@@ -462,15 +484,42 @@ def build_vs_page(competitor):
 
 
 COMPETITORS = [
-    {"name": "CloudQuery", "category": "Cloud asset inventory", "url": "https://www.cloudquery.io/",
-     "license": "Apache-2.0", "codemod": "No", "iac": "No (read-only)", "canary": "No",
-     "deterministic": "n/a", "hash_anchored": "No", "pricing": "Free + paid SaaS"},
-    {"name": "HeroDevs", "category": "Post-EOL support subscription", "url": "https://www.herodevs.com/",
-     "license": "Proprietary", "codemod": "No", "iac": "No", "canary": "No",
-     "deterministic": "n/a", "hash_anchored": "No", "pricing": "Enterprise quote"},
-    {"name": "aws-samples runtime-update-helper", "category": "AWS sample script", "url": "https://github.com/aws-samples/aws-lambda-runtime-update-helper",
-     "license": "MIT-0", "codemod": "No", "iac": "No (runtime field flip only)", "canary": "No",
-     "deterministic": "Unspecified", "hash_anchored": "No", "pricing": "Free"},
+    {
+        "name": "CloudQuery",
+        "category": "Cloud asset inventory",
+        "url": "https://www.cloudquery.io/",
+        "license": "Apache-2.0",
+        "codemod": "No",
+        "iac": "No (read-only)",
+        "canary": "No",
+        "deterministic": "n/a",
+        "hash_anchored": "No",
+        "pricing": "Free + paid SaaS",
+    },
+    {
+        "name": "HeroDevs",
+        "category": "Post-EOL support subscription",
+        "url": "https://www.herodevs.com/",
+        "license": "Proprietary",
+        "codemod": "No",
+        "iac": "No",
+        "canary": "No",
+        "deterministic": "n/a",
+        "hash_anchored": "No",
+        "pricing": "Enterprise quote",
+    },
+    {
+        "name": "aws-samples runtime-update-helper",
+        "category": "AWS sample script",
+        "url": "https://github.com/aws-samples/aws-lambda-runtime-update-helper",
+        "license": "MIT-0",
+        "codemod": "No",
+        "iac": "No (runtime field flip only)",
+        "canary": "No",
+        "deterministic": "Unspecified",
+        "hash_anchored": "No",
+        "pricing": "Free",
+    },
 ]
 
 
@@ -499,7 +548,7 @@ def build_deprecations_ics(deprecations):
         lines += [
             "BEGIN:VEVENT",
             f"UID:{uid}",
-            f"DTSTAMP:{datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}",
+            f"DTSTAMP:{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}",
             f"DTSTART;VALUE=DATE:{dtstart}",
             f"DTEND;VALUE=DATE:{dtend}",
             f"SUMMARY:{summary}",
@@ -508,7 +557,7 @@ def build_deprecations_ics(deprecations):
             "END:VEVENT",
         ]
     lines.append("END:VCALENDAR")
-    return "\r\n".join(lines) + "\r\n"
+    return "\n".join(lines) + "\n"
 
 
 def main():
@@ -529,6 +578,7 @@ def main():
 
     # Build pages
     pages = {
+        "index.html": build_index_page(pricing),
         "audit/index.html": build_audit_page(pricing),
         "pack/index.html": build_pack_page(pricing),
         "license/index.html": build_license_page(pricing),
@@ -548,28 +598,28 @@ def main():
 
     for c in COMPETITORS:
         pages[f"vs/{slugify(c['name'])}/index.html"] = build_vs_page(c)
-    
+
     # Build migration pages
     migration_pages = build_migration_pages(deprecations, pricing)
     pages.update(migration_pages)
-    
+
     # Build sitemap
     sitemap = build_sitemap(deprecations)
     if sitemap:
         pages["sitemap.xml"] = sitemap
-    
+
     # Build verification page
     verify_page = build_verify_page()
     if verify_page:
         pages["verify/index.html"] = verify_page
-    
+
     for path, content in pages.items():
         full_path = DOCS_DIR / path
         full_path.parent.mkdir(parents=True, exist_ok=True)
         with open(full_path, "w") as f:
-            f.write(content)
+            f.write(normalize_project_links(content))
         print(f"Built: docs/{path}")
-    
+
     # Copy legal docs
     legal_dir = DOCS_DIR.parent / "legal"
     legal_output = DOCS_DIR / "legal"
@@ -578,10 +628,17 @@ def main():
         for legal_file in legal_dir.glob("*.md"):
             # Convert markdown to HTML (simple version)
             import shutil
+
             output = legal_output / legal_file.with_suffix(".html").name
             shutil.copy(legal_file, output)
             print(f"Copied: legal/{legal_file.name}")
-    
+        security_file = DOCS_DIR.parent / "SECURITY.md"
+        if security_file.exists():
+            import shutil
+
+            shutil.copy(security_file, legal_output / "SECURITY.html")
+            print("Copied: SECURITY.md")
+
     print("=" * 40)
     print("Build complete!")
     return 0

@@ -1,9 +1,9 @@
 """Test Python Lambda runtime scanner."""
+
 import json
 from argparse import Namespace
 from pathlib import Path
 
-import pytest
 
 from python_pivot import scan
 
@@ -11,8 +11,14 @@ FIXTURE = Path(__file__).parent / "fixtures" / "lambda-inventory.json"
 
 
 def _args(**kw):
-    base = dict(fixture=str(FIXTURE), regions=None, profile=None,
-                format="table", out=None, strict=False)
+    base = dict(
+        fixture=str(FIXTURE),
+        regions=None,
+        profile=None,
+        format="table",
+        out=None,
+        strict=False,
+    )
     base.update(kw)
     return Namespace(**base)
 
@@ -27,7 +33,7 @@ def test_identifies_eol_runtimes():
     by_rt = {f.runtime: f for f in findings}
     # 3.7 is long past EOL
     assert by_rt["python3.7"].severity == "critical-eol"
-    # 3.8 is past EOL  
+    # 3.8 is past EOL
     assert by_rt["python3.8"].severity == "critical-eol"
     # 3.12 is the target — ok
     assert by_rt["python3.12"].severity == "ok"
@@ -54,7 +60,7 @@ def test_run_csv_has_header(capsys):
     rc = scan.run(_args(format="csv"))
     assert rc == 0
     out = capsys.readouterr().out
-    assert out.splitlines()[0].startswith('function_name')
+    assert out.splitlines()[0].startswith("function_name")
 
 
 def test_run_markdown(capsys):

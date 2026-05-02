@@ -1,10 +1,8 @@
 """Test the package remap module."""
-import io
+
 import json
-import sys
 from argparse import Namespace
 
-import pytest
 
 from al2023_gate import remap
 

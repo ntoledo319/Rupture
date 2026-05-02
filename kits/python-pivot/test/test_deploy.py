@@ -1,13 +1,15 @@
 """Test deploy plan rendering (no AWS calls)."""
+
 from argparse import Namespace
 
-import pytest
 
 from python_pivot import deploy
 
 
 def test_build_plan_includes_all_stages():
-    plan = deploy.build_plan("myfn", "live", [5, 25, 50, 100], 60, "arn:aws:...:MyAlarm", "python3.12")
+    plan = deploy.build_plan(
+        "myfn", "live", [5, 25, 50, 100], 60, "arn:aws:...:MyAlarm", "python3.12"
+    )
     assert "myfn" in plan
     assert "python3.12" in plan
     assert "5%" in plan
@@ -27,9 +29,16 @@ def test_build_plan_warns_without_alarm():
 
 def test_plan_only_prints_and_exits(capsys):
     args = Namespace(
-        function="f", alias="live", runtime="python3.12",
-        stages="5,50,100", dwell="30", alarm=None,
-        profile=None, region=None, plan_only=True, apply=False,
+        function="f",
+        alias="live",
+        runtime="python3.12",
+        stages="5,50,100",
+        dwell="30",
+        alarm=None,
+        profile=None,
+        region=None,
+        plan_only=True,
+        apply=False,
     )
     rc = deploy.run(args)
     assert rc == 0
@@ -39,9 +48,16 @@ def test_plan_only_prints_and_exits(capsys):
 
 def test_apply_without_alarm_fails(capsys):
     args = Namespace(
-        function="f", alias="live", runtime="python3.12",
-        stages="5,100", dwell="10", alarm=None,
-        profile=None, region=None, plan_only=False, apply=True,
+        function="f",
+        alias="live",
+        runtime="python3.12",
+        stages="5,100",
+        dwell="10",
+        alarm=None,
+        profile=None,
+        region=None,
+        plan_only=False,
+        apply=True,
     )
     rc = deploy.run(args)
     assert rc == 2

@@ -135,6 +135,7 @@ Open-core: the CLI code in this repo is MIT-licensed. The paid tiers include has
 - 🌐 [Landing page](https://ntoledo319.github.io/Rupture)
 - 🚀 [Show HN draft](./launch/show-hn-draft.md)
 - 📝 [Blog post: Migrating Lambda Node.js 20 → 22](./launch/blog-post.md)
+- 💬 [Direct support reply templates](./launch/thread-answers.md)
 - 💬 Issues: use the repo tracker
 
 ---

@@ -5,6 +5,9 @@ on:
     - cron: '0 2 * * *'  # Daily at 2am UTC
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   benchmark:
     runs-on: ubuntu-latest
@@ -18,18 +21,22 @@ jobs:
       
       - name: Install all kits
         run: |
-          pip install -e kits/lambda-lifeline
-          pip install -e kits/al2023-gate
-          pip install -e kits/python-pivot
+          pip install -e "kits/al2023-gate[dev]"
+          pip install -e "kits/python-pivot[dev]"
+          cd kits/lambda-lifeline
+          npm ci
+          npm link
       
       - name: Load public repo list
         id: repos
         run: |
-          # Curated list of public repos with IaC files
-          cat > /tmp/repos.txt << 'EOF'
-          https://github.com/aws-samples/aws-cdk-examples
-          https://github.com/aws-samples/serverless-patterns
-          EOF
+          awk '
+            /^[[:space:]]*($|#)/ { next }
+            {
+              split($1, ref, "@")
+              print "https://github.com/" ref[1]
+            }
+          ' corpus/public-repos.txt > /tmp/repos.txt
           echo "repo_count=$(wc -l < /tmp/repos.txt)" >> $GITHUB_OUTPUT
       
       - name: Run benchmarks
@@ -41,6 +48,7 @@ jobs:
             echo "Benchmarking $repo_name..."
             
             # Clone
+            rm -rf /tmp/repo
             git clone --depth 1 "$repo" /tmp/repo 2>/dev/null || continue
             
             # Run all kits
@@ -57,11 +65,11 @@ jobs:
           python << 'EOF'
           import json
           import glob
-          from datetime import datetime
+          from datetime import UTC, datetime
           from pathlib import Path
           
           results = {
-              'date': datetime.utcnow().isoformat(),
+              'date': datetime.now(UTC).isoformat(),
               'total_repos': 0,
               'kits': {
                   'lambda-lifeline': {'pass': 0, 'fail': 0, 'warn': 0},
@@ -76,7 +84,7 @@ jobs:
                   with open(file) as f:
                       data = json.load(f)
                   
-                  kit = Path(file).stem.split('_')[-1]
+                  kit = next(k for k in results['kits'] if file.endswith(f"_{k}.json"))
                   findings = len(data.get('findings', []))
                   
                   if findings == 0:

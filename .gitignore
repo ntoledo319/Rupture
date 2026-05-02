@@ -28,10 +28,8 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Lambda-lifeline package-lock (operator preference)
-kits/lambda-lifeline/package-lock.json
-
 # ledger/internal/ is tracked but not linked from public pages.
 
 # Local feed signing scratch
 /tmp/rupture_pack.*
+.aider*

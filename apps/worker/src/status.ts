@@ -5,6 +5,9 @@
 import type { Env } from './index';
 import { getCapStatus } from './caps';
 
+type ComponentHealth = { ok: boolean; latency?: number; configured?: boolean };
+type CapStatus = Record<string, { used: number; limit: number; percentage: number }>;
+
 export async function statusHandler(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   const format = url.searchParams.get('format') || 'json';
@@ -36,6 +39,8 @@ export async function statusHandler(request: Request, env: Env): Promise<Respons
       r2: r2Health,
       queue: queueHealth,
       stripe: { ok: !!env.STRIPE_KEY, mode: env.STRIPE_KEY?.startsWith('sk_test') ? 'test' : 'live' },
+      email: { ok: !!env.RESEND_API_KEY, configured: !!env.RESEND_API_KEY },
+      github: { ok: !!env.GITHUB_APP_ID, configured: !!env.GITHUB_APP_ID },
     },
   };
   
@@ -50,7 +55,7 @@ export async function statusHandler(request: Request, env: Env): Promise<Respons
   });
 }
 
-async function checkKVHealth(env: Env): Promise<{ ok: boolean; latency?: number }> {
+async function checkKVHealth(env: Env): Promise<ComponentHealth> {
   const start = Date.now();
   try {
     await env.IDEMPOTENCY.put('health:check', '1', { expirationTtl: 60 });
@@ -62,21 +67,35 @@ async function checkKVHealth(env: Env): Promise<{ ok: boolean; latency?: number 
   }
 }
 
-async function checkR2Health(env: Env): Promise<{ ok: boolean }> {
+async function checkR2Health(env: Env): Promise<ComponentHealth> {
+  if (!env.UPLOADS) {
+    return { ok: false, configured: false };
+  }
+
   try {
     await env.UPLOADS.list({ limit: 1 });
-    return { ok: true };
+    return { ok: true, configured: true };
   } catch (error) {
-    return { ok: false };
+    return { ok: false, configured: true };
   }
 }
 
-async function checkQueueHealth(env: Env): Promise<{ ok: boolean }> {
-  // Queue health is implicit - if we can send, it's healthy
-  return { ok: true };
+async function checkQueueHealth(env: Env): Promise<ComponentHealth> {
+  return { ok: !!env.JOBS, configured: !!env.JOBS };
 }
 
-function toPrometheusMetrics(status: any): string {
+function toPrometheusMetrics(status: {
+  overall: string;
+  components: {
+    caps: CapStatus;
+    kv: ComponentHealth;
+    r2: ComponentHealth;
+    queue: ComponentHealth;
+    stripe: { ok: boolean; mode: string };
+    email: ComponentHealth;
+    github: ComponentHealth;
+  };
+}): string {
   const lines = [];
   
   // Overall health
@@ -86,7 +105,7 @@ function toPrometheusMetrics(status: any): string {
   
   // Component health
   for (const [component, data] of Object.entries(status.components)) {
-    if (data.ok !== undefined) {
+    if (isComponentHealth(data)) {
       lines.push(`# HELP rupture_${component}_health ${component} health`);
       lines.push(`# TYPE rupture_${component}_health gauge`);
       lines.push(`rupture_${component}_health ${data.ok ? 1 : 0}`);
@@ -101,4 +120,8 @@ function toPrometheusMetrics(status: any): string {
   }
   
   return lines.join('\n');
+}
+
+function isComponentHealth(value: unknown): value is ComponentHealth {
+  return typeof value === 'object' && value !== null && 'ok' in value;
 }

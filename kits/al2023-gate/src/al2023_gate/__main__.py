@@ -1,4 +1,5 @@
 """Allow `python -m al2023_gate ...`."""
+
 from .cli import main
 import sys
 

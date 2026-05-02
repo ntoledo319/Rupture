@@ -1,8 +1,7 @@
 """Test the Packer HCL template generator."""
-from argparse import Namespace
-from pathlib import Path
 
-import pytest
+from argparse import Namespace
+
 
 from al2023_gate import packer
 

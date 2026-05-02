@@ -20,7 +20,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 </style>
 </head>
 <body>
-<a href="/" class="brand">← Rupture</a>
+<a href="/Rupture/" class="brand">← Rupture</a>
 <h1>Audit PDF</h1>
 <p>Upload your IaC files, get a hash-anchored deterministic report scoring every finding by severity × blast-radius.</p>
 
@@ -54,7 +54,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
   <li>Verify authenticity at <code>/verify/&lt;sha&gt;</code></li>
 </ol>
 
-<form action="/api/audit/checkout" method="POST">
+<form action="https://rupture-worker.rupture-kits.workers.dev/api/audit/checkout" method="POST">
   <h3>Start Audit</h3>
   <p><input type="email" name="email" placeholder="your@email.com" required style="padding:0.5rem;width:300px"></p>
   <p><input type="file" name="files" multiple accept=".yaml,.yml,.json,.tf,.js,.ts,.py"></p>
@@ -63,7 +63,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 
 <footer>
   <p>Delivery within 5 minutes. Reports include SHA-256 hash of inputs for verification.</p>
-  <p><a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a></p>
+  <p><a href="/Rupture/legal/terms">Terms</a> · <a href="/Rupture/legal/privacy">Privacy</a></p>
 </footer>
 </body>
 </html>

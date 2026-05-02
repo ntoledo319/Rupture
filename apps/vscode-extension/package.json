@@ -3,7 +3,7 @@
   "displayName": "Rupture - AWS Deprecation Scanner",
   "description": "Real-time AWS deprecation detection in VS Code",
   "version": "1.0.0",
-  "publisher": "ntoledo319",
+  "publisher": "rupture",
   "engines": {
     "vscode": "^1.85.0"
   },

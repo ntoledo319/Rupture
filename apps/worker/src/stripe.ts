@@ -6,6 +6,16 @@
  */
 
 import type { Env } from './index';
+import { storeFiles } from './upload';
+import {
+  errorMessage,
+  hmacSha256Hex,
+  jsonResponse,
+  readBody,
+  stringField,
+  timingSafeEqualHex,
+  wantsHtmlRedirect,
+} from './http';
 
 interface StripeEvent {
   id: string;
@@ -20,11 +30,11 @@ export async function stripeRouter(request: Request, env: Env, path: string): Pr
     return handleStripeWebhook(request, env);
   }
   
-  if (path === '/api/audit/checkout-session') {
+  if (path === '/api/audit/checkout' || path === '/api/audit/checkout-session') {
     return createAuditCheckout(request, env);
   }
   
-  if (path === '/api/pack/checkout-session') {
+  if (path === '/api/pack/checkout' || path === '/api/pack/checkout-session') {
     return createPackCheckout(request, env);
   }
   
@@ -150,23 +160,29 @@ async function handleRefund(refund: any, env: Env): Promise<void> {
 }
 
 async function createAuditCheckout(request: Request, env: Env): Promise<Response> {
-  const body = await request.json() as { email: string; deadline?: string; upload_url?: string };
+  if (request.method !== 'POST') {
+    return jsonResponse({ error: 'Method not allowed' }, 405);
+  }
+
+  const body = await readBody(request);
+  const email = stringField(body, 'email');
+  const deadline = stringField(body, 'deadline');
+  const uploadUrl = stringField(body, 'upload_url');
+
+  if (!email) {
+    return jsonResponse({ error: 'email required' }, 400);
+  }
   
   // Calculate surge pricing based on deadline
-  const daysUntil = body.deadline ? calculateDaysUntil(body.deadline) : 999;
+  const daysUntil = deadline ? calculateDaysUntil(deadline) : 999;
   let price = 299;
   if (daysUntil <= 7) price = 599;
   else if (daysUntil <= 30) price = 399;
   
   // In test mode without a real key, return mock checkout URL
   if (env.STRIPE_KEY.startsWith('sk_test_dummy')) {
-    return new Response(JSON.stringify({
-      url: `https://checkout.stripe.com/test?price=${price}&email=${encodeURIComponent(body.email)}`,
-      price,
-      mode: 'test',
-    }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const url = `https://checkout.stripe.com/test?price=${price}&email=${encodeURIComponent(email)}`;
+    return checkoutResponse(request, url, price, 'test');
   }
   
   // Production or real test key: create real Stripe Checkout Session
@@ -180,41 +196,43 @@ async function createAuditCheckout(request: Request, env: Env): Promise<Response
       'mode': 'payment',
       'success_url': 'https://ntoledo319.github.io/Rupture/verify?session_id={CHECKOUT_SESSION_ID}',
       'cancel_url': 'https://ntoledo319.github.io/Rupture/audit',
-      'customer_email': body.email,
+      'customer_email': email,
       'metadata[sku]': 'audit',
-      'metadata[email]': body.email,
-      'metadata[upload_url]': body.upload_url || '',
-      'metadata[deadline]': body.deadline || '',
+      'metadata[email]': email,
+      'metadata[upload_url]': uploadUrl || '',
+      'metadata[deadline]': deadline || '',
     });
 
-    return new Response(JSON.stringify({
-      url: session.url,
+    return checkoutResponse(
+      request,
+      session.url,
       price,
-      mode: env.STRIPE_KEY.startsWith('sk_test') ? 'test' : 'live',
-    }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+      env.STRIPE_KEY.startsWith('sk_test') ? 'test' : 'live'
+    );
   } catch (error) {
     console.error('Stripe session creation failed:', error);
-    return new Response(JSON.stringify({ error: 'Failed to create checkout session' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return jsonResponse({ error: 'Failed to create checkout session' }, 500);
   }
 }
 
 async function createPackCheckout(request: Request, env: Env): Promise<Response> {
-  const body = await request.json() as { email: string; repo: string; installation_id?: string };
+  if (request.method !== 'POST') {
+    return jsonResponse({ error: 'Method not allowed' }, 405);
+  }
+
+  const body = await readBody(request);
+  const email = stringField(body, 'email');
+  const repo = stringField(body, 'repo');
+  const installationId = stringField(body, 'installation_id');
+
+  if (!email || !repo) {
+    return jsonResponse({ error: 'email and repo required' }, 400);
+  }
   
   // In test mode without a real key
   if (env.STRIPE_KEY.startsWith('sk_test_dummy')) {
-    return new Response(JSON.stringify({
-      url: `https://checkout.stripe.com/pack?price=1499&email=${encodeURIComponent(body.email)}&repo=${encodeURIComponent(body.repo)}`,
-      price: 1499,
-      mode: 'test',
-    }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    const url = `https://checkout.stripe.com/pack?price=1499&email=${encodeURIComponent(email)}&repo=${encodeURIComponent(repo)}`;
+    return checkoutResponse(request, url, 1499, 'test');
   }
 
   try {
@@ -227,27 +245,36 @@ async function createPackCheckout(request: Request, env: Env): Promise<Response>
       'mode': 'payment',
       'success_url': 'https://ntoledo319.github.io/Rupture/status?session_id={CHECKOUT_SESSION_ID}',
       'cancel_url': 'https://ntoledo319.github.io/Rupture/pack',
-      'customer_email': body.email,
+      'customer_email': email,
       'metadata[sku]': 'migration_pack',
-      'metadata[email]': body.email,
-      'metadata[repo]': body.repo,
-      'metadata[installation_id]': body.installation_id || '',
+      'metadata[email]': email,
+      'metadata[repo]': repo,
+      'metadata[installation_id]': installationId || '',
     });
 
-    return new Response(JSON.stringify({
-      url: session.url,
-      price: 1499,
-      mode: env.STRIPE_KEY.startsWith('sk_test') ? 'test' : 'live',
-    }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return checkoutResponse(
+      request,
+      session.url,
+      1499,
+      env.STRIPE_KEY.startsWith('sk_test') ? 'test' : 'live'
+    );
   } catch (error) {
     console.error('Stripe session creation failed:', error);
-    return new Response(JSON.stringify({ error: 'Failed to create checkout session' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return jsonResponse({ error: 'Failed to create checkout session' }, 500);
   }
+}
+
+function checkoutResponse(
+  request: Request,
+  url: string,
+  price: number,
+  mode: 'test' | 'live'
+): Response {
+  if (wantsHtmlRedirect(request)) {
+    return Response.redirect(url, 303);
+  }
+
+  return jsonResponse({ url, price, mode });
 }
 
 async function stripeRequest(env: Env, path: string, body?: Record<string, string>): Promise<any> {
@@ -275,30 +302,26 @@ async function verifyWebhookSignature(
   signature: string,
   secret: string
 ): Promise<boolean> {
-  // Implement Stripe webhook signature verification
-  // Using Web Crypto API
   try {
-    const encoder = new TextEncoder();
-    const key = await crypto.subtle.importKey(
-      'raw',
-      encoder.encode(secret),
-      { name: 'HMAC', hash: 'SHA-256' },
-      false,
-      ['sign']
-    );
-    
-    const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(payload));
-    const sigHex = Array.from(new Uint8Array(sig))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-    
-    // Parse Stripe signature header
-    const elements = signature.split(',');
-    const signatures = elements
-      .filter(e => e.startsWith('v1='))
-      .map(e => e.slice(3));
-    
-    return signatures.includes(sigHex);
+    const timestamp = signature
+      .split(',')
+      .find((part) => part.startsWith('t='))
+      ?.slice(2);
+    if (!timestamp) return false;
+
+    const timestampSeconds = Number(timestamp);
+    if (!Number.isFinite(timestampSeconds)) return false;
+
+    const ageSeconds = Math.abs(Date.now() / 1000 - timestampSeconds);
+    if (ageSeconds > 300) return false;
+
+    const expected = await hmacSha256Hex(secret, `${timestamp}.${payload}`);
+    const signatures = signature
+      .split(',')
+      .filter((e) => e.startsWith('v1='))
+      .map((e) => e.slice(3));
+
+    return signatures.some((sig) => timingSafeEqualHex(expected, sig));
   } catch (error) {
     console.error('Signature verification failed:', error);
     return false;
@@ -337,12 +360,12 @@ export async function autoRefund(chargeId: string, reason: string, env: Env): Pr
         type: 'refund_failed',
         chargeId,
         reason,
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage(error),
       });
     } else {
       await env.IDEMPOTENCY.put(`failed_refund:${chargeId}`, JSON.stringify({
         reason,
-        error: error instanceof Error ? error.message : String(error),
+        error: errorMessage(error),
         at: new Date().toISOString()
       }));
     }

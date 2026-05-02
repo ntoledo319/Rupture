@@ -4,16 +4,17 @@
  */
 
 import type { Env } from './index';
+import { jsonResponse } from './http';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
-const ALLOWED_EXTENSIONS = ['.yaml', '.yml', '.json', '.tf', '.js', '.ts', '.py', '.txt'];
+const ALLOWED_EXTENSIONS = ['.yaml', '.yml', '.json', '.tf', '.tfvars', '.js', '.ts', '.py', '.txt'];
 
 export async function uploadHandler(request: Request, env: Env, path: string): Promise<Response> {
   if (path === '/upload/presign' && request.method === 'POST') {
     return generatePresignedUrl(request, env);
   }
   
-  if (path.startsWith('/upload/') && request.method === 'GET') {
+  if (path.startsWith('/upload/') && (request.method === 'GET' || request.method === 'PUT')) {
     return serveUploadedFile(request, env, path);
   }
   
@@ -21,6 +22,10 @@ export async function uploadHandler(request: Request, env: Env, path: string): P
 }
 
 async function generatePresignedUrl(request: Request, env: Env): Promise<Response> {
+  if (!env.UPLOADS) {
+    return jsonResponse({ error: 'upload_storage_unavailable' }, 503);
+  }
+
   const body = await request.json() as {
     filename: string;
     contentType?: string;
@@ -62,10 +67,11 @@ async function generatePresignedUrl(request: Request, env: Env): Promise<Respons
   });
   
   // In production, this would generate a presigned R2 URL
-  // For now, return the upload endpoint
+  // For now, return the absolute upload endpoint
+  const origin = new URL(request.url).origin;
   return new Response(JSON.stringify({
     uploadId,
-    uploadUrl: `/upload/${uploadId}`,
+    uploadUrl: `${origin}/upload/${uploadId}`,
     expiresIn: 3600,
     maxSize: MAX_FILE_SIZE,
   }), {
@@ -74,6 +80,10 @@ async function generatePresignedUrl(request: Request, env: Env): Promise<Respons
 }
 
 async function serveUploadedFile(request: Request, env: Env, path: string): Promise<Response> {
+  if (!env.UPLOADS) {
+    return jsonResponse({ error: 'upload_storage_unavailable' }, 503);
+  }
+
   const uploadId = path.replace('/upload/', '');
   
   // Check if upload exists
@@ -126,7 +136,34 @@ async function serveUploadedFile(request: Request, env: Env, path: string): Prom
   return new Response('Method not allowed', { status: 405 });
 }
 
+export async function storeFiles(env: Env, files: File[]): Promise<string> {
+  if (!env.UPLOADS) throw new Error('upload_storage_unavailable');
+
+  const uploadId = crypto.randomUUID();
+  
+  for (const file of files) {
+    const key = `uploads/${uploadId}/${file.name}`;
+    await env.UPLOADS.put(key, await file.arrayBuffer(), {
+      httpMetadata: { contentType: file.type }
+    });
+  }
+  
+  // Store metadata
+  const metadata = {
+    files: files.map(f => f.name),
+    uploadedAt: new Date().toISOString(),
+  };
+  
+  await env.IDEMPOTENCY.put(`upload:${uploadId}`, JSON.stringify(metadata), {
+    expirationTtl: 3600 * 24 * 30, // 30 days
+  });
+  
+  return uploadId;
+}
+
 export async function cleanupOldUploads(env: Env): Promise<void> {
+  if (!env.UPLOADS) return;
+
   // List all uploads in R2
   const uploads = await env.UPLOADS.list({ prefix: 'uploads/' });
   
@@ -134,20 +171,16 @@ export async function cleanupOldUploads(env: Env): Promise<void> {
   const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
   
   for (const object of uploads.objects || []) {
-    // Check upload age from metadata
-    const uploadId = object.key.split('/')[1];
-    const metadata = await env.IDEMPOTENCY.get(`upload:${uploadId}`);
+    const uploadedAt = object.uploaded.getTime();
     
-    if (metadata) {
-      const meta = JSON.parse(metadata);
-      const uploadedAt = new Date(meta.uploadedAt).getTime();
+    if (now - uploadedAt > thirtyDaysMs) {
+      // Delete old upload
+      await env.UPLOADS.delete(object.key);
       
-      if (now - uploadedAt > thirtyDaysMs) {
-        // Delete old upload
-        await env.UPLOADS.delete(object.key);
-        await env.IDEMPOTENCY.delete(`upload:${uploadId}`);
-        console.log(`Cleaned up old upload: ${uploadId}`);
-      }
+      // Attempt to clean up metadata if it still exists
+      const uploadId = object.key.split('/')[1];
+      await env.IDEMPOTENCY.delete(`upload:${uploadId}`);
+      console.log(`Cleaned up old upload: ${object.key}`);
     }
   }
 }

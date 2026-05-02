@@ -7,6 +7,7 @@
  */
 
 import type { Env } from './index';
+import { errorMessage } from './http';
 
 const RESEND_API = 'https://api.resend.com/emails';
 const MAX_ATTEMPTS = 3;
@@ -32,10 +33,7 @@ export interface SendResult {
 export async function sendEmail(env: Env, job: EmailJob): Promise<SendResult> {
   if (!env.RESEND_API_KEY) {
     // No provider configured. Queue for later, surface to /status.
-    await env.JOBS.send({
-      type: 'email-pending-provider',
-      job,
-    });
+    await enqueueOrStore(env, 'email-pending-provider', { job });
     return { ok: false, error: 'no_provider', retryable: true };
   }
 
@@ -61,7 +59,7 @@ export async function sendEmail(env: Env, job: EmailJob): Promise<SendResult> {
   } catch (e) {
     return {
       ok: false,
-      error: `network: ${(e as Error).message}`,
+      error: `network: ${errorMessage(e)}`,
       retryable: true,
     };
   }
@@ -96,20 +94,55 @@ export async function sendEmailWithRetry(
 
   if (result.retryable && attempt < MAX_ATTEMPTS) {
     const delaySeconds = Math.pow(2, attempt) * 30; // 60s, 120s, 240s
-    await env.JOBS.send(
-      { type: 'email-retry', job: { ...job, attempt: attempt + 1 } },
-      { delaySeconds }
+    await enqueueOrStore(
+      env,
+      'email-retry',
+      { job: { ...job, attempt: attempt + 1 } },
+      delaySeconds
     );
     return result;
   }
 
   // Final failure — DLQ.
-  await env.JOBS_DLQ.send({
-    type: 'email-failed',
-    job,
-    lastError: result,
-  });
+  if (env.JOBS_DLQ) {
+    await env.JOBS_DLQ.send({
+      type: 'email-failed',
+      job,
+      lastError: result,
+    });
+  } else {
+    await storePendingJob(env, 'email-failed', { job, lastError: result });
+  }
   return result;
+}
+
+async function enqueueOrStore(
+  env: Env,
+  type: string,
+  payload: Record<string, unknown>,
+  delaySeconds?: number
+): Promise<void> {
+  if (env.JOBS) {
+    await env.JOBS.send(
+      { type, ...payload },
+      delaySeconds ? { delaySeconds } : undefined
+    );
+    return;
+  }
+
+  await storePendingJob(env, type, payload);
+}
+
+async function storePendingJob(
+  env: Env,
+  type: string,
+  payload: Record<string, unknown>
+): Promise<void> {
+  await env.IDEMPOTENCY.put(
+    `pending_job:${type}:${crypto.randomUUID()}`,
+    JSON.stringify({ type, ...payload, storedAt: new Date().toISOString() }),
+    { expirationTtl: 86400 * 14 }
+  );
 }
 
 export function renderAuditDeliveryEmail(opts: {

@@ -1,4 +1,5 @@
 """Shared utilities: coloring, logging."""
+
 from __future__ import annotations
 import os
 import sys
@@ -51,4 +52,7 @@ def dim(msg: str) -> None:
 
 def dry_run_banner(apply: bool, *, to_stderr: bool = False) -> None:
     if not apply:
-        warn(color.bold("DRY RUN — no changes written. Pass --apply to execute."), to_stderr=to_stderr)
+        warn(
+            color.bold("DRY RUN — no changes written. Pass --apply to execute."),
+            to_stderr=to_stderr,
+        )

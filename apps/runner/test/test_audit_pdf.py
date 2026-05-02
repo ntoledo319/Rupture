@@ -22,6 +22,7 @@ def test_runner_module_imports():
     # If audit_pdf.py imports cleanly, the module surface is intact.
     import importlib.util
     import os
+
     here = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     target = os.path.join(here, "audit_pdf.py")
     spec = importlib.util.spec_from_file_location("audit_pdf", target)

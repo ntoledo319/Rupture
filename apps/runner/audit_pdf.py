@@ -4,9 +4,7 @@ Creates hash-anchored, deterministic reports.
 """
 
 import hashlib
-import json
 from datetime import datetime
-from pathlib import Path
 from typing import Optional
 
 from jinja2 import Template
@@ -121,21 +119,21 @@ def generate_audit_pdf(
     upload_url: Optional[str],
     email: str,
     deadline: Optional[str] = None,
-    output_path: Optional[str] = None
+    output_path: Optional[str] = None,
 ) -> str:
     """Generate an audit PDF report."""
     from weasyprint import HTML
-    
+
     # In a real implementation:
     # 1. Download files from upload_url
     # 2. Run kit analysis
     # 3. Calculate input hash
     # 4. Generate findings
-    
+
     # For now, create sample data
     input_content = b"sample input for hashing"
     input_hash = hashlib.sha256(input_content).hexdigest()
-    
+
     findings = [
         {
             "severity": 9,
@@ -156,10 +154,10 @@ def generate_audit_pdf(
             "remediation": "Migrate to aws-sdk v3",
         },
     ]
-    
+
     # Sort by severity * blast_radius
     findings.sort(key=lambda f: f["severity"] * f["blast_radius"], reverse=True)
-    
+
     template = Template(PDF_TEMPLATE)
     html_content = template.render(
         generated_at=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
@@ -178,15 +176,15 @@ def generate_audit_pdf(
         ],
         verify_url=f"https://ntoledo319.github.io/Rupture/verify/{input_hash}",
     )
-    
+
     # Generate PDF
     if output_path is None:
         output_path = f"/tmp/audit_{input_hash[:8]}.pdf"
-    
+
     HTML(string=html_content).write_pdf(output_path)
-    
+
     # Embed metadata
     # WeasyPrint allows setting PDF metadata including custom properties
     # The hash is also visible in the PDF content itself
-    
+
     return output_path

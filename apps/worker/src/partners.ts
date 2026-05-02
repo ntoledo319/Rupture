@@ -8,6 +8,7 @@
  */
 
 import type { Env } from './index';
+import { readBody, stringField } from './http';
 
 interface PartnerRecord {
   slug: string;
@@ -34,30 +35,36 @@ export async function partnerSignup(
   request: Request,
   env: Env
 ): Promise<Response> {
-  const body = (await request.json()) as Partial<PartnerRecord>;
-  if (!body.email || !body.display_name || !body.domain) {
+  const body = await readBody(request);
+  const email = stringField(body, 'email');
+  const displayName = stringField(body, 'display_name');
+  const domain = stringField(body, 'domain');
+
+  if (!email || !displayName || !domain) {
     return jsonResponse(
       { error: 'email, display_name, domain required' },
       400
     );
   }
 
-  const slug = (body.display_name || '')
+  const slug = displayName
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
     .slice(0, 32);
+  if (!slug) return jsonResponse({ error: 'invalid display_name' }, 400);
 
   const existing = await env.IDEMPOTENCY.get(`${PARTNERS_KV_PREFIX}${slug}`);
   if (existing) {
     return jsonResponse({ error: 'partner_slug_taken', slug }, 409);
   }
 
-  const stripeAccountId = await createStripeConnectAccount(env, body.email);
+  const stripeAccountId = await createStripeConnectAccount(env, email);
   const record: PartnerRecord = {
     slug,
-    email: body.email,
-    display_name: body.display_name,
-    domain: body.domain,
+    email,
+    display_name: displayName,
+    domain,
     domain_verified: false,
     stripe_account_id: stripeAccountId,
     logo_url: null,
@@ -76,7 +83,7 @@ export async function partnerSignup(
     onboarding_url: onboardingUrl,
     verification_record: {
       type: 'TXT',
-      host: '_rupture.' + body.domain,
+      host: '_rupture.' + domain,
       value: `rupture-verification=${slug}`,
     },
   });
@@ -131,18 +138,28 @@ export async function partnerAudit(
   )) as PartnerRecord | null;
   if (!record) return jsonResponse({ error: 'partner not found' }, 404);
 
-  const body = (await request.json()) as {
-    buyer_email: string;
-    upload_url: string;
-    stripe_session_id: string;
-  };
+  const body = await readBody(request);
+  const buyerEmail = stringField(body, 'buyer_email');
+  const uploadUrl = stringField(body, 'upload_url');
+  const stripeSessionId = stringField(body, 'stripe_session_id');
+
+  if (!buyerEmail || !uploadUrl || !stripeSessionId) {
+    return jsonResponse(
+      { error: 'buyer_email, upload_url, stripe_session_id required' },
+      400
+    );
+  }
+
+  if (!env.JOBS) {
+    return jsonResponse({ error: 'queue_unavailable' }, 503);
+  }
 
   await env.JOBS.send({
     type: 'audit',
     sku: 'audit',
-    buyer_email: body.buyer_email,
-    upload_url: body.upload_url,
-    stripe_session_id: body.stripe_session_id,
+    buyer_email: buyerEmail,
+    upload_url: uploadUrl,
+    stripe_session_id: stripeSessionId,
     branding: record.domain_verified
       ? {
           partner_slug: slug,

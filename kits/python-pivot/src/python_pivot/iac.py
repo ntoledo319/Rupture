@@ -1,4 +1,5 @@
 """IaC patcher: rewrite Python Lambda runtimes in SAM / CDK / Terraform / Serverless."""
+
 from __future__ import annotations
 import argparse
 import re
@@ -30,7 +31,10 @@ RULES: List[RewriteRule] = [
     # SAM globals
     RewriteRule(
         name="sam-globals-runtime",
-        pattern=re.compile(rf"(Globals\s*:\s*\n(?:[^\n]*\n)*?\s*Runtime\s*:\s*){DEPRECATED_PY}", re.MULTILINE),
+        pattern=re.compile(
+            rf"(Globals\s*:\s*\n(?:[^\n]*\n)*?\s*Runtime\s*:\s*){DEPRECATED_PY}",
+            re.MULTILINE,
+        ),
         replacement=r"\g<1>" + TARGET_RUNTIME,
     ),
     # CDK (TypeScript and Python): Runtime.PYTHON_3_9, lambda.Runtime.PYTHON_3_9, _lambda.Runtime.PYTHON_3_9
@@ -43,7 +47,7 @@ RULES: List[RewriteRule] = [
     RewriteRule(
         name="terraform-runtime",
         pattern=re.compile(rf'(runtime\s*=\s*")({DEPRECATED_PY})(")'),
-        replacement=r'\g<1>' + TARGET_RUNTIME + r'\g<3>',
+        replacement=r"\g<1>" + TARGET_RUNTIME + r"\g<3>",
     ),
     # Serverless Framework: runtime: python3.9
     RewriteRule(
@@ -62,8 +66,19 @@ def _walk_iac_files(root: Path) -> List[Path]:
     for p in root.rglob("*"):
         if not p.is_file() or p.suffix not in exts:
             continue
-        if any(part in {".venv", "venv", "__pycache__", "node_modules", ".git", "cdk.out", ".terraform"}
-               for part in p.parts):
+        if any(
+            part
+            in {
+                ".venv",
+                "venv",
+                "__pycache__",
+                "node_modules",
+                ".git",
+                "cdk.out",
+                ".terraform",
+            }
+            for part in p.parts
+        ):
             continue
         out.append(p)
     return out
@@ -86,7 +101,9 @@ def run(args: argparse.Namespace) -> int:
         return 2
 
     apply_mode = bool(args.apply)
-    util.hdr(f"IaC patcher · {root} · {util.color.red('APPLY') if apply_mode else util.color.yellow('DRY-RUN')}")
+    util.hdr(
+        f"IaC patcher · {root} · {util.color.red('APPLY') if apply_mode else util.color.yellow('DRY-RUN')}"
+    )
     util.dry_run_banner(apply_mode)
 
     files = _walk_iac_files(root)
@@ -104,9 +121,11 @@ def run(args: argparse.Namespace) -> int:
         if not edits:
             continue
         files_changed += 1
-        for e in edits:
-            total_edits += e["count"]
-            util.info(f"{util.color.green('[rewrite]')} {f} · {e['rule']} · {e['count']} hit(s)")
+        for edit in edits:
+            total_edits += edit["count"]
+            util.info(
+                f"{util.color.green('[rewrite]')} {f} · {edit['rule']} · {edit['count']} hit(s)"
+            )
         if apply_mode and new_text != text:
             f.write_text(new_text)
 

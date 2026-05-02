@@ -1,11 +1,9 @@
 """Test the scanner module with a fixture."""
+
 import json
-import os
-import sys
 from argparse import Namespace
 from pathlib import Path
 
-import pytest
 
 from al2023_gate import scan
 
@@ -13,8 +11,14 @@ FIXTURE = Path(__file__).parent / "fixtures" / "inventory.json"
 
 
 def _args(**overrides):
-    base = dict(fixture=str(FIXTURE), regions=None, profile=None,
-                format="table", out=None, strict=False)
+    base = dict(
+        fixture=str(FIXTURE),
+        regions=None,
+        profile=None,
+        format="table",
+        out=None,
+        strict=False,
+    )
     base.update(overrides)
     return Namespace(**base)
 

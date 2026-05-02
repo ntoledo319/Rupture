@@ -1,4 +1,5 @@
 """Pytest configuration — ensure src/ is on the path."""
+
 import sys
 from pathlib import Path
 

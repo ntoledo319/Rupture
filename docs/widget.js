@@ -8,7 +8,7 @@
     
     const SCRIPT = document.currentScript;
     const REPO = SCRIPT?.dataset?.repo;
-    const API_BASE = 'https://rupture-worker.toledonick98.workers.dev';
+    const API_BASE = 'https://rupture-worker.rupture-kits.workers.dev';
     
     if (!REPO) {
         console.error('Rupture widget: data-repo attribute required');

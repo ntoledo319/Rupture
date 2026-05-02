@@ -1,8 +1,7 @@
 """Test the runbook generator."""
-from argparse import Namespace
-from pathlib import Path
 
-import pytest
+from argparse import Namespace
+
 
 from al2023_gate import runbook
 

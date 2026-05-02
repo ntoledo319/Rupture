@@ -1,7 +1,7 @@
 """Manual rollback: re-point a Lambda alias at its previous version."""
+
 from __future__ import annotations
 import argparse
-from typing import Optional
 
 from . import util
 
@@ -14,7 +14,9 @@ def run(args: argparse.Namespace) -> int:
         return 2
 
     region = args.region or "us-east-1"
-    session = boto3.Session(profile_name=args.profile) if args.profile else boto3.Session()
+    session = (
+        boto3.Session(profile_name=args.profile) if args.profile else boto3.Session()
+    )
     lam = session.client("lambda", region_name=region)
 
     util.hdr(f"Rollback alias {args.alias} on {args.function}")
@@ -38,7 +40,9 @@ def run(args: argparse.Namespace) -> int:
                 versions.append(v["Version"])
     versions_sorted = sorted(set(versions), key=lambda x: int(x))
     if len(versions_sorted) < 2:
-        util.err(f"Only {len(versions_sorted)} version(s) exist — nothing to roll back to.")
+        util.err(
+            f"Only {len(versions_sorted)} version(s) exist — nothing to roll back to."
+        )
         return 1
 
     try:
@@ -53,11 +57,14 @@ def run(args: argparse.Namespace) -> int:
     target = args.target_version or versions_sorted[idx - 1]
 
     if not args.apply:
-        util.warn(f"DRY-RUN — would swap alias {args.alias} from {current_version} → {target}. Pass --apply to execute.")
+        util.warn(
+            f"DRY-RUN — would swap alias {args.alias} from {current_version} → {target}. Pass --apply to execute."
+        )
         return 0
 
     lam.update_alias(
-        FunctionName=args.function, Name=args.alias,
+        FunctionName=args.function,
+        Name=args.alias,
         FunctionVersion=target,
         RoutingConfig={"AdditionalVersionWeights": {}},
     )

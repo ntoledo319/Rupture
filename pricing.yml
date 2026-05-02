@@ -77,6 +77,6 @@ urls:
   github_repo: https://github.com/ntoledo319/Rupture
   discussions: https://github.com/ntoledo319/Rupture/discussions
 stripe:
-  test_mode: true
+  test_mode: false
   account_id: null
   webhook_secret: null

@@ -1,10 +1,10 @@
 """Test CLI wiring via subprocess."""
+
 import os
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
 
 KIT_ROOT = Path(__file__).parent.parent
 
@@ -13,7 +13,10 @@ def _run(*args):
     env = {**os.environ, "PYTHONPATH": str(KIT_ROOT / "src"), "NO_COLOR": "1"}
     return subprocess.run(
         [sys.executable, "-m", "python_pivot", "--no-banner", *args],
-        capture_output=True, text=True, env=env, cwd=str(KIT_ROOT),
+        capture_output=True,
+        text=True,
+        env=env,
+        cwd=str(KIT_ROOT),
     )
 
 
@@ -31,7 +34,9 @@ def test_version():
 
 
 def test_scan_cli():
-    r = _run("scan", "--fixture", "test/fixtures/lambda-inventory.json", "--format", "json")
+    r = _run(
+        "scan", "--fixture", "test/fixtures/lambda-inventory.json", "--format", "json"
+    )
     assert r.returncode == 0
     assert "payment-webhook" in r.stdout
 

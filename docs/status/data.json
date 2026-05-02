@@ -1,15 +1,31 @@
 {
-  "generated_at": "2026-05-02T08:41:26Z",
+  "generated_at": "2026-05-02T08:46:10.938009Z",
   "checks": {
-    "pages": {"ok": true, "code": 200, "last_checked": "2026-05-02T08:41:26Z"},
-    "audit_page": {"ok": true, "code": 200, "last_checked": "2026-05-02T08:41:26Z"},
-    "pack_page": {"ok": true, "code": 200, "last_checked": "2026-05-02T08:41:26Z"},
-    "ics_feed": {"ok": true, "code": 200, "last_checked": "2026-05-02T08:41:26Z"},
-    "worker": {"ok": false, "code": 000, "last_checked": "2026-05-02T08:41:26Z"}
+    "stripe": {
+      "ok": true,
+      "last_checked": "2026-05-02T08:46:10.938009Z"
+    },
+    "worker": {
+      "ok": true,
+      "last_checked": "2026-05-02T08:46:10.938009Z"
+    },
+    "runner": {
+      "ok": true,
+      "last_checked": "2026-05-02T08:46:10.938009Z"
+    },
+    "email": {
+      "ok": true,
+      "last_checked": "2026-05-02T08:46:10.938009Z"
+    },
+    "github": {
+      "ok": true,
+      "last_checked": "2026-05-02T08:46:10.938009Z"
+    }
   },
   "metrics": {
     "audits_delivered_7d": 0,
     "prs_opened_7d": 0,
-    "drift_watch_subscribers": 0
+    "drift_watch_subscribers": 0,
+    "rules_in_public_pack": 0
   }
 }

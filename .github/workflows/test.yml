@@ -7,11 +7,11 @@ on:
     branches: [main]
 
 jobs:
-  test-kits:
+  test-python-kits:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        kit: [lambda-lifeline, al2023-gate, python-pivot]
+        kit: [al2023-gate, python-pivot]
     steps:
       - uses: actions/checkout@v4
       
@@ -35,6 +35,26 @@ jobs:
         with:
           file: ./kits/${{ matrix.kit }}/coverage.xml
           flags: ${{ matrix.kit }}
+
+  test-node-kit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd kits/lambda-lifeline
+          npm ci
+
+      - name: Run tests
+        run: |
+          cd kits/lambda-lifeline
+          npm test
 
   test-worker:
     runs-on: ubuntu-latest
@@ -125,4 +145,4 @@ jobs:
         run: black --check kits/
       
       - name: Type check with mypy
-        run: mypy kits/ --ignore-missing-imports
+        run: mypy kits/al2023-gate/src kits/python-pivot/src --ignore-missing-imports

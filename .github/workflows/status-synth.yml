@@ -18,7 +18,7 @@ jobs:
         run: |
           set +e
           PAGES_URL="${{ vars.PAGES_URL || 'https://ntoledo319.github.io/Rupture' }}"
-          WORKER_URL="${{ vars.WORKER_URL }}"
+          WORKER_URL="${{ vars.WORKER_URL || 'https://rupture-worker.rupture-kits.workers.dev' }}"
           NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           status() { curl -s -o /dev/null -w '%{http_code}' --max-time 8 "$1"; }
           PAGES_CODE=$(status "$PAGES_URL/status/")
@@ -27,17 +27,26 @@ jobs:
           ICS_CODE=$(status "$PAGES_URL/deprecations.ics")
           WORKER_CODE=000
           if [ -n "$WORKER_URL" ]; then WORKER_CODE=$(status "$WORKER_URL/health"); fi
+          WORKER_STATUS_JSON=""
+          if [ -n "$WORKER_URL" ]; then WORKER_STATUS_JSON=$(curl -fsS --max-time 8 "$WORKER_URL/status" || true); fi
+          component_ok() {
+            printf '%s' "$WORKER_STATUS_JSON" | jq -r "$1" 2>/dev/null | grep -qx true && echo true || echo false
+          }
           ok() { [ "$1" = "200" ] && echo true || echo false; }
           mkdir -p docs/status
           cat > docs/status/data.json <<JSON
           {
             "generated_at": "$NOW",
             "checks": {
+              "stripe": {"ok": $(component_ok '.components.stripe.ok == true'), "last_checked": "$NOW"},
+              "worker": {"ok": $(component_ok '.overall == "healthy"'), "code": $WORKER_CODE, "last_checked": "$NOW"},
+              "runner": {"ok": $(component_ok '.components.queue.ok == true'), "last_checked": "$NOW"},
+              "email": {"ok": $(component_ok '.components.email.ok == true'), "last_checked": "$NOW"},
+              "github": {"ok": $(component_ok '.components.github.ok == true'), "last_checked": "$NOW"},
               "pages": {"ok": $(ok $PAGES_CODE), "code": $PAGES_CODE, "last_checked": "$NOW"},
               "audit_page": {"ok": $(ok $AUDIT_CODE), "code": $AUDIT_CODE, "last_checked": "$NOW"},
               "pack_page": {"ok": $(ok $PACK_CODE), "code": $PACK_CODE, "last_checked": "$NOW"},
-              "ics_feed": {"ok": $(ok $ICS_CODE), "code": $ICS_CODE, "last_checked": "$NOW"},
-              "worker": {"ok": $(ok $WORKER_CODE), "code": $WORKER_CODE, "last_checked": "$NOW"}
+              "ics_feed": {"ok": $(ok $ICS_CODE), "code": $ICS_CODE, "last_checked": "$NOW"}
             },
             "metrics": {
               "audits_delivered_7d": 0,

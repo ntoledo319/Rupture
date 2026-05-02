@@ -1,9 +1,9 @@
 """Test native-wheel audit."""
+
 import json
 from argparse import Namespace
 from pathlib import Path
 
-import pytest
 
 from python_pivot import audit
 
@@ -66,13 +66,15 @@ def test_clean_requirements_pass(tmp_path, capsys):
 
 def test_pyproject_parsing(tmp_path):
     pp = tmp_path / "pyproject.toml"
-    pp.write_text('''
+    pp.write_text(
+        """
 [project]
 dependencies = [
   "numpy==1.24.0",
   "requests>=2.31"
 ]
-''')
+"""
+    )
     pkgs = audit.parse_pyproject(pp)
     names = [n for n, _ in pkgs]
     assert "numpy" in names

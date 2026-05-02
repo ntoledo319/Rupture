@@ -1,8 +1,8 @@
 """Test Ansible playbook patcher."""
+
 from argparse import Namespace
 from pathlib import Path
 
-import pytest
 
 from al2023_gate import ansible
 

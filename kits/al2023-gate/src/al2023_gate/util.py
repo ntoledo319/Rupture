@@ -1,4 +1,5 @@
 """Shared utilities: coloring, logging, arg helpers."""
+
 from __future__ import annotations
 import os
 import sys
@@ -20,12 +21,28 @@ class color:
     bold = staticmethod(lambda s: _c("1", s))
 
 
-def info(msg: str) -> None:  print(f"{color.cyan('ℹ')} {msg}")
-def ok(msg: str) -> None:    print(f"{color.green('✓')} {msg}")
-def warn(msg: str) -> None:  print(f"{color.yellow('⚠')} {msg}")
-def err(msg: str) -> None:   print(f"{color.red('✗')} {msg}", file=sys.stderr)
-def hdr(msg: str) -> None:   print(f"\n{color.bold(color.magenta('▸ ' + msg))}")
-def dim(msg: str) -> None:   print(color.gray(msg))
+def info(msg: str) -> None:
+    print(f"{color.cyan('ℹ')} {msg}")
+
+
+def ok(msg: str) -> None:
+    print(f"{color.green('✓')} {msg}")
+
+
+def warn(msg: str) -> None:
+    print(f"{color.yellow('⚠')} {msg}")
+
+
+def err(msg: str) -> None:
+    print(f"{color.red('✗')} {msg}", file=sys.stderr)
+
+
+def hdr(msg: str) -> None:
+    print(f"\n{color.bold(color.magenta('▸ ' + msg))}")
+
+
+def dim(msg: str) -> None:
+    print(color.gray(msg))
 
 
 def dry_run_banner(apply: bool) -> None:

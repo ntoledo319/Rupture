@@ -5,6 +5,7 @@ known-breaking changes in AL2023. Reports incompatibilities and suggests fixes.
 Does NOT rewrite automatically — cloud-init scripts are too sensitive to
 blind rewrites. Instead emits an actionable list of locations and suggested edits.
 """
+
 from __future__ import annotations
 import argparse
 import re
@@ -26,7 +27,9 @@ class Rule:
 RULES: List[Rule] = [
     Rule(
         name="yum-to-dnf",
-        pattern=re.compile(r"\byum\s+(install|update|remove|info|search|clean|list|check-update)\b"),
+        pattern=re.compile(
+            r"\byum\s+(install|update|remove|info|search|clean|list|check-update)\b"
+        ),
         message="`yum` still works as a compat alias on AL2023 but is deprecated.",
         suggestion="Replace `yum` with `dnf` for forward compatibility.",
         severity="medium",
@@ -115,17 +118,23 @@ def scan_text(text: str) -> List[dict]:
     findings = []
     for rule in RULES:
         for m in rule.pattern.finditer(text):
-            before = text[:m.start()]
+            before = text[: m.start()]
             line_num = before.count("\n") + 1
-            line = text.splitlines()[line_num - 1] if line_num - 1 < len(text.splitlines()) else ""
-            findings.append({
-                "rule": rule.name,
-                "severity": rule.severity,
-                "line": line_num,
-                "text": line.strip()[:120],
-                "message": rule.message,
-                "suggestion": rule.suggestion,
-            })
+            line = (
+                text.splitlines()[line_num - 1]
+                if line_num - 1 < len(text.splitlines())
+                else ""
+            )
+            findings.append(
+                {
+                    "rule": rule.name,
+                    "severity": rule.severity,
+                    "line": line_num,
+                    "text": line.strip()[:120],
+                    "message": rule.message,
+                    "suggestion": rule.suggestion,
+                }
+            )
     return findings
 
 
@@ -134,7 +143,17 @@ def run(args: argparse.Namespace) -> int:
     for raw in args.paths:
         p = Path(raw)
         if p.is_dir():
-            paths.extend([f for f in p.rglob("*") if f.is_file() and (f.suffix in (".sh", ".yaml", ".yml", ".cfg", ".bash") or f.name in ("user-data", "cloud-config"))])
+            paths.extend(
+                [
+                    f
+                    for f in p.rglob("*")
+                    if f.is_file()
+                    and (
+                        f.suffix in (".sh", ".yaml", ".yml", ".cfg", ".bash")
+                        or f.name in ("user-data", "cloud-config")
+                    )
+                ]
+            )
         else:
             paths.append(p)
 
@@ -157,8 +176,11 @@ def run(args: argparse.Namespace) -> int:
         total_findings += len(findings)
         print(f"\n{util.color.bold(str(p))}")
         for f in findings:
-            sev_col = util.color.red if f["severity"] == "critical" else (
-                      util.color.yellow if f["severity"] == "high" else util.color.cyan)
+            sev_col = (
+                util.color.red
+                if f["severity"] == "critical"
+                else (util.color.yellow if f["severity"] == "high" else util.color.cyan)
+            )
             print(f"  {sev_col('['+f['severity']+']')} line {f['line']}: {f['rule']}")
             print(f"    {util.color.gray(f['text'])}")
             print(f"    → {f['message']}")

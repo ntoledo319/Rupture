@@ -1,8 +1,8 @@
 """Test IaC patcher."""
+
 from argparse import Namespace
 from pathlib import Path
 
-import pytest
 
 from python_pivot import iac
 
@@ -32,7 +32,7 @@ def test_terraform_patched(tmp_path):
     patched = f.read_text()
     assert 'runtime       = "python3.12"' in patched
     # Existing 3.12 unchanged
-    assert 'already-migrated' in patched
+    assert "already-migrated" in patched
 
 
 def test_cdk_ts_patched(tmp_path):

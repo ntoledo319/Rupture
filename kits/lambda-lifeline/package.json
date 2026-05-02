@@ -39,7 +39,9 @@
     "rollback": "node bin/cli.mjs rollback"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.658.0",
     "@aws-sdk/client-lambda": "^3.658.0",
-    "@aws-sdk/client-sts": "^3.658.0"
+    "@aws-sdk/client-sts": "^3.658.0",
+    "@aws-sdk/credential-providers": "^3.658.0"
   }
 }

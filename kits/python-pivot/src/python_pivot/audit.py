@@ -8,11 +8,11 @@ This is a deliberate non-exhaustive table — we cover the packages that
 actually break Lambda deploys when the runtime moves. Unknown packages
 pass silently (they're usually pure-Python).
 """
+
 from __future__ import annotations
 import argparse
 import json
 import re
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -32,52 +32,53 @@ class WheelRequirement:
 # cp312 wheels on PyPI for linux x86_64 / linux aarch64.
 PY312_WHEEL_TABLE: Dict[str, WheelRequirement] = {
     # Scientific
-    "numpy":          WheelRequirement("numpy",          "1.26.0", "1.26+ ships cp312 wheels."),
-    "scipy":          WheelRequirement("scipy",          "1.11.4", "1.11.4+ for cp312."),
-    "pandas":         WheelRequirement("pandas",         "2.1.1",  "2.1.1+ for cp312."),
-    "scikit-learn":   WheelRequirement("scikit-learn",   "1.3.2",  "1.3.2+ for cp312."),
-    "matplotlib":     WheelRequirement("matplotlib",     "3.8.0",  "3.8.0+ for cp312."),
-    "pillow":         WheelRequirement("pillow",         "10.1.0", "10.1.0+ for cp312."),
-    "lxml":           WheelRequirement("lxml",           "4.9.4",  "4.9.4+ for cp312."),
-
+    "numpy": WheelRequirement("numpy", "1.26.0", "1.26+ ships cp312 wheels."),
+    "scipy": WheelRequirement("scipy", "1.11.4", "1.11.4+ for cp312."),
+    "pandas": WheelRequirement("pandas", "2.1.1", "2.1.1+ for cp312."),
+    "scikit-learn": WheelRequirement("scikit-learn", "1.3.2", "1.3.2+ for cp312."),
+    "matplotlib": WheelRequirement("matplotlib", "3.8.0", "3.8.0+ for cp312."),
+    "pillow": WheelRequirement("pillow", "10.1.0", "10.1.0+ for cp312."),
+    "lxml": WheelRequirement("lxml", "4.9.4", "4.9.4+ for cp312."),
     # Cryptography / auth
-    "cryptography":   WheelRequirement("cryptography",   "41.0.5", "41.0.5+ for cp312 (libssl3)."),
-    "pycryptodome":   WheelRequirement("pycryptodome",   "3.19.0", "3.19.0+ for cp312."),
-    "bcrypt":         WheelRequirement("bcrypt",         "4.1.1",  "4.1.1+ for cp312."),
-    "pyopenssl":      WheelRequirement("pyopenssl",      "23.3.0", "23.3.0+ for cp312."),
-
+    "cryptography": WheelRequirement(
+        "cryptography", "41.0.5", "41.0.5+ for cp312 (libssl3)."
+    ),
+    "pycryptodome": WheelRequirement("pycryptodome", "3.19.0", "3.19.0+ for cp312."),
+    "bcrypt": WheelRequirement("bcrypt", "4.1.1", "4.1.1+ for cp312."),
+    "pyopenssl": WheelRequirement("pyopenssl", "23.3.0", "23.3.0+ for cp312."),
     # DB drivers
-    "psycopg2-binary": WheelRequirement("psycopg2-binary","2.9.9", "2.9.9+ for cp312."),
-    "psycopg":        WheelRequirement("psycopg",        "3.1.13", "3.1.13+ for cp312."),
-    "mysqlclient":    WheelRequirement("mysqlclient",    "2.2.0",  "2.2.0+ for cp312."),
-    "pymssql":        WheelRequirement("pymssql",        "2.2.11", "2.2.11+ for cp312."),
-
+    "psycopg2-binary": WheelRequirement(
+        "psycopg2-binary", "2.9.9", "2.9.9+ for cp312."
+    ),
+    "psycopg": WheelRequirement("psycopg", "3.1.13", "3.1.13+ for cp312."),
+    "mysqlclient": WheelRequirement("mysqlclient", "2.2.0", "2.2.0+ for cp312."),
+    "pymssql": WheelRequirement("pymssql", "2.2.11", "2.2.11+ for cp312."),
     # Data serialization
-    "pyyaml":         WheelRequirement("pyyaml",         "6.0.1",  "6.0.1+ for cp312."),
-    "orjson":         WheelRequirement("orjson",         "3.9.10", "3.9.10+ for cp312."),
-    "ujson":          WheelRequirement("ujson",          "5.8.0",  "5.8.0+ for cp312."),
-    "msgpack":        WheelRequirement("msgpack",        "1.0.7",  "1.0.7+ for cp312."),
-
+    "pyyaml": WheelRequirement("pyyaml", "6.0.1", "6.0.1+ for cp312."),
+    "orjson": WheelRequirement("orjson", "3.9.10", "3.9.10+ for cp312."),
+    "ujson": WheelRequirement("ujson", "5.8.0", "5.8.0+ for cp312."),
+    "msgpack": WheelRequirement("msgpack", "1.0.7", "1.0.7+ for cp312."),
     # Web / network
-    "aiohttp":        WheelRequirement("aiohttp",        "3.9.0",  "3.9.0+ for cp312."),
-    "grpcio":         WheelRequirement("grpcio",         "1.59.0", "1.59.0+ for cp312."),
-    "protobuf":       WheelRequirement("protobuf",       "4.25.0", "4.25.0+ for cp312."),
-    "frozenlist":     WheelRequirement("frozenlist",     "1.4.0",  "1.4.0+ for cp312."),
-    "multidict":      WheelRequirement("multidict",      "6.0.4",  "6.0.4+ for cp312."),
-    "yarl":           WheelRequirement("yarl",           "1.9.3",  "1.9.3+ for cp312."),
-
+    "aiohttp": WheelRequirement("aiohttp", "3.9.0", "3.9.0+ for cp312."),
+    "grpcio": WheelRequirement("grpcio", "1.59.0", "1.59.0+ for cp312."),
+    "protobuf": WheelRequirement("protobuf", "4.25.0", "4.25.0+ for cp312."),
+    "frozenlist": WheelRequirement("frozenlist", "1.4.0", "1.4.0+ for cp312."),
+    "multidict": WheelRequirement("multidict", "6.0.4", "6.0.4+ for cp312."),
+    "yarl": WheelRequirement("yarl", "1.9.3", "1.9.3+ for cp312."),
     # ML / NLP
-    "tiktoken":       WheelRequirement("tiktoken",       "0.5.2",  "0.5.2+ for cp312."),
-    "tokenizers":     WheelRequirement("tokenizers",     "0.15.0", "0.15.0+ for cp312."),
-
+    "tiktoken": WheelRequirement("tiktoken", "0.5.2", "0.5.2+ for cp312."),
+    "tokenizers": WheelRequirement("tokenizers", "0.15.0", "0.15.0+ for cp312."),
     # AWS
-    "awscrt":         WheelRequirement("awscrt",         "0.19.17","0.19.17+ for cp312."),
-    "boto3":          WheelRequirement("boto3",          "1.29.0", "1.29+ tested on cp312."),
-    "botocore":       WheelRequirement("botocore",       "1.32.0", "1.32+ tested on cp312."),
-
+    "awscrt": WheelRequirement("awscrt", "0.19.17", "0.19.17+ for cp312."),
+    "boto3": WheelRequirement("boto3", "1.29.0", "1.29+ tested on cp312."),
+    "botocore": WheelRequirement("botocore", "1.32.0", "1.32+ tested on cp312."),
     # Dead-end — these never added cp312 wheels
-    "python-snappy":  WheelRequirement("python-snappy",  None,     "No cp312 wheels. Switch to `cramjam` or `plyvel`."),
-    "fastparquet":    WheelRequirement("fastparquet",    "2023.10.1", "2023.10.1+ for cp312."),
+    "python-snappy": WheelRequirement(
+        "python-snappy", None, "No cp312 wheels. Switch to `cramjam` or `plyvel`."
+    ),
+    "fastparquet": WheelRequirement(
+        "fastparquet", "2023.10.1", "2023.10.1+ for cp312."
+    ),
 }
 
 
@@ -107,8 +108,12 @@ def parse_pyproject(path: Path) -> List[Tuple[str, Optional[str]]]:
     text = path.read_text()
     pkgs: List[Tuple[str, Optional[str]]] = []
     # Look for dependencies = ["pkg==1.2", ...] and optional-dependencies blocks
-    for dep_list in re.findall(r'dependencies\s*=\s*\[([^\]]*)\]', text, flags=re.DOTALL):
-        for m in re.finditer(r'"\s*([A-Za-z0-9_.\-]+)\s*(?:\[[^\]]*\])?\s*([<>=!~][^"]*)?\s*"', dep_list):
+    for dep_list in re.findall(
+        r"dependencies\s*=\s*\[([^\]]*)\]", text, flags=re.DOTALL
+    ):
+        for m in re.finditer(
+            r'"\s*([A-Za-z0-9_.\-]+)\s*(?:\[[^\]]*\])?\s*([<>=!~][^"]*)?\s*"', dep_list
+        ):
             pkgs.append((m.group(1).lower(), (m.group(2) or "").strip() or None))
     return pkgs
 
@@ -121,7 +126,7 @@ def _extract_min_version(spec: Optional[str]) -> Optional[str]:
         for part in spec.split(","):
             part = part.strip()
             if part.startswith(op):
-                return part[len(op):].strip()
+                return part[len(op) :].strip()
     return None
 
 
@@ -152,32 +157,38 @@ def audit_packages(pkgs: List[Tuple[str, Optional[str]]]) -> List[dict]:
         declared = _extract_min_version(spec)
         if req.min_version_for_py312 is None:
             # Package has NO cp312 wheels — always a problem
-            findings.append({
-                "package": name,
-                "declared": spec or "(unpinned)",
-                "required": "(none — no cp312 wheels)",
-                "severity": "critical",
-                "note": req.note,
-            })
+            findings.append(
+                {
+                    "package": name,
+                    "declared": spec or "(unpinned)",
+                    "required": "(none — no cp312 wheels)",
+                    "severity": "critical",
+                    "note": req.note,
+                }
+            )
             continue
         if declared is None:
             # unpinned — flag as warning (latest will likely resolve, but reproducibility is at risk)
-            findings.append({
-                "package": name,
-                "declared": "(unpinned)",
-                "required": f">={req.min_version_for_py312}",
-                "severity": "low",
-                "note": f"unpinned; latest will include cp312 wheels. Pin >={req.min_version_for_py312} for reproducibility.",
-            })
+            findings.append(
+                {
+                    "package": name,
+                    "declared": "(unpinned)",
+                    "required": f">={req.min_version_for_py312}",
+                    "severity": "low",
+                    "note": f"unpinned; latest will include cp312 wheels. Pin >={req.min_version_for_py312} for reproducibility.",
+                }
+            )
             continue
         if _version_lt(declared, req.min_version_for_py312):
-            findings.append({
-                "package": name,
-                "declared": spec,
-                "required": f">={req.min_version_for_py312}",
-                "severity": "high",
-                "note": req.note,
-            })
+            findings.append(
+                {
+                    "package": name,
+                    "declared": spec,
+                    "required": f">={req.min_version_for_py312}",
+                    "severity": "high",
+                    "note": req.note,
+                }
+            )
     return findings
 
 
@@ -208,10 +219,15 @@ def run(args: argparse.Namespace) -> int:
         return 0
 
     for f in findings:
-        sev_color = util.color.red if f["severity"] == "critical" else (
-                    util.color.yellow if f["severity"] == "high" else util.color.cyan)
-        print(f"  {sev_color('[' + f['severity'] + ']')} {util.color.bold(f['package'])} "
-              f"declared={f['declared']} · needs {f['required']}")
+        sev_color = (
+            util.color.red
+            if f["severity"] == "critical"
+            else (util.color.yellow if f["severity"] == "high" else util.color.cyan)
+        )
+        print(
+            f"  {sev_color('[' + f['severity'] + ']')} {util.color.bold(f['package'])} "
+            f"declared={f['declared']} · needs {f['required']}"
+        )
         print(f"      {util.color.gray(f['note'])}")
 
     util.warn(f"{len(findings)} package(s) need attention before Python 3.12.")

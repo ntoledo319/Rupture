@@ -1,6 +1,6 @@
 # Operator Decisions — Rupture Launch
 
-> Source: `updateplan.md` §2. Each decision is either **RESOLVED** (operator answered or default applied after the 24h timeout) or **BLOCKING** (cannot proceed without operator input). Blocking items put the system in **dry-launch mode** (code ships, fixtures pass, landing live, no charges).
+> Source: `updateplan.md` §2. Current state after the May 2, 2026 launch-hardening pass.
 
 ---
 
@@ -15,27 +15,28 @@
 - **Custom domain:** deferred until first $50 of revenue clears (per $0-seed rule)
 
 ## [DECISION-3] Stripe account
-- **Status:** BLOCKING (live mode); RESOLVED for test mode
-- **Test mode:** `STRIPE_KEY=sk_test_dummy_for_setup` placeholder; checkout flows render with test cards
-- **Live mode prerequisite:** operator runs `stripe login` then sets `STRIPE_KEY` (standard live key `sk_live_...` or restricted key) via `wrangler secret put STRIPE_KEY`
-- **Once live key lands:** the agent runs `apps/worker/scripts/setup_stripe.ts` to provision products, prices, payment links — idempotent
+- **Status:** RESOLVED — live mode active
+- **Worker secret:** `STRIPE_KEY` is set in the production Cloudflare Worker.
+- **Webhook:** live Stripe webhook endpoint registered for `https://rupture-worker.rupture-kits.workers.dev/webhook/stripe`.
+- **Smoke check:** audit checkout returns a live Stripe Checkout redirect without charging.
 
 ## [DECISION-4] Cloudflare account
-- **Status:** BLOCKING for deployment; RESOLVED for development
-- **Dev:** `wrangler dev` runs locally, integration tests pass
-- **Deploy prerequisite:** operator creates a free Cloudflare account, sets `CF_API_TOKEN` as a GitHub Actions secret with permissions: Workers, Pages, R2, KV, Queues, Workers AI (free tier only)
-- **Once token lands:** `.github/workflows/deploy-worker.yml` ships the Worker on every `main` push
+- **Status:** RESOLVED — production Worker deployed
+- **Account:** `8386730baf2dc6008a63c5bfd92c6f49`
+- **Worker:** `https://rupture-worker.rupture-kits.workers.dev`
+- **Bindings:** KV, R2 (`rupture-uploads`), Queues (`rupture-jobs`, `rupture-jobs-dlq`), and Workers AI are configured.
+- **Health:** `/status` reports healthy for KV, R2, Queue, and Stripe.
 
 ## [DECISION-5] Resend (transactional email)
 - **Status:** RESOLVED — default applied
 - **Decision:** Resend free tier (3,000 emails/month, 100/day)
-- **Operator action:** create free account; set `RESEND_API_KEY` as a Worker secret
-- **Until secret lands:** emails are queued (`apps/worker/src/email.ts` returns `no_provider` and pushes to `JOBS-EMAIL`); buyers see "delivery within 5 minutes — pending email provisioning" on `/status`
+- **Worker secret:** `RESEND_API_KEY` is set in the production Cloudflare Worker.
 
 ## [DECISION-6] GitHub App registration
-- **Status:** BLOCKING for Migration Pack and auto-PR bot; RESOLVED for everything else
-- **Operator action:** click `https://github.com/settings/apps/new?manifest=<base64>` (URL emitted by `apps/github-app/manifest.json`); install on `ntoledo319/rupture-sandbox` for end-to-end test
-- **Audit and Drift Watch:** unaffected by this decision and ship in dry-launch mode
+- **Status:** PARTIALLY RESOLVED
+- **Public app:** https://github.com/apps/rupture-migration-bot exists.
+- **Sandbox repo:** `ntoledo319/rupture-sandbox` exists.
+- **Remaining:** confirm the installed GitHub App webhook points at `https://rupture-worker.rupture-kits.workers.dev/webhook/github`, then run one Migration Pack end-to-end test PR.
 
 ## [DECISION-7] Discord support server (optional)
 - **Status:** RESOLVED — default applied
@@ -61,12 +62,6 @@
 
 ---
 
-## Dry-launch mode (active until DECISIONS-3, 4, 6 resolve)
+## Launch Mode
 
-While any of the three blocking decisions is still pending, the agent operates in **dry-launch**:
-- Landing pages live; CTAs route to a "Pre-order — we'll email you when checkout opens" flow that captures `email + sku` to a queue
-- All static pages, ICS feed, benchmark, and SEO surface still ship
-- The `/status` page reflects which integrations are pending
-- No real charges. No auto-PRs. No real emails (other than the pre-order capture).
-
-The flip from dry-launch to live is a single CI run once each blocking secret lands.
+Rupture is no longer in dry-launch for Audit PDF checkout. The remaining launch gates are operational: push the current local fixes to `main`, wait for GitHub Pages/Actions to go green, run the Migration Pack sandbox PR test, publish the benchmark/release artifacts, and submit Show HN in the chosen Tuesday/Wednesday window.

@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Status — Rupture</title>
 <style>body{font-family:system-ui,sans-serif;max-width:900px;margin:0 auto;padding:2rem;line-height:1.6}.brand{color:#2563eb;font-weight:600}.svc{display:flex;justify-content:space-between;align-items:center;border:1px solid #e5e7eb;border-radius:8px;padding:1rem;margin:.5rem 0}.dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:8px;background:#9ca3af}.dot.green{background:#10b981}.dot.red{background:#ef4444}.muted{color:#6b7280;font-size:.85rem}</style>
-</head><body><a href="/" class="brand">← Rupture</a><h1>System Status</h1>
-<p class="muted">Synthetic checks every 5 minutes. Data pulled from <a href="/status/data.json">/status/data.json</a>.</p>
+</head><body><a href="/Rupture/" class="brand">← Rupture</a><h1>System Status</h1>
+<p class="muted">Synthetic checks every 5 minutes. Data pulled from <a href="/Rupture/status/data.json">/status/data.json</a>.</p>
 <div id="services"><div class="svc"><span><span class="dot" id="dot-stripe"></span>Stripe checkout</span><span id="t-stripe">—</span></div>
 <div class="svc"><span><span class="dot" id="dot-worker"></span>Worker API</span><span id="t-worker">—</span></div>
 <div class="svc"><span><span class="dot" id="dot-runner"></span>Job runner</span><span id="t-runner">—</span></div>
@@ -10,7 +10,7 @@
 <h2>Throughput (last 7 days)</h2>
 <ul id="metrics"><li>Loading…</li></ul>
 <script>
-fetch('/status/data.json').then(r=>r.json()).then(d=>{
+fetch('/Rupture/status/data.json').then(r=>r.json()).then(d=>{
   for(const s of ['stripe','worker','runner','email','github']){
     const v=(d.checks||{})[s];
     if(v){document.getElementById('dot-'+s).className='dot '+(v.ok?'green':'red');document.getElementById('t-'+s).textContent=v.last_checked||'';}
@@ -19,4 +19,4 @@ fetch('/status/data.json').then(r=>r.json()).then(d=>{
   for(const [k,v] of Object.entries(d.metrics||{})){const li=document.createElement('li');li.textContent=k+': '+v;m.appendChild(li);}
 }).catch(()=>{document.getElementById('metrics').innerHTML='<li>status feed unavailable</li>';});
 </script>
-<footer style="margin-top:3rem;color:#6b7280;font-size:.85rem"><a href="/">Home</a></footer></body></html>
+<footer style="margin-top:3rem;color:#6b7280;font-size:.85rem"><a href="/Rupture/">Home</a></footer></body></html>

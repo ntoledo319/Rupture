@@ -1,9 +1,9 @@
 """Test the CLI entrypoint integration."""
+
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
 
 KIT_ROOT = Path(__file__).parent.parent
 
@@ -11,10 +11,14 @@ KIT_ROOT = Path(__file__).parent.parent
 def _run(*args, env_extra=None):
     env = {"PYTHONPATH": str(KIT_ROOT / "src"), "NO_COLOR": "1"}
     import os
+
     env_full = {**os.environ, **env, **(env_extra or {})}
     result = subprocess.run(
         [sys.executable, "-m", "al2023_gate", "--no-banner", *args],
-        capture_output=True, text=True, env=env_full, cwd=str(KIT_ROOT)
+        capture_output=True,
+        text=True,
+        env=env_full,
+        cwd=str(KIT_ROOT),
     )
     return result
 

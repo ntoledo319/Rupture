@@ -19,7 +19,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 </style>
 </head>
 <body>
-<a href="/" class="brand">← Rupture</a>
+<a href="/Rupture/" class="brand">← Rupture</a>
 <h1>Migration Pack</h1>
 <p class="price">$1,499</p>
 <p>A real PR opened on your repository with codemods, IaC patches, canary plan, and rollback script.</p>
@@ -42,18 +42,18 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 
 <h3>Install GitHub App</h3>
 <p>First, install the Rupture Migration Bot on your repository:</p>
-<p><a href="/pack/install" style="display:inline-block;background:#24292f;color:white;padding:0.75rem 1.5rem;border-radius:6px;text-decoration:none;font-weight:600">Install GitHub App</a></p>
+<p><a href="https://rupture-worker.rupture-kits.workers.dev/pack/install" style="display:inline-block;background:#24292f;color:white;padding:0.75rem 1.5rem;border-radius:6px;text-decoration:none;font-weight:600">Install GitHub App</a></p>
 
 <h3>Or Purchase Now</h3>
-<form action="/api/pack/checkout" method="POST">
+<form action="https://rupture-worker.rupture-kits.workers.dev/api/pack/checkout" method="POST">
   <p><input type="email" name="email" placeholder="your@email.com" required style="padding:0.5rem;width:300px"></p>
   <p><input type="text" name="repo" placeholder="owner/repo" required style="padding:0.5rem;width:300px"></p>
   <button type="submit">Purchase Migration Pack — $1,499</button>
 </form>
 
 <footer>
-  <p>Refund auto-fires if CI fails within 7 days. <a href="/legal/terms">Terms</a> apply.</p>
-  <p><a href="/">Home</a> · <a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a></p>
+  <p>Refund auto-fires if CI fails within 7 days. <a href="/Rupture/legal/terms">Terms</a> apply.</p>
+  <p><a href="/Rupture/">Home</a> · <a href="/Rupture/legal/terms">Terms</a> · <a href="/Rupture/legal/privacy">Privacy</a></p>
 </footer>
 </body>
 </html>

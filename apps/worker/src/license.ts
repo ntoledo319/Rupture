@@ -3,6 +3,7 @@
  */
 
 import type { Env } from './index';
+import { jsonResponse, readBody, stringField } from './http';
 
 export async function licenseRouter(request: Request, env: Env, path: string): Promise<Response> {
   if (path === '/api/license/inquiry') {
@@ -21,26 +22,36 @@ export async function licenseRouter(request: Request, env: Env, path: string): P
 }
 
 async function handleLicenseInquiry(request: Request, env: Env): Promise<Response> {
-  const body = await request.json() as {
-    email: string;
-    company: string;
-    repos?: number;
-  };
+  const body = await readBody(request);
+  const email = stringField(body, 'email');
+  const company = stringField(body, 'company');
+  const reposRaw = stringField(body, 'repos');
+
+  if (!email || !company) {
+    return jsonResponse({ error: 'email and company required' }, 400);
+  }
   
   // Queue inquiry for processing
-  await env.JOBS.send({
+  const job = {
     type: 'license_inquiry',
-    email: body.email,
-    company: body.company,
-    repos: body.repos,
+    email,
+    company,
+    repos: reposRaw ? Number(reposRaw) : undefined,
     submittedAt: new Date().toISOString(),
-  });
+  };
+  if (env.JOBS) {
+    await env.JOBS.send(job);
+  } else {
+    await env.IDEMPOTENCY.put(
+      `license_inquiry:${crypto.randomUUID()}`,
+      JSON.stringify(job),
+      { expirationTtl: 86400 * 30 }
+    );
+  }
   
-  return new Response(JSON.stringify({
+  return jsonResponse({
     received: true,
     message: 'License inquiry received. Check your email within 24 hours.',
-  }), {
-    headers: { 'Content-Type': 'application/json' },
   });
 }
 
@@ -91,14 +102,20 @@ async function verifyLicense(request: Request, env: Env): Promise<Response> {
 }
 
 async function validateLicenseKey(request: Request, env: Env): Promise<Response> {
-  const body = await request.json() as { key: string; action: string };
+  const body = await readBody(request);
+  const key = stringField(body, 'key');
+  const action = stringField(body, 'action') || 'validate';
+
+  if (!key) {
+    return jsonResponse({ valid: false, error: 'Missing license key' }, 400);
+  }
   
   const result = await verifyLicense(
-    new Request(`${request.url}?key=${body.key}`),
+    new Request(`${request.url}?key=${encodeURIComponent(key)}`),
     env
   );
   
-  const data = await result.json();
+  const data = (await result.json()) as { valid?: boolean };
   
   if (!data.valid) {
     return new Response(JSON.stringify(data), {
@@ -109,9 +126,9 @@ async function validateLicenseKey(request: Request, env: Env): Promise<Response>
   
   // Log usage
   await env.IDEMPOTENCY.put(
-    `license:usage:${body.key}:${Date.now()}`,
+    `license:usage:${key}:${Date.now()}`,
     JSON.stringify({
-      action: body.action,
+      action,
       timestamp: new Date().toISOString(),
     }),
     { expirationTtl: 86400 * 365 } // Keep usage logs for 1 year
@@ -119,7 +136,7 @@ async function validateLicenseKey(request: Request, env: Env): Promise<Response>
   
   return new Response(JSON.stringify({
     valid: true,
-    action: body.action,
+    action,
     timestamp: new Date().toISOString(),
   }), {
     headers: { 'Content-Type': 'application/json' },

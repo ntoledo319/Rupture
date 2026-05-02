@@ -26,9 +26,8 @@ jobs:
         run: |
           python << 'EOF'
           import yaml
-          from datetime import datetime, timedelta
-          from icalendar import Calendar, Event
-          import uuid
+          from datetime import UTC, datetime, timedelta
+          from icalendar import Alarm, Calendar, Event
           
           # Load deprecations
           with open('rules/public/deprecations.yml') as f:
@@ -50,14 +49,13 @@ jobs:
               event.add('description', dep.get('description', ''))
               event.add('dtstart', datetime.strptime(dep['date'], '%Y-%m-%d').date())
               event.add('dtend', (datetime.strptime(dep['date'], '%Y-%m-%d') + timedelta(days=1)).date())
-              event.add('dtstamp', datetime.utcnow())
-              event.add('created', datetime.utcnow())
-              event.add('uid', str(uuid.uuid4()))
+              event.add('dtstamp', datetime.now(UTC))
+              event.add('created', datetime.now(UTC))
+              event.add('uid', f"{dep['name'].lower().replace(' ', '-')}@rupture")
               event.add('url', dep.get('url', 'https://ntoledo319.github.io/Rupture'))
               
               # Add alert 30 days before
-              from icalendar import vAlarm
-              alarm = vAlarm()
+              alarm = Alarm()
               alarm.add('action', 'DISPLAY')
               alarm.add('description', f"30 days until {dep['name']} deprecation")
               alarm.add('trigger', timedelta(days=-30))

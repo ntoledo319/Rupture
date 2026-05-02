@@ -12,6 +12,9 @@ import { supportHandler } from './support';
 import { rateLimitMiddleware } from './ratelimit';
 import { checkCaps } from './caps';
 import { partnersRouter } from './partners';
+import { errorMessage } from './http';
+import { generateLicenseKey } from './license';
+import { sendEmailWithRetry } from './email';
 
 export interface Env {
   IDEMPOTENCY: KVNamespace;
@@ -26,6 +29,7 @@ export interface Env {
   RESEND_API_KEY?: string;
   GITHUB_APP_ID: string;
   GITHUB_APP_PRIVATE_KEY: string;
+  GITHUB_WEBHOOK_SECRET?: string;
   ENVIRONMENT: string;
 }
 
@@ -81,12 +85,12 @@ export default {
         return await supportHandler(request, env);
       }
 
-      if (path.startsWith('/api/audit')) {
-        return await handleAudit(request, env, path);
-      }
-
-      if (path.startsWith('/api/pack')) {
-        return await handlePack(request, env, path);
+      if (
+        path.startsWith('/api/audit') ||
+        path.startsWith('/api/pack') ||
+        path === '/pack/install'
+      ) {
+        return await stripeOrPackRouter(request, env, path);
       }
 
       if (path.startsWith('/api/license')) {
@@ -142,7 +146,7 @@ export default {
           if (env.JOBS_DLQ) {
             await env.JOBS_DLQ.send({
               ...message.body,
-              error: error.message,
+              error: errorMessage(error),
               failedAt: new Date().toISOString(),
             });
           } else {
@@ -168,31 +172,21 @@ function jsonResponse(data: any, status = 200): Response {
   });
 }
 
-async function handleAudit(request: Request, env: Env, path: string): Promise<Response> {
-  if (path === '/api/audit/checkout') {
-    // Redirect to Stripe Payment Link for Audit
-    const url = new URL(request.url);
-    const email = url.searchParams.get('email') || 'anonymous';
-    
-    // TODO: Create checkout session with surge pricing logic
-    return jsonResponse({ 
-      checkoutUrl: '/api/audit/checkout-session',
-      message: 'Checkout flow initiated'
-    });
+async function stripeOrPackRouter(request: Request, env: Env, path: string): Promise<Response> {
+  if (
+    path === '/api/audit/checkout' ||
+    path === '/api/audit/checkout-session' ||
+    path === '/api/pack/checkout' ||
+    path === '/api/pack/checkout-session'
+  ) {
+    return await stripeRouter(request, env, path);
   }
-  
-  return jsonResponse({ error: 'Invalid audit endpoint' }, 404);
-}
 
-async function handlePack(request: Request, env: Env, path: string): Promise<Response> {
-  if (path === '/api/pack/checkout') {
-    return jsonResponse({
-      checkoutUrl: '/api/pack/checkout-session',
-      message: 'Migration Pack checkout initiated'
-    });
+  if (path === '/pack/install') {
+    return await githubRouter(request, env, path);
   }
-  
-  return jsonResponse({ error: 'Invalid pack endpoint' }, 404);
+
+  return jsonResponse({ error: 'Invalid commerce endpoint' }, 404);
 }
 
 async function verifyHandler(request: Request, env: Env, path: string): Promise<Response> {
@@ -243,20 +237,69 @@ async function abuseHandler(request: Request, env: Env): Promise<Response> {
 }
 
 async function processJob(job: any, env: Env): Promise<void> {
-  // Job processing logic
   console.log('Processing job:', job.type);
   
   switch (job.type) {
+    case 'email':
+      await sendEmailWithRetry(env, job);
+      break;
+    case 'email-retry':
+      await sendEmailWithRetry(env, job.job);
+      break;
+    case 'license_key': {
+      const key = await generateLicenseKey(
+        job.company || 'Rupture customer',
+        job.email,
+        env
+      );
+      await sendEmailWithRetry(env, {
+        to: job.email,
+        subject: 'Your Rupture org license key',
+        html: `<p>Your Rupture license key:</p><p><code>${key}</code></p>`,
+        scope: 'license_key',
+      });
+      break;
+    }
+    case 'license_inquiry':
+      await storeOperationalJob(env, job, 'license_inquiry_received');
+      break;
     case 'audit_pdf':
-      // Trigger runner container
+      await storeOperationalJob(env, job, 'requires_audit_runner');
       break;
     case 'migration_pr':
-      // Trigger PR creation
+      await storeOperationalJob(env, job, 'requires_migration_runner');
       break;
-    case 'email':
-      // Send email via Resend
+    case 'drift_watch_setup':
+      await storeOperationalJob(env, job, 'requires_drift_watch_runner');
+      break;
+    case 'initial_scan':
+      await storeOperationalJob(env, job, 'initial_scan_queued');
+      break;
+    case 'check_refund_eligibility':
+      await storeOperationalJob(env, job, 'refund_eligibility_check_due');
+      break;
+    case 'email-pending-provider':
+    case 'email-failed':
+    case 'refund_failed':
+      await storeOperationalJob(env, job, job.type);
       break;
     default:
       throw new Error(`Unknown job type: ${job.type}`);
   }
+}
+
+async function storeOperationalJob(
+  env: Env,
+  job: Record<string, unknown>,
+  status: string
+): Promise<void> {
+  await env.IDEMPOTENCY.put(
+    `ops_job:${status}:${crypto.randomUUID()}`,
+    JSON.stringify({
+      ...job,
+      status,
+      storedAt: new Date().toISOString(),
+    }),
+    { expirationTtl: 86400 * 30 }
+  );
 }

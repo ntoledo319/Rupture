@@ -1,5 +1,6 @@
 name = "rupture-worker"
 main = "src/index.ts"
+account_id = "8386730baf2dc6008a63c5bfd92c6f49"
 compatibility_date = "2024-04-01"
 compatibility_flags = ["nodejs_compat"]
 
@@ -8,35 +9,34 @@ compatibility_flags = ["nodejs_compat"]
 
 [[kv_namespaces]]
 binding = "IDEMPOTENCY"
-id = "b19bf5f7b9b94c1490e88d5743ffef4e"
+id = "640b434aaaa848908392cf4dbfe9b26c"
 
 [[kv_namespaces]]
 binding = "RATE_LIMITS"
-id = "c27aefa8ea9444cea5f015294c376e99"
+id = "a9421b31a1244bddbb2e75a0bde103b3"
 
 [[kv_namespaces]]
 binding = "DAILY_CAPS"
-id = "d8bb87ce9838456dae59e335aeee9418"
+id = "db472b0d7c2f4cdfbc8006732b9475fa"
 
-# R2 and Queues are disabled until operator enables them in dashboard
-# [[r2_buckets]]
-# binding = "UPLOADS"
-# bucket_name = "rupture-uploads"
+[[r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "rupture-uploads"
 
-# [[queues.producers]]
-# binding = "JOBS"
-# queue = "rupture-jobs"
+[[queues.producers]]
+binding = "JOBS"
+queue = "rupture-jobs"
 
-# [[queues.consumers]]
-# queue = "rupture-jobs"
-# max_batch_size = 1
-# max_batch_timeout = 30
-# max_retries = 3
-# dead_letter_queue = "rupture-jobs-dlq"
+[[queues.consumers]]
+queue = "rupture-jobs"
+max_batch_size = 1
+max_batch_timeout = 30
+max_retries = 3
+dead_letter_queue = "rupture-jobs-dlq"
 
-# [[queues.producers]]
-# binding = "JOBS_DLQ"
-# queue = "rupture-jobs-dlq"
+[[queues.producers]]
+binding = "JOBS_DLQ"
+queue = "rupture-jobs-dlq"
 
 # AI binding for support bot
 [ai]
@@ -53,3 +53,4 @@ GITHUB_WEBHOOK_PATH = "/webhook/github"
 # RESEND_API_KEY = "re_..."
 # GITHUB_APP_PRIVATE_KEY = "-----BEGIN RSA PRIVATE KEY-----..."
 # GITHUB_APP_ID = "123456"
+# GITHUB_WEBHOOK_SECRET = "..."

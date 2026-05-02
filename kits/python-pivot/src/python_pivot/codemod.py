@@ -14,12 +14,13 @@ Rules target the actual breakage points, not the entire pyupgrade surface:
   8. datetime.utcnow() / utcfromtimestamp() — deprecated in 3.12, lint.
   9. `from __future__ import annotations` — informational (harmless, but no longer needed).
 """
+
 from __future__ import annotations
 import argparse
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Tuple, Callable
+from typing import List, Tuple
 
 from . import util
 
@@ -57,7 +58,9 @@ LINT_RULES: List[Rule] = [
     Rule(
         name="distutils-import",
         kind="lint",
-        pattern=re.compile(r"^\s*(?:from\s+distutils\S*\s+import|import\s+distutils\S*)", re.MULTILINE),
+        pattern=re.compile(
+            r"^\s*(?:from\s+distutils\S*\s+import|import\s+distutils\S*)", re.MULTILINE
+        ),
         reason="`distutils` removed in Python 3.12. Use `setuptools`, `packaging`, or `shutil`.",
     ),
     Rule(
@@ -75,13 +78,17 @@ LINT_RULES: List[Rule] = [
     Rule(
         name="typing-io-re",
         kind="lint",
-        pattern=re.compile(r"from\s+typing\s+import\s+[^\n]*\b(IO|BinaryIO|TextIO|Match|Pattern)\b"),
+        pattern=re.compile(
+            r"from\s+typing\s+import\s+[^\n]*\b(IO|BinaryIO|TextIO|Match|Pattern)\b"
+        ),
         reason="`typing.IO`/`BinaryIO`/`TextIO` still fine; `typing.io` and `typing.re` submodules removed in 3.12.",
     ),
     Rule(
         name="typing-io-submodule",
         kind="lint",
-        pattern=re.compile(r"from\s+typing\.(io|re)\s+import|import\s+typing\.(io|re)\b"),
+        pattern=re.compile(
+            r"from\s+typing\.(io|re)\s+import|import\s+typing\.(io|re)\b"
+        ),
         reason="`typing.io` and `typing.re` submodules removed in 3.12. Import from `typing` directly.",
     ),
     Rule(
@@ -93,7 +100,9 @@ LINT_RULES: List[Rule] = [
     Rule(
         name="unittest-makesuite",
         kind="lint",
-        pattern=re.compile(r"\bunittest\.(makeSuite|findTestCases|getTestCaseNames)\s*\("),
+        pattern=re.compile(
+            r"\bunittest\.(makeSuite|findTestCases|getTestCaseNames)\s*\("
+        ),
         reason="`unittest.makeSuite`/`findTestCases`/`getTestCaseNames` removed in 3.12.",
     ),
     Rule(
@@ -105,7 +114,10 @@ LINT_RULES: List[Rule] = [
     Rule(
         name="pkg-resources",
         kind="lint",
-        pattern=re.compile(r"^\s*import\s+pkg_resources\b|^\s*from\s+pkg_resources\s+import", re.MULTILINE),
+        pattern=re.compile(
+            r"^\s*import\s+pkg_resources\b|^\s*from\s+pkg_resources\s+import",
+            re.MULTILINE,
+        ),
         reason="`pkg_resources` slow and deprecated. Use `importlib.metadata` or `importlib.resources`.",
     ),
 ]
@@ -118,7 +130,9 @@ def apply_rewrites(text: str) -> Tuple[str, List[dict]]:
     for r in REWRITE_RULES:
         new_text, n = r.pattern.subn(r.replacement, new_text)
         if n > 0:
-            edits.append({"rule": r.name, "count": n, "kind": "rewrite", "reason": r.reason})
+            edits.append(
+                {"rule": r.name, "count": n, "kind": "rewrite", "reason": r.reason}
+            )
     return new_text, edits
 
 
@@ -126,19 +140,21 @@ def apply_lints(text: str) -> List[dict]:
     findings: List[dict] = []
     for r in LINT_RULES:
         for m in r.pattern.finditer(text):
-            line = text[:m.start()].count("\n") + 1
+            line = text[: m.start()].count("\n") + 1
             # Grab the source line for context
             start = text.rfind("\n", 0, m.start()) + 1
             end = text.find("\n", m.end())
             if end < 0:
                 end = len(text)
-            findings.append({
-                "rule": r.name,
-                "line": line,
-                "source": text[start:end].rstrip(),
-                "reason": r.reason,
-                "kind": "lint",
-            })
+            findings.append(
+                {
+                    "rule": r.name,
+                    "line": line,
+                    "source": text[start:end].rstrip(),
+                    "reason": r.reason,
+                    "kind": "lint",
+                }
+            )
     return findings
 
 
@@ -147,7 +163,10 @@ def _walk_python_files(root: Path) -> List[Path]:
         return [root]
     out = []
     for p in root.rglob("*.py"):
-        if any(part in {".venv", "venv", "__pycache__", ".git", "node_modules"} for part in p.parts):
+        if any(
+            part in {".venv", "venv", "__pycache__", ".git", "node_modules"}
+            for part in p.parts
+        ):
             continue
         out.append(p)
     return out
@@ -161,7 +180,9 @@ def run(args: argparse.Namespace) -> int:
 
     files = _walk_python_files(root)
     apply_mode = bool(args.apply)
-    util.hdr(f"Python codemod · {root} · {util.color.red('APPLY') if apply_mode else util.color.yellow('DRY-RUN')}")
+    util.hdr(
+        f"Python codemod · {root} · {util.color.red('APPLY') if apply_mode else util.color.yellow('DRY-RUN')}"
+    )
     util.dry_run_banner(apply_mode)
     util.dim(f"  {len(files)} file(s) scanned")
 
@@ -184,19 +205,25 @@ def run(args: argparse.Namespace) -> int:
 
         if rw_edits:
             files_changed += 1
-            for e in rw_edits:
-                total_rewrites += e["count"]
-                util.info(f"{util.color.green('[rewrite]')} {f} · {e['rule']} · {e['count']} hit(s)")
+            for edit in rw_edits:
+                total_rewrites += edit["count"]
+                util.info(
+                    f"{util.color.green('[rewrite]')} {f} · {edit['rule']} · {edit['count']} hit(s)"
+                )
 
         for lt in lt_findings:
             total_lints += 1
-            util.info(f"{util.color.yellow('[lint]')}    {f}:{lt['line']} · {lt['rule']} — {lt['reason']}")
+            util.info(
+                f"{util.color.yellow('[lint]')}    {f}:{lt['line']} · {lt['rule']} — {lt['reason']}"
+            )
 
         if apply_mode and new_text != text:
             f.write_text(new_text)
 
     print()
-    util.ok(f"{total_rewrites} rewrite(s) across {files_changed} file(s), {total_lints} lint finding(s).")
+    util.ok(
+        f"{total_rewrites} rewrite(s) across {files_changed} file(s), {total_lints} lint finding(s)."
+    )
 
     if not apply_mode and total_rewrites > 0:
         util.info("Re-run with --apply to write changes.")

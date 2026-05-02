@@ -6,6 +6,7 @@
  */
 
 import type { Env } from './index';
+import { hmacSha256Hex, timingSafeEqualHex } from './http';
 
 export async function githubRouter(request: Request, env: Env, path: string): Promise<Response> {
   if (path === '/webhook/github') {
@@ -20,7 +21,20 @@ export async function githubRouter(request: Request, env: Env, path: string): Pr
 }
 
 async function handleGitHubWebhook(request: Request, env: Env): Promise<Response> {
-  const payload = await request.json();
+  const rawBody = await request.text();
+  if (env.GITHUB_WEBHOOK_SECRET) {
+    const signature = request.headers.get('X-Hub-Signature-256');
+    const verified = await verifyGitHubSignature(
+      rawBody,
+      signature,
+      env.GITHUB_WEBHOOK_SECRET
+    );
+    if (!verified) {
+      return new Response('Invalid signature', { status: 400 });
+    }
+  }
+
+  const payload = JSON.parse(rawBody);
   const eventType = request.headers.get('X-GitHub-Event');
   
   console.log(`GitHub webhook: ${eventType}`);
@@ -65,7 +79,7 @@ async function handleInstallation(payload: any, env: Env): Promise<void> {
     // Schedule initial scan (with jitter to avoid thundering herd)
     for (const repo of payload.repositories || []) {
       const jitter = Math.floor(Math.random() * 60000); // 0-60 seconds
-      await env.JOBS.send({
+      await enqueueJob(env, {
         type: 'initial_scan',
         installationId: installation.id,
         repo: repo.full_name,
@@ -86,7 +100,7 @@ async function handleInstallationRepos(payload: any, env: Env): Promise<void> {
   
   if (action === 'added') {
     for (const repo of payload.repositories_added || []) {
-      await env.JOBS.send({
+      await enqueueJob(env, {
         type: 'initial_scan',
         installationId: installation.id,
         repo: repo.full_name,
@@ -123,7 +137,7 @@ async function handleCheckRun(payload: any, env: Env): Promise<void> {
     );
     
     // Schedule refund check in 7 days
-    await env.JOBS.send({
+    await enqueueJob(env, {
       type: 'check_refund_eligibility',
       repo,
       prNumber,
@@ -166,7 +180,7 @@ async function generateInstallUrl(env: Env): Promise<Response> {
     url: 'https://ntoledo319.github.io/Rupture',
     callback_urls: ['https://ntoledo319.github.io/Rupture/pack/callback'],
     setup_url: 'https://ntoledo319.github.io/Rupture/pack/setup',
-    webhook_url: 'https://rupture-worker.toledonick98.workers.dev/webhook/github',
+    webhook_url: 'https://rupture-worker.rupture-kits.workers.dev/webhook/github',
     redirect_url: 'https://ntoledo319.github.io/Rupture/pack/installed',
     setup_on_install: true,
     default_permissions: {
@@ -214,4 +228,31 @@ export async function createMigrationPR(
     prUrl: `https://github.com/${repo}/pull/123`,
     prNumber: 123,
   };
+}
+
+async function enqueueJob(
+  env: Env,
+  job: Record<string, unknown>,
+  options?: QueueSendOptions
+): Promise<void> {
+  if (env.JOBS) {
+    await env.JOBS.send(job, options);
+    return;
+  }
+
+  await env.IDEMPOTENCY.put(
+    `pending_job:${job.type || 'github'}:${crypto.randomUUID()}`,
+    JSON.stringify({ ...job, storedAt: new Date().toISOString() }),
+    { expirationTtl: 86400 * 14 }
+  );
+}
+
+async function verifyGitHubSignature(
+  payload: string,
+  signature: string | null,
+  secret: string
+): Promise<boolean> {
+  if (!signature?.startsWith('sha256=')) return false;
+  const expected = `sha256=${await hmacSha256Hex(secret, payload)}`;
+  return timingSafeEqualHex(expected, signature);
 }
