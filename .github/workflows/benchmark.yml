@@ -81,11 +81,19 @@ jobs:
           
           for file in glob.glob('/tmp/benchmarks/*.json'):
               try:
-                  with open(file) as f:
-                      data = json.load(f)
+                  raw = Path(file).read_text()
+                  starts = [idx for idx in (raw.find('['), raw.find('{')) if idx >= 0]
+                  if not starts:
+                      raise ValueError("no JSON payload found")
+                  data = json.loads(raw[min(starts):])
                   
                   kit = next(k for k in results['kits'] if file.endswith(f"_{k}.json"))
-                  findings = len(data.get('findings', []))
+                  if isinstance(data, list):
+                      findings = len(data)
+                  elif isinstance(data, dict):
+                      findings = len(data.get('findings', data.get('resources', [])))
+                  else:
+                      findings = 0
                   
                   if findings == 0:
                       results['kits'][kit]['pass'] += 1
