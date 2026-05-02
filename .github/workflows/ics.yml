@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: '0 4 * * *'  # Daily at 4am UTC
   push:
+    branches: [main]
     paths:
       - 'rules/public/deprecations.yml'
   workflow_dispatch:
