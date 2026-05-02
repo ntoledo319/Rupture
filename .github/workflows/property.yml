@@ -17,16 +17,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v4
+        if: matrix.kit == 'lambda-lifeline'
+        with:
+          node-version: '20'
       - name: Install kit
         run: |
-          if [ -f kits/${{ matrix.kit }}/pyproject.toml ] || [ -f kits/${{ matrix.kit }}/setup.py ]; then
-            pip install -e kits/${{ matrix.kit }} || true
+          if [ "${{ matrix.kit }}" = "lambda-lifeline" ]; then
+            cd kits/lambda-lifeline
+            npm ci
+            npm link
+          elif [ -f kits/${{ matrix.kit }}/pyproject.toml ] || [ -f kits/${{ matrix.kit }}/setup.py ]; then
+            pip install -e "kits/${{ matrix.kit }}[dev]"
           fi
           pip install hypothesis pytest
       - name: Run property tests
         run: |
-          if find kits/${{ matrix.kit }} -name 'test_propert*' | grep -q .; then
-            pytest kits/${{ matrix.kit }} -k property -q
+          mapfile -t property_tests < <(find kits/${{ matrix.kit }} -path '*test_propert*' -type f)
+          if [ "${#property_tests[@]}" -gt 0 ]; then
+            pytest "${property_tests[@]}" -q
           else
             echo "no property tests yet for ${{ matrix.kit }} — skipping"
           fi

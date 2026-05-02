@@ -108,25 +108,29 @@ jobs:
               json.dump(results, f, indent=2)
           
           # Generate markdown report
+          lines = [
+              "# Rupture Public Benchmark",
+              "",
+              f"Last updated: {results['date']}",
+              "",
+              "## Results Summary",
+              "",
+              "| Kit | Pass | Warn | Fail |",
+              "|-----|------|------|------|",
+          ]
+          for kit, stats in results["kits"].items():
+              lines.append(f"| {kit} | {stats['pass']} | {stats['warn']} | {stats['fail']} |")
+          lines.extend([
+              "",
+              "## Details",
+              "",
+              f"Total repositories scanned: {results['total_repos']}",
+              "",
+              "*Note: This benchmark scans public repositories only. No private code is included.*",
+              "",
+          ])
           with open('BENCHMARK.md', 'w') as f:
-              f.write(f"""# Rupture Public Benchmark
-
-Last updated: {results['date']}
-
-## Results Summary
-
-| Kit | Pass | Warn | Fail |
-|-----|------|------|------|
-| lambda-lifeline | {results['kits']['lambda-lifeline']['pass']} | {results['kits']['lambda-lifeline']['warn']} | {results['kits']['lambda-lifeline']['fail']} |
-| al2023-gate | {results['kits']['al2023-gate']['pass']} | {results['kits']['al2023-gate']['warn']} | {results['kits']['al2023-gate']['fail']} |
-| python-pivot | {results['kits']['python-pivot']['pass']} | {results['kits']['python-pivot']['warn']} | {results['kits']['python-pivot']['fail']} |
-
-## Details
-
-Total repositories scanned: {results['total_repos']}
-
-*Note: This benchmark scans public repositories only. No private code is included.*
-""")
+              f.write("\n".join(lines))
           
           print("Benchmark complete")
           EOF

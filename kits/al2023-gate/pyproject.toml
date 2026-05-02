@@ -24,7 +24,7 @@ dependencies = []
 
 [project.optional-dependencies]
 aws = ["boto3>=1.28.0"]
-dev = ["pytest>=7.0"]
+dev = ["pytest>=7.0", "pytest-cov>=4.1.0"]
 
 [project.scripts]
 al2023-gate = "al2023_gate.cli:main"
