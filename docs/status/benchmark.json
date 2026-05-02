@@ -1,22 +1,83 @@
 {
-  "date": "2026-05-02T22:17:33.544295+00:00",
-  "total_repos": 0,
+  "date": "2026-05-02T22:20:37.863764+00:00",
+  "total_repos": 12,
   "kits": {
     "lambda-lifeline": {
-      "pass": 0,
+      "pass": 4,
       "fail": 0,
       "warn": 0
     },
     "al2023-gate": {
-      "pass": 0,
+      "pass": 4,
       "fail": 0,
       "warn": 0
     },
     "python-pivot": {
-      "pass": 0,
+      "pass": 4,
       "fail": 0,
       "warn": 0
     }
   },
-  "findings": []
+  "findings": [
+    {
+      "repo": "container-images",
+      "kit": "al2023-gate",
+      "findings": 0
+    },
+    {
+      "repo": "examples",
+      "kit": "lambda-lifeline",
+      "findings": 0
+    },
+    {
+      "repo": "serverless-patterns",
+      "kit": "python-pivot",
+      "findings": 0
+    },
+    {
+      "repo": "container-images",
+      "kit": "python-pivot",
+      "findings": 0
+    },
+    {
+      "repo": "aws-cdk-examples",
+      "kit": "al2023-gate",
+      "findings": 0
+    },
+    {
+      "repo": "examples",
+      "kit": "python-pivot",
+      "findings": 0
+    },
+    {
+      "repo": "serverless-patterns",
+      "kit": "lambda-lifeline",
+      "findings": 0
+    },
+    {
+      "repo": "aws-cdk-examples",
+      "kit": "lambda-lifeline",
+      "findings": 0
+    },
+    {
+      "repo": "examples",
+      "kit": "al2023-gate",
+      "findings": 0
+    },
+    {
+      "repo": "aws-cdk-examples",
+      "kit": "python-pivot",
+      "findings": 0
+    },
+    {
+      "repo": "container-images",
+      "kit": "lambda-lifeline",
+      "findings": 0
+    },
+    {
+      "repo": "serverless-patterns",
+      "kit": "al2023-gate",
+      "findings": 0
+    }
+  ]
 }
