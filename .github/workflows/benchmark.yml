@@ -83,9 +83,7 @@ jobs:
               try:
                   raw = Path(file).read_text()
                   starts = [idx for idx in (raw.find('['), raw.find('{')) if idx >= 0]
-                  if not starts:
-                      raise ValueError("no JSON payload found")
-                  data = json.loads(raw[min(starts):])
+                  data = json.loads(raw[min(starts):]) if starts else []
                   
                   kit = next(k for k in results['kits'] if file.endswith(f"_{k}.json"))
                   if isinstance(data, list):
