@@ -36,7 +36,8 @@
 - **Status:** PARTIALLY RESOLVED
 - **Public app:** https://github.com/apps/rupture-migration-bot exists.
 - **Sandbox repo:** `ntoledo319/rupture-sandbox` exists.
-- **Remaining:** confirm the installed GitHub App webhook points at `https://rupture-worker.rupture-kits.workers.dev/webhook/github`, then run one Migration Pack end-to-end test PR.
+- **Install endpoint:** `https://rupture-worker.rupture-kits.workers.dev/pack/install` returns a manifest with webhook `https://rupture-worker.rupture-kits.workers.dev/webhook/github`.
+- **Remaining:** install `GITHUB_APP_PRIVATE_KEY` and `GITHUB_WEBHOOK_SECRET` in Cloudflare, wire the migration runner to process queued `migration_pr` jobs, then run one sandbox end-to-end PR.
 
 ## [DECISION-7] Discord support server (optional)
 - **Status:** RESOLVED — default applied
@@ -64,4 +65,6 @@
 
 ## Launch Mode
 
-Rupture is no longer in dry-launch for Audit PDF checkout. The remaining launch gates are operational: push the current local fixes to `main`, wait for GitHub Pages/Actions to go green, run the Migration Pack sandbox PR test, publish the benchmark/release artifacts, and submit Show HN in the chosen Tuesday/Wednesday window.
+Rupture is no longer in dry-launch for Audit PDF or Migration Pack checkout. GitHub Pages, production Worker health, CI, benchmark, signed `v1.0.0` release artifacts, and VS Code Marketplace publishing are green.
+
+Remaining launch gates are limited to the GitHub Action Marketplace listing propagation/publication, the real Migration Pack sandbox PR test, and distribution. The sandbox PR is blocked by missing GitHub App private key/webhook secret plus the external migration runner wiring. Show HN should wait for the Tuesday/Wednesday launch window; from Saturday May 2, 2026, the next suitable windows are Tuesday May 5, 2026 or Wednesday May 6, 2026.

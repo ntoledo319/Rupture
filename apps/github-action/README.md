@@ -5,9 +5,9 @@ Free GitHub Action that scans your IaC and source for AWS runtime deprecation is
 ## Usage
 
 ```yaml
-- uses: ntoledo319/Rupture/apps/github-action@v1
+- uses: ntoledo319/Rupture@v1
   with:
-    kit: auto          # or: lambda-lifeline | al2023-gate | python-pivot
+    kit: auto          # or: all | lambda-lifeline | al2023-gate | python-pivot
     path: .
     format: markdown
     fail-on: high
@@ -20,15 +20,15 @@ See `action.yml`. All optional with sensible defaults.
 
 ## What it does
 
-- Auto-detects the relevant kit from your repo's file mix (Node.js → `lambda-lifeline`, Python → `python-pivot`, AMI/Packer/AL2 IaC → `al2023-gate`).
-- Runs the kit in the workspace.
+- Runs the path-safe checks from all kits in dry-run mode by default (`auto`/`all`).
+- Uses `lambda-lifeline` for Node.js and Lambda IaC, `python-pivot` for Python 3.12 readiness, and `al2023-gate` for AL2023 Ansible/cloud-init risk.
 - Comments findings on the PR (configurable).
 - Fails the check on `--fail-on` severity (default: `high`).
 
 ## What it does NOT do
 
 - It does not modify your code. Use the paid **Migration Pack** (`https://ntoledo319.github.io/Rupture/pack/`) for that.
-- It does not send any data outside the runner — no telemetry, no remote calls beyond `pip install`.
+- It does not send any data outside the runner. Install traffic is limited to GitHub Actions setup actions plus local package installs from the checked-out action source.
 
 ## Pricing
 

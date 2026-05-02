@@ -48,8 +48,7 @@ runs:
         INPUT_PATH: ${{ inputs.path }}
         INPUT_FORMAT: ${{ inputs.format }}
         INPUT_FAIL_ON: ${{ inputs.fail-on }}
-      run: |
-        bash "$GITHUB_ACTION_PATH/run.sh"
+      run: bash "$GITHUB_ACTION_PATH/apps/github-action/run.sh"
 
     - name: Comment PR
       if: inputs.comment-pr == 'true' && github.event_name == 'pull_request'

@@ -1,6 +1,6 @@
 # MISSION HANDOFF: PLATFORM DEATHWATCH (RUPTURE)
 
-**Status:** LIVE CHECKOUT ENABLED. REMAINING WORK IS DISTRIBUTION + RELEASE HARDENING.
+**Status:** LIVE CHECKOUT ENABLED. CI, RELEASE, BENCHMARK, PAGES, WORKER, AND VS CODE PUBLISHING ARE GREEN.
 
 ## 1. Executive Summary
 Rupture is a suite of three high-stakes migration kits targeting imminent AWS EOL and runtime deprecation deadlines (Amazon Linux 2, Node.js 20, Python 3.9-3.11). The project is structured as a monorepo containing production-ready CLI tools, a high-conversion landing page, and a distribution engine.
@@ -22,27 +22,32 @@ Rupture is a suite of three high-stakes migration kits targeting imminent AWS EO
 - **SEO Blog Post**: 2,500-word authority post in `launch/blog-post.md`.
 - **Thread Replies**: Ready-to-use templates for SO/GitHub/re:Post in `launch/thread-answers.md`.
 
-## 3. Critical Operator Actions (Immediate)
+## 3. Completed Launch Gates
 1. **Infrastructure**: GitHub Pages is enabled on `main` + `/docs`.
 2. **Commerce**: live Worker is deployed at `https://rupture-worker.rupture-kits.workers.dev`; audit checkout smoke test returns a live Stripe Checkout redirect.
+3. **CI**: Test, determinism, property, benchmark, status synthetic, Pages, Release, and VS Code publishing workflows are green on `main`.
+4. **Release**: `v1.0.0` is published with wheels, sdist/tarball assets, SBOMs, checksums, and `.sig` signatures.
+5. **Benchmark**: `BENCHMARK.md` is current and reports 12 public repositories scanned with no warnings or failures.
+6. **VS Code**: `rupture.rupture-vscode` `v1.0.0` is published and validated by the Marketplace API.
+7. **Commerce smoke checks**: Audit and Migration Pack checkout endpoints return live Stripe Checkout redirects; license inquiry is accepted; GitHub App install manifest endpoint returns the expected app manifest.
+
+## 4. Remaining Work
+1. **Migration Pack real PR**: blocked until the GitHub App private key and webhook secret are installed in Cloudflare and the external migration runner is wired to process `migration_pr` jobs. Current Worker behavior stores those jobs as `requires_migration_runner`; it does not open a PR by itself.
+2. **GitHub Action Marketplace listing**: root `action.yml` and `@v1` tag are being prepared for `uses: ntoledo319/Rupture@v1`. Verify `https://github.com/marketplace/actions/rupture-aws-deprecation-check` after GitHub indexes or after publishing through the release UI if required.
 3. **Distribution**:
-    - **Tue/Wed (6-9 AM PT)**: Post the Show HN draft.
+    - **Tue/Wed (6-9 AM PT)**: Post the Show HN draft. Next suitable windows are Tuesday May 5, 2026 or Wednesday May 6, 2026.
     - **SEO**: Publish the blog post to Dev.to/Medium.
     - **Direct Support**: Use the search queries in `launch/thread-answers.md` to find people currently struggling with these migrations and provide the templated help + kit mention.
-4. **Release hardening**:
-    - Wait for pushed GitHub Actions fixes to make determinism, ICS, benchmark, and status synthetic runs green.
-    - Publish the first signed release and VS Code extension after CI is green.
-    - Run one Migration Pack sandbox PR against `ntoledo319/rupture-sandbox`.
 
-## 4. Revenue Trajectory
+## 5. Revenue Trajectory
 - **Goal**: $25,000 in 7 days.
 - **Primary Funnel**: Show HN -> Source Repo -> Landing Page -> $499 Solo Kit.
 - **Urgency Drivers**: The countdown timers on the landing page and kit outputs are linked to the April/June 2026 hard deadlines.
 
-## 5. Maintenance
+## 6. Maintenance
 - **Kits**: Written in Python (al2023-gate, python-pivot) and Node.js (lambda-lifeline).
 - **Updates**: Modify `rules/public/deprecations.yml` to update deadline dates or add new runtime warnings.
 
 ***
 
-**DELETE THIS FILE ONCE SHOW HN, BENCHMARK, RELEASE, VS CODE PUBLISHING, AND THE SANDBOX MIGRATION PACK TEST ARE COMPLETE.**
+**DELETE THIS FILE ONCE SHOW HN, THE GITHUB ACTION MARKETPLACE LISTING, AND THE SANDBOX MIGRATION PACK PR TEST ARE COMPLETE.**

@@ -33,16 +33,42 @@ Every kit ships the same 6 pillars:
 
 ## Install
 
-Each kit is a standalone Python package. Clone and install the one you need:
+Each kit is standalone. `lambda-lifeline` is a Node CLI; `al2023-gate` and `python-pivot` are Python CLIs. Clone and install the one you need:
 
 ```bash
 git clone https://github.com/ntoledo319/Rupture.git
-cd Rupture/kits/lambda-lifeline   # or al2023-gate, or python-pivot
-pip install -e .
+cd Rupture/kits/lambda-lifeline
+npm install
+npm link
 lambda-lifeline --help
 ```
 
-All kits require Python 3.10+. Live mode uses `boto3`; fixture mode requires nothing.
+For the Python kits:
+
+```bash
+cd Rupture/kits/al2023-gate   # or kits/python-pivot
+pip install -e .
+al2023-gate --help
+```
+
+The Python kits require Python 3.10+. Live mode uses `boto3`; fixture mode requires nothing.
+
+---
+
+## GitHub Action
+
+Run the free PR check from GitHub Actions:
+
+```yaml
+- uses: ntoledo319/Rupture@v1
+  with:
+    kit: auto
+    path: .
+    fail-on: high
+    comment-pr: true
+```
+
+The action runs dry-run, path-safe checks from all three kits and can comment findings on pull requests.
 
 ---
 
