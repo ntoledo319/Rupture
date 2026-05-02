@@ -140,4 +140,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add BENCHMARK.md docs/status/benchmark.json
-          git diff --cached --quiet || (git commit -m "chore: update benchmark results [skip ci]" && git pull --rebase origin main && git push)
+          git diff --cached --quiet || (git commit -m "chore: update benchmark results [skip ci]" && git restore . && git pull --rebase origin main && git push)
