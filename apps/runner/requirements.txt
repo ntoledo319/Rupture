@@ -22,3 +22,6 @@ pytest-cov>=4.1.0
 
 # Utilities
 tenacity>=8.2.3  # Retry logic
+
+# GitHub App auth (RS256 JWT for migration_pr)
+PyJWT[crypto]>=2.8.0

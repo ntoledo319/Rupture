@@ -35,3 +35,18 @@ If the bot misbehaves on your repo, `POST` to `/abuse` with `{"repo": "owner/nam
 ## Permissions requested
 
 The minimum required to open a PR. See `permissions.md` for the precise list.
+
+## Operator setup (one-time)
+
+After registering the GitHub App from `manifest.json` (the worker's `/pack/install` endpoint generates the manifest URL), wire its credentials into the worker and runner:
+
+```bash
+cd apps/worker
+./scripts/setup_github_app.sh \
+  --app-id 123456 \
+  --private-key-pem ~/Downloads/rupture-bot.private-key.pem \
+  --webhook-secret "$(openssl rand -hex 32)"
+```
+
+The script pushes `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY`, and `GITHUB_WEBHOOK_SECRET` into the Cloudflare worker via `wrangler secret put`. The same `APP_ID` and private-key contents must also be available to the runner container that processes `migration_pr` jobs (export them as environment variables on the host or set them as Render/Fly secrets).
+
