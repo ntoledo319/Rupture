@@ -112,6 +112,5 @@
     "url": "https://github.com/ntoledo319/Rupture.git",
     "directory": "apps/vscode-extension"
   },
-  "license": "MIT",
-  "icon": "icon.png"
+  "license": "MIT"
 }
