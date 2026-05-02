@@ -8,6 +8,9 @@ on:
       - 'rules/public/deprecations.yml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   generate-ics:
     runs-on: ubuntu-latest
@@ -75,4 +78,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/deprecations.ics
-          git diff --cached --quiet || (git commit -m "chore: update deprecations.ics [skip ci]" && git push)
+          git diff --cached --quiet || (git commit -m "chore: update deprecations.ics [skip ci]" && git pull --rebase origin main && git push)
