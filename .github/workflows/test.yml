@@ -33,7 +33,7 @@ jobs:
       - name: Upload coverage
         uses: codecov/codecov-action@v6
         with:
-          file: ./kits/${{ matrix.kit }}/coverage.xml
+          files: ./kits/${{ matrix.kit }}/coverage.xml
           flags: ${{ matrix.kit }}
 
   test-node-kit:
