@@ -3,7 +3,7 @@ name: Reproducible Release (C4, C5)
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*.*.*'
   workflow_dispatch:
 
 permissions:

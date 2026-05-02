@@ -33,7 +33,7 @@ Rupture is a suite of three high-stakes migration kits targeting imminent AWS EO
 
 ## 4. Remaining Work
 1. **Migration Pack real PR**: blocked until the GitHub App private key and webhook secret are installed in Cloudflare and the external migration runner is wired to process `migration_pr` jobs. Current Worker behavior stores those jobs as `requires_migration_runner`; it does not open a PR by itself.
-2. **GitHub Action Marketplace listing**: root `action.yml` and `@v1` tag are being prepared for `uses: ntoledo319/Rupture@v1`. Verify `https://github.com/marketplace/actions/rupture-aws-deprecation-check` after GitHub indexes or after publishing through the release UI if required.
+2. **GitHub Action Marketplace listing**: root `action.yml` and the major `v1` action tag are in place for `uses: ntoledo319/Rupture@v1`. Verify `https://github.com/marketplace/actions/rupture-aws-deprecation-check` after GitHub indexes or after publishing through the release UI if required.
 3. **Distribution**:
     - **Tue/Wed (6-9 AM PT)**: Post the Show HN draft. Next suitable windows are Tuesday May 5, 2026 or Wednesday May 6, 2026.
     - **SEO**: Publish the blog post to Dev.to/Medium.

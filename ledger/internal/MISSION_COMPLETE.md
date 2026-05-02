@@ -17,7 +17,7 @@
 | Mutation score ≥ 80% | ⏳ first weekly run |
 | Latest release has SBOM + Sigstore | ✅ `v1.0.0` has SBOM, checksums, and signatures |
 | GitHub App installed; bot opened a real PR | ⏳ blocked: private key/webhook secret + migration runner wiring |
-| `rupture/check@v1` listed on Marketplace | ⏳ root action metadata prepared; listing still needs verification after `v1` tag/indexing |
+| `rupture/check@v1` listed on Marketplace | ⏳ root action metadata and `v1` tag are in place; Marketplace visibility still needs verification/indexing |
 | VS Code extension on Marketplace | ✅ `rupture.rupture-vscode` `v1.0.0` validated by Marketplace API |
 | Worker `/status` green | ✅ production Worker reports healthy |
 | Static `/status` green for 1+ hour | ✅ status synthetic workflow writes green status data |
