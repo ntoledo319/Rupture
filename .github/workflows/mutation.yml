@@ -12,10 +12,10 @@ jobs:
       matrix:
         kit: [al2023-gate, python-pivot]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       
@@ -45,7 +45,7 @@ jobs:
           echo "Mutation score $mutation_score% meets threshold"
       
       - name: Upload report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mutation-report-${{ matrix.kit }}
           path: kits/${{ matrix.kit }}/mutation_report.txt
@@ -53,10 +53,10 @@ jobs:
   node-stryker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
       
@@ -88,10 +88,10 @@ jobs:
     needs: [python-mutmut, node-stryker]
     if: failure()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Create quality debt issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.issues.create({

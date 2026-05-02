@@ -16,10 +16,10 @@ jobs:
       matrix:
         kit: [al2023-gate, python-pivot]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -58,7 +58,7 @@ jobs:
           sha256sum dist/* > dist/SHA256SUMS-${{ matrix.kit }}.txt
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-${{ matrix.kit }}
           path: dist/*
@@ -66,10 +66,10 @@ jobs:
   build-node-kit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
 
@@ -107,7 +107,7 @@ jobs:
           sha256sum dist/* > dist/SHA256SUMS-lambda-lifeline.txt
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-lambda-lifeline
           path: dist/*
@@ -117,7 +117,7 @@ jobs:
     needs: [build-python-kits, build-node-kit]
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: release-*
           merge-multiple: true
@@ -139,7 +139,7 @@ jobs:
       id-token: write
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: release-*
           merge-multiple: true
