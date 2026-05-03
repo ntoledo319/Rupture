@@ -3,100 +3,60 @@ VERSION:2.0
 PRODID:-//Rupture//AWS Deprecations//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALDESC:AWS platform deprecation deadlines tracked by Rupture
-X-WR-CALNAME:AWS Deprecations
+X-WR-CALNAME:AWS Deprecation Deadlines (Rupture)
+X-WR-TIMEZONE:UTC
 BEGIN:VEVENT
-SUMMARY:AWS Deprecation: Lambda Node.js 20 Phase 1
+UID:lambda-node.js-20-phase-1@rupture
+DTSTAMP:20260503T052853Z
 DTSTART;VALUE=DATE:20260430
 DTEND;VALUE=DATE:20260501
-DTSTAMP:20260503T050700Z
-UID:lambda-node.js-20-phase-1@rupture
-CREATED:20260503T050700Z
-DESCRIPTION:Lambda functions using Node.js 20 runtime will fail to update.
-  Phase 1: CreateFunction and UpdateFunctionConfiguration blocked.
+SUMMARY:Lambda Node.js 20 Phase 1
+DESCRIPTION:Lambda functions using Node.js 20 runtime will fail to update. Phase 1: CreateFunction and UpdateFunctionConfiguration blocked. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:30 days until Lambda Node.js 20 Phase 1 deprecation
-TRIGGER:-P30D
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:AWS Deprecation: Amazon Linux 2 EOL
+UID:amazon-linux-2-eol@rupture
+DTSTAMP:20260503T052853Z
 DTSTART;VALUE=DATE:20260630
 DTEND;VALUE=DATE:20260701
-DTSTAMP:20260503T050700Z
-UID:amazon-linux-2-eol@rupture
-CREATED:20260503T050700Z
-DESCRIPTION:Amazon Linux 2 reaches end of life. No more security patches\,
-  AMI publishing\, or extras updates.
+SUMMARY:Amazon Linux 2 EOL
+DESCRIPTION:Amazon Linux 2 reaches end of life. No more security patches\, AMI publishing\, or extras updates. Source: https://aws.amazon.com/blogs/aws/update-on-amazon-linux-2-end-of-life/
 URL:https://aws.amazon.com/blogs/aws/update-on-amazon-linux-2-end-of-life/
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:30 days until Amazon Linux 2 EOL deprecation
-TRIGGER:-P30D
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:AWS Deprecation: Lambda Python 3.9 EOL
+UID:lambda-python-3.9-eol@rupture
+DTSTAMP:20260503T052853Z
 DTSTART;VALUE=DATE:20261031
 DTEND;VALUE=DATE:20261101
-DTSTAMP:20260503T050700Z
-UID:lambda-python-3.9-eol@rupture
-CREATED:20260503T050700Z
-DESCRIPTION:Lambda functions using Python 3.9 runtime deprecated.
+SUMMARY:Lambda Python 3.9 EOL
+DESCRIPTION:Lambda functions using Python 3.9 runtime deprecated. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:30 days until Lambda Python 3.9 EOL deprecation
-TRIGGER:-P30D
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:AWS Deprecation: Lambda Python 3.10 EOL
+UID:lambda-python-3.10-eol@rupture
+DTSTAMP:20260503T052853Z
 DTSTART;VALUE=DATE:20270430
 DTEND;VALUE=DATE:20270501
-DTSTAMP:20260503T050700Z
-UID:lambda-python-3.10-eol@rupture
-CREATED:20260503T050700Z
-DESCRIPTION:Lambda functions using Python 3.10 runtime deprecated.
+SUMMARY:Lambda Python 3.10 EOL
+DESCRIPTION:Lambda functions using Python 3.10 runtime deprecated. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:30 days until Lambda Python 3.10 EOL deprecation
-TRIGGER:-P30D
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:AWS Deprecation: Lambda Python 3.11 EOL
+UID:lambda-python-3.11-eol@rupture
+DTSTAMP:20260503T052853Z
 DTSTART;VALUE=DATE:20271031
 DTEND;VALUE=DATE:20271101
-DTSTAMP:20260503T050700Z
-UID:lambda-python-3.11-eol@rupture
-CREATED:20260503T050700Z
-DESCRIPTION:Lambda functions using Python 3.11 runtime deprecated.
+SUMMARY:Lambda Python 3.11 EOL
+DESCRIPTION:Lambda functions using Python 3.11 runtime deprecated. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:30 days until Lambda Python 3.11 EOL deprecation
-TRIGGER:-P30D
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:AWS Deprecation: IMDSv1 Enforcement
+UID:imdsv1-enforcement@rupture
+DTSTAMP:20260503T052853Z
 DTSTART;VALUE=DATE:20251231
 DTEND;VALUE=DATE:20260101
-DTSTAMP:20260503T050700Z
-UID:imdsv1-enforcement@rupture
-CREATED:20260503T050700Z
-DESCRIPTION:IMDSv1 access will be blocked by default on new instance launc
- hes.
-URL:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instan
- ce-metadata-service.html
-BEGIN:VALARM
-ACTION:DISPLAY
-DESCRIPTION:30 days until IMDSv1 Enforcement deprecation
-TRIGGER:-P30D
-END:VALARM
+SUMMARY:IMDSv1 Enforcement
+DESCRIPTION:IMDSv1 access will be blocked by default on new instance launches. Source: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
+URL:https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
 END:VEVENT
 END:VCALENDAR
