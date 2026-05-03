@@ -35,3 +35,9 @@ Repository = "https://github.com/ntoledo319/Rupture"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.mutmut]
+paths_to_mutate = "src/al2023_gate/"
+tests_dir = "test/"
+runner = "python -m pytest -x -q --no-header"
+

@@ -35,3 +35,16 @@ Thumbs.db
 # Local feed signing scratch
 /tmp/rupture_pack.*
 .aider*
+
+# Mutation testing scratch (mutmut writes mutants/, never commit)
+mutants/
+.mutmut-cache
+mutation_report.txt
+
+# Claude scheduled-task lock (local, host-specific)
+.claude/
+
+# Type-check & lint caches
+.mypy_cache/
+.ruff_cache/
+
