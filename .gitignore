@@ -48,3 +48,4 @@ mutation_report.txt
 .mypy_cache/
 .ruff_cache/
 
+apps/runner/.venv/
