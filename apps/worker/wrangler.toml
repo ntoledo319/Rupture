@@ -1,6 +1,6 @@
 name = "rupture-worker"
 main = "src/index.ts"
-account_id = "8386730baf2dc6008a63c5bfd92c6f49"
+account_id = "19a8d5aafc1d8e775d523704ed558175"
 compatibility_date = "2024-04-01"
 compatibility_flags = ["nodejs_compat"]
 

@@ -5,10 +5,16 @@ FROM python:3.12-slim as builder
 
 WORKDIR /app
 
-# Install build dependencies
+# Install build dependencies (gcc + WeasyPrint native libs needed at build time
+# for cffi bindings against pango/cairo/gdk-pixbuf).
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     libc6-dev \
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
+    libharfbuzz0b \
+    libcairo2 \
+    libgdk-pixbuf-2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
