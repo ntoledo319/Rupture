@@ -1,6 +1,6 @@
-# Migrating AWS Lambda Node.js 20 to Node.js 22: A complete guide (Apr 30, 2026 EOL)
+# Migrating AWS Lambda Node.js 20 to Node.js 22: A complete guide (Sep 30, 2026 cliff)
 
-> Published 2026-04-28. For teams running AWS Lambda functions on `nodejs20.x`. Source: [AWS Lambda runtimes official docs](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).
+> Published 2026-04-28. Updated 2026-05-21 — Phase 1 EOL has passed; this guide is now positioned as the **cleanup path before the Sep 30 Phase 3 cliff** (after which AWS blocks updates to existing `nodejs20.x` functions). For teams running AWS Lambda functions on `nodejs20.x`. Source: [AWS Lambda runtimes official docs](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).
 
 ## TL;DR
 

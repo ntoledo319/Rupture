@@ -17,11 +17,11 @@ Post these the same morning the Show HN goes up. Thread the X post; LinkedIn sta
 ```
 Rupture is live.
 
-3 CLIs for the AWS deprecation deadlines that break prod:
+CLIs for the AWS deprecation deadlines that break prod:
 
-– lambda-lifeline (nodejs20.x → 22, Apr 30)
-– al2023-gate (AL2 → AL2023, Jun 30)
+– al2023-gate (Amazon Linux 2 → AL2023, Jun 30)
 – python-pivot (Lambda Python 3.9-3.11 → 3.12)
+– lambda-lifeline (nodejs20.x → 22 — Phase 1 passed Apr 30; cliff Sep 30)
 
 MIT. Deterministic. Mutation-tested at 80%+.
 
@@ -55,9 +55,9 @@ After 14 months of building, Rupture is live.
 
 Rupture is three open-source CLIs that automate AWS runtime migrations off the deprecation deadlines breaking production this year:
 
-– lambda-lifeline — Node.js 16 / 18 / 20 → 22 (Apr 30, 2026)
-– al2023-gate — Amazon Linux 2 → AL2023 (Jun 30, 2026)
-– python-pivot — Lambda Python 3.9 / 3.10 / 3.11 → 3.12
+– al2023-gate — Amazon Linux 2 → AL2023 (Jun 30, 2026 — live deadline)
+– python-pivot — Lambda Python 3.9 / 3.10 / 3.11 → 3.12 (rolling EOL waves)
+– lambda-lifeline — Node.js 16 / 18 / 20 → 22 (Phase 1 passed Apr 30; Phase 3 cliff Sep 30)
 
 Each kit scans your account, runs codemods (dry-run by default), patches IaC across SAM / CDK / Terraform / Serverless / Packer / Ansible, generates a staged canary deploy plan, and produces a tested rollback script. The free GitHub Action runs the dry-run pass on every PR and comments findings.
 

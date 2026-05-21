@@ -1,9 +1,9 @@
 # Rupture — Migration Kits for AWS Platform Deprecations
 
-> CLIs for the real AWS deprecation deadlines that break production: **Lambda Node.js 20**, **Amazon Linux 2**, **Lambda Python 3.9/3.10/3.11**.
+> CLIs for the AWS deprecation deadlines that break production. Next up: **Amazon Linux 2 (Jun 30, 2026)**. Also: **Lambda Python 3.9/3.10/3.11** waves, and post-deadline cleanup for **Lambda Node.js 20**.
 
 [![landing](https://img.shields.io/badge/landing-live-brightgreen)](https://ntoledo319.github.io/Rupture)
-[![tests](https://img.shields.io/badge/tests-116%20passing-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-126%20passing-brightgreen)](#tests)
 [![license](https://img.shields.io/badge/license-MIT%20(open%20core)-blue)](#license)
 
 AWS is killing runtimes on a hard schedule. When a deadline passes, deploys fail, functions get frozen, AMIs stop receiving patches. Most shops find out in production.
@@ -16,9 +16,11 @@ AWS is killing runtimes on a hard schedule. When a deadline passes, deploys fail
 
 | Kit | Deadline | What breaks | Status |
 |---|---|---|---|
-| [**lambda-lifeline**](./kits/lambda-lifeline) | **Apr 30, 2026** — Lambda Node.js 20 EOL (Phase 1) | `require()`, `aws-sdk` v2, `URL` globals, OpenSSL 3 hashes | Ready |
-| [**al2023-gate**](./kits/al2023-gate) | **Jun 30, 2026** — Amazon Linux 2 EOL | `yum`, `amazon-linux-extras`, `ntpd`, `iptables`, Python 2 | Ready |
-| [**python-pivot**](./kits/python-pivot) | **Lambda Python 3.9/3.10/3.11** EOL waves | `distutils`, `imp`, `collections.Mapping`, native wheels | Ready |
+| [**al2023-gate**](./kits/al2023-gate) | **Jun 30, 2026** — Amazon Linux 2 EOL | `yum`, `amazon-linux-extras`, `ntpd`, `iptables`, Python 2 | **Live deadline** |
+| [**python-pivot**](./kits/python-pivot) | **Lambda Python 3.9/3.10/3.11** EOL waves | `distutils`, `imp`, `collections.Mapping`, native wheels | Active |
+| [**lambda-lifeline**](./kits/lambda-lifeline) | Apr 30, 2026 — Lambda Node.js 20 EOL (Phase 1, **passed**) | `require()`, `aws-sdk` v2, `URL` globals, OpenSSL 3 hashes | Post-deadline cleanup |
+
+> Phase 1 for Node.js 20 ended Apr 30, 2026 — security patches stop. Phase 2 (Aug 31) blocks creating new functions on `nodejs20.x`; Phase 3 (Sep 30) blocks updating existing ones. If you're still on `nodejs20.x`, `lambda-lifeline` is the cleanup path before the Sep 30 cliff.
 
 Every kit ships the same 6 pillars:
 
@@ -33,22 +35,24 @@ Every kit ships the same 6 pillars:
 
 ## Install
 
-Each kit is standalone. `lambda-lifeline` is a Node CLI; `al2023-gate` and `python-pivot` are Python CLIs. Clone and install the one you need:
+Each kit is standalone. `al2023-gate` and `python-pivot` are Python CLIs; `lambda-lifeline` is a Node CLI. Clone and install the one you need.
+
+For the live deadline (AL2 → AL2023, Jun 30):
 
 ```bash
 git clone https://github.com/ntoledo319/Rupture.git
+cd Rupture/kits/al2023-gate   # or kits/python-pivot
+pip install -e .
+al2023-gate --help
+```
+
+For Node 20 cleanup (before the Sep 30 Phase 3 cliff):
+
+```bash
 cd Rupture/kits/lambda-lifeline
 npm install
 npm link
 lambda-lifeline --help
-```
-
-For the Python kits:
-
-```bash
-cd Rupture/kits/al2023-gate   # or kits/python-pivot
-pip install -e .
-al2023-gate --help
 ```
 
 The Python kits require Python 3.10+. Live mode uses `boto3`; fixture mode requires nothing.
@@ -74,24 +78,23 @@ The action runs dry-run, path-safe checks from all three kits and can comment fi
 
 ## 30-second demo
 
+Live deadline first — Amazon Linux 2 → AL2023:
+
 ```bash
 # Scan what's about to break (offline, no AWS creds needed)
-lambda-lifeline scan --fixture test/fixtures/lambda-inventory.json --format table
+al2023-gate scan --fixture test/fixtures/inventory.json --format table
 
-# Rewrite source for Node.js 22
-lambda-lifeline codemod ./src --apply
+# Remap package names (yum → dnf, retired packages → replacements)
+al2023-gate remap --packages packages.txt
 
-# Audit native-module dependencies
-lambda-lifeline audit ./package.json
+# Patch cloud-init / launch-template / Packer / Ansible
+al2023-gate cloudinit --path user-data.yaml --apply
 
-# Patch SAM/CDK/Terraform
-lambda-lifeline iac ./template.yaml --apply
-
-# Generate canary deploy plan
-lambda-lifeline deploy plan --alias prod
+# Generate the rollout runbook for EKS / ECS / Beanstalk / ASG
+al2023-gate runbook --target eks
 ```
 
-See [kits/lambda-lifeline/README.md](./kits/lambda-lifeline) for the full walkthrough with captured output.
+Same shape for `python-pivot` and `lambda-lifeline` — see each kit's README for the full walkthrough with captured output.
 
 ---
 
@@ -113,33 +116,39 @@ See [kits/lambda-lifeline/README.md](./kits/lambda-lifeline) for the full walkth
 
 AWS publishes deprecation notices on a blog. Your deploys will fail on a Tuesday. The fix is usually not one-line — it's native wheels that don't exist for the new runtime, OpenSSL 3 hashes your code depended on, an IMDSv1 call that's now blocked, an `iptables` rule that no longer works on nftables.
 
-Rupture automates AWS migrations off deprecated runtimes — deterministically, safely, and before the deadline. It's opinionated, well-tested (116 tests across 3 kits), and safe — everything is dry-run by default, everything has a rollback path.
+Rupture automates AWS migrations off deprecated runtimes — deterministically, safely, and before the deadline. It's opinionated, well-tested (126 tests across kits + apps), and safe — everything is dry-run by default, everything has a rollback path.
 
 ---
 
 ## Tests
 
 ```bash
-# lambda-lifeline: 24 tests
-cd kits/lambda-lifeline && pytest -q
+# lambda-lifeline: 24 tests (Node, node --test)
+cd kits/lambda-lifeline && npm test
 
 # al2023-gate: 48 tests
 cd kits/al2023-gate && pytest -q
 
 # python-pivot: 44 tests
 cd kits/python-pivot && pytest -q
+
+# apps/runner: 7 tests
+cd apps/runner && pytest -q
+
+# apps/worker: 3 tests (vitest)
+cd apps/worker && npm test
 ```
 
-116 passing across all kits.
+126 passing across kits + apps.
 
 ---
 
 ## Roadmap
 
 Shipped:
-- [x] lambda-lifeline — Lambda Node.js 20 → 22
-- [x] al2023-gate — Amazon Linux 2 → AL2023
-- [x] python-pivot — Lambda Python 3.9/3.10/3.11 → 3.12
+- [x] al2023-gate — Amazon Linux 2 → AL2023 *(Jun 30, 2026 — live deadline)*
+- [x] python-pivot — Lambda Python 3.9/3.10/3.11 → 3.12 *(rolling EOL waves)*
+- [x] lambda-lifeline — Lambda Node.js 20 → 22 *(Phase 1 passed Apr 30; Phase 3 cliff Sep 30)*
 
 Queued:
 - [ ] imds-v2-gate — IMDSv1 → IMDSv2 enforcement
@@ -159,7 +168,7 @@ Open-core: the CLI code in this repo is MIT-licensed. The paid tiers include has
 ## Links
 
 - 🌐 [Landing page](https://ntoledo319.github.io/Rupture)
-- 🚀 [Show HN draft](./launch/show-hn-draft.md)
+- 🚀 [Show HN post](./launch/show-hn-final.md)
 - 📝 [Blog post: Migrating Lambda Node.js 20 → 22](./launch/blog-post.md)
 - 💬 [Direct support reply templates](./launch/thread-answers.md)
 - 💬 Issues: use the repo tracker

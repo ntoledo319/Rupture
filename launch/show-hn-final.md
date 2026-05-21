@@ -14,7 +14,7 @@ This is the version to paste at submission time. Replaces the earlier draft.
 ## Title
 
 ```
-Show HN: Rupture – three CLIs for AWS runtime deprecations (Lambda 20, AL2, Python)
+Show HN: Rupture – CLIs for AWS runtime deprecations (Amazon Linux 2 EOL Jun 30)
 ```
 
 ## Submission URL
@@ -26,13 +26,13 @@ https://github.com/ntoledo319/Rupture
 ## Body
 
 ```
-AWS Lambda Node.js 20 hits Phase 1 EOL on Apr 30, 2026. Amazon Linux 2 on Jun 30. Lambda Python 3.9/3.10/3.11 in waves after that. When Phase 3 lands you can't update functions on those runtimes anymore — the only path forward is a full deploy with a new runtime, or your code is frozen.
+Amazon Linux 2 hits end-of-life on Jun 30, 2026. After that, no patches, no new AMIs, anything still pinned to AL2 in a launch template or EKS node group is on borrowed time. Lambda Python 3.9/3.10/3.11 are in their own EOL waves; Node.js 20 already hit Phase 1 EOL on Apr 30 (Phase 3, the update-blocking cliff, is Sep 30). When the cliffs land you can't update functions on those runtimes anymore — the only path is a full re-deploy on a new runtime, or your code is frozen.
 
-I built Rupture: three CLIs, one per deadline.
+I built Rupture: one CLI per deadline.
 
-  lambda-lifeline   nodejs16/18/20 → 22       (Apr 30, 2026)
   al2023-gate       Amazon Linux 2 → AL2023   (Jun 30, 2026)
   python-pivot      Lambda Python 3.9-3.11 → 3.12
+  lambda-lifeline   nodejs16/18/20 → 22       (Phase 1 passed Apr 30; cliff Sep 30)
 
 Each kit does the same five things: scan the account, run mechanical codemods (dry-run is the default; --apply writes), patch IaC across SAM / CDK / Terraform / Serverless / Packer / Ansible, generate a staged canary plan with auto-rollback hooks, and produce a tested rollback script. All offline-able through fixtures so you can evaluate before pointing it at AWS.
 
@@ -59,12 +59,12 @@ Open to feedback on any of it — codemod rules especially. If you've already do
 
 ## Submission timing
 
-Window: Tue or Wed, **6:00–9:00 a.m. PT**. (5/5 lands in this window.)
+Window: Tue or Wed, **6:00–9:00 a.m. PT**. Target: **Tue Jun 9 or Wed Jun 10, 2026** — gives 20–21 days of pre-AL2023 urgency for the HN audience. (The original 5/5 window was missed; this is the reframed target.)
 
 After submitting, paste the HN URL into `launched.txt`:
 
 ```
-2026-05-05T15:30:00Z submitted by ntoledo319 link=https://news.ycombinator.com/item?id=...
+2026-06-09T13:30:00Z submitted by ntoledo319 link=https://news.ycombinator.com/item?id=...
 ```
 
 ## Comment posture

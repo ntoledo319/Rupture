@@ -11,18 +11,18 @@ Three variants for three relationships. Pick the one that matches the target. Fi
 
 ---
 
-## Variant 1 — COLD MAINTAINER
+## Variant 1 — COLD MAINTAINER (AL2023, live deadline)
 
-For someone you don't know with a public repo running deprecated runtimes. Do not send if you don't have a specific finding to lead with.
+For someone you don't know with a public repo running Amazon Linux 2 in launch templates, AMIs, EKS node groups, or Beanstalk platforms. Do not send if you don't have a specific finding to lead with.
 
 ```
-Subject: nodejs20.x EOL Apr 30 — auto-migration PR for [repo]
+Subject: Amazon Linux 2 EOL Jun 30 — auto-migration PR for [repo]
 
 [name],
 
-Solo dev behind Rupture here. Running the open scanner against public repos and saw [repo] still has [N] Lambda functions on nodejs20.x. Apr 30 is Phase 1 EOL; Sep 30 is the cliff where you can't update those functions anymore.
+Solo dev behind Rupture here. Running the open scanner against public repos and saw [repo] still pins Amazon Linux 2 in [specific file, e.g. "the EKS node group in eks/cluster.tf" or "the Packer template at packer/api.json"]. Jun 30 is EOL — after that, no patches, no new AMIs, anything depending on AL2 in CI starts breaking when the base images go.
 
-I built a kit that scans the repo, runs the import-assertion → import-attribute codemod, patches the IaC (SAM / CDK / Terraform / Serverless), and opens a PR with a tested rollback script. MIT, mutation-tested at 80%+, deterministic builds.
+I built a kit that scans the repo, runs the package-name remap (yum→dnf, deprecated packages, replacements), patches the IaC (Terraform / CloudFormation / Packer / Ansible / cloud-init), and opens a PR with a tested rollback path. MIT, mutation-tested at 80%+, deterministic builds.
 
 If you want it run against [repo]: install at github.com/apps/rupture-migration-bot. One PR per repo per week, max. Free tier never charges. Drop a `.no-rupture` file at the repo root and the bot stops touching it within 60 seconds.
 
@@ -33,6 +33,8 @@ github.com/ntoledo319/Rupture
 — Nicholas Toledo
 ```
 
+> **Post-deadline cleanup variant:** the same template works for `lambda-lifeline` (Node 20 → 22, Phase 1 already passed Apr 30) — swap the subject to `nodejs20.x cleanup before Sep 30 cliff — auto-migration PR for [repo]` and update the body's deadline framing to "Phase 3 (Sep 30) is the hard cliff." Don't lead with Apr 30 — that's history; lead with Sep 30.
+
 ## Variant 2 — WARM CONTACT (waitlist, network, mutuals)
 
 For someone who already opted in or who you know personally. Asking for a real-world test before the public launch.
@@ -42,7 +44,7 @@ Subject: Rupture is live — want me to run it on [repo / your stack]?
 
 [name] —
 
-Soft-launched Rupture this week. Three CLIs for the AWS runtime deprecations breaking prod this year (Lambda 20, AL2, Python 3.x). I think [repo / your team's stack] would be a clean target — saw [specific thing about their setup, e.g. "the SAM templates in [repo] still pin nodejs20.x" or "your team mentioned Python 3.10 functions back in [context]"].
+Soft-launched Rupture this week. Three CLIs for the AWS runtime deprecations breaking prod this year (AL2 Jun 30, Python 3.x waves, plus Node 20 cleanup before the Sep 30 cliff). I think [repo / your team's stack] would be a clean target — saw [specific thing about their setup, e.g. "the SAM templates in [repo] still pin nodejs20.x" or "your team mentioned Python 3.10 functions back in [context]"].
 
 Looking for two or three real-world end-to-end runs before I post to HN on Tuesday morning. The deal: install the GitHub App at github.com/apps/rupture-migration-bot, pick the repos you want it to touch, it opens one PR per repo with the migration applied. Free, MIT, dry-run by default, opt-out by dropping a `.no-rupture` file.
 
