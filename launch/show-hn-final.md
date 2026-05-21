@@ -59,12 +59,12 @@ Open to feedback on any of it — codemod rules especially. If you've already do
 
 ## Submission timing
 
-Window: Tue or Wed, **6:00–9:00 a.m. PT**. Target: **Tue Jun 9 or Wed Jun 10, 2026** — gives 20–21 days of pre-AL2023 urgency for the HN audience. (The original 5/5 window was missed; this is the reframed target.)
+Window: Tue or Wed, **6:00–9:00 a.m. PT**. Target: **Tue Jun 2 or Wed Jun 3, 2026** — first post-Memorial-Day full work week, gives 27–28 days of pre-AL2023 urgency for the HN audience. (The original 5/5 window was missed; this is the reframed target.)
 
 After submitting, paste the HN URL into `launched.txt`:
 
 ```
-2026-06-09T13:30:00Z submitted by ntoledo319 link=https://news.ycombinator.com/item?id=...
+2026-06-02T13:30:00Z submitted by ntoledo319 link=https://news.ycombinator.com/item?id=...
 ```
 
 ## Comment posture

@@ -86,7 +86,7 @@ The `v1` release published 2026-05-02 has not yet been indexed at
 
 Allow ~24 hours for the index to populate after saving.
 
-## 4. Show HN submission *(Tue 2026-06-09 or Wed 2026-06-10, 6–9 AM PT)*
+## 4. Show HN submission *(Tue 2026-06-02 or Wed 2026-06-03, 6–9 AM PT)*
 
 **Reframe complete (2026-05-21):** the launch artifacts (`launch/show-hn-final.md`,
 `launch/social.md`, `launch/outreach.md`, `launch/hn-replies.md`,
@@ -95,9 +95,11 @@ Allow ~24 hours for the index to populate after saving.
 Phase 3 cliff. README.md hero updated.
 
 The previous launch windows (2026-05-05 and 2026-05-06) were missed when work was
-backburnered. The new target is **Tue 2026-06-09 or Wed 2026-06-10, 6–9 AM PT** —
-gives the HN audience 20–21 days of live AL2023 urgency. After Jun 17 the AL2023
-window narrows to ~13 days and the framing weakens.
+backburnered. The target is now **Tue 2026-06-02 or Wed 2026-06-03, 6–9 AM PT** —
+first post-Memorial-Day full work week, gives the HN audience 27–28 days of live
+AL2023 urgency. (May 26 was avoided because Memorial Day hangover dampens HN
+engagement on the Tuesday-after. Jun 9/10 was the earlier conservative target;
+unblocking R2 + landing the reframe ahead of schedule allowed pulling it in.)
 
 Go/no-go checklist before submitting:
 - R2 enabled (step 1) and `wrangler r2 bucket list` succeeds.
