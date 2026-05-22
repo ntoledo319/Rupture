@@ -197,10 +197,13 @@ async function createAuditCheckout(request: Request, env: Env): Promise<Response
       'success_url': 'https://ntoledo319.github.io/Rupture/verify?session_id={CHECKOUT_SESSION_ID}',
       'cancel_url': 'https://ntoledo319.github.io/Rupture/audit',
       'customer_email': email,
+      'metadata[project]': 'rupture',
       'metadata[sku]': 'audit',
       'metadata[email]': email,
       'metadata[upload_url]': uploadUrl || '',
       'metadata[deadline]': deadline || '',
+      'payment_intent_data[metadata][project]': 'rupture',
+      'payment_intent_data[metadata][sku]': 'audit',
     });
 
     return checkoutResponse(
@@ -246,10 +249,13 @@ async function createPackCheckout(request: Request, env: Env): Promise<Response>
       'success_url': 'https://ntoledo319.github.io/Rupture/status?session_id={CHECKOUT_SESSION_ID}',
       'cancel_url': 'https://ntoledo319.github.io/Rupture/pack',
       'customer_email': email,
+      'metadata[project]': 'rupture',
       'metadata[sku]': 'migration_pack',
       'metadata[email]': email,
       'metadata[repo]': repo,
       'metadata[installation_id]': installationId || '',
+      'payment_intent_data[metadata][project]': 'rupture',
+      'payment_intent_data[metadata][sku]': 'migration_pack',
     });
 
     return checkoutResponse(
@@ -348,6 +354,7 @@ export async function autoRefund(chargeId: string, reason: string, env: Env): Pr
     await stripeRequest(env, '/v1/refunds', {
       charge: chargeId,
       reason: 'requested_by_customer',
+      'metadata[project]': 'rupture',
       'metadata[reason]': reason,
       'metadata[managed_by]': 'rupture-auto-refund',
     });

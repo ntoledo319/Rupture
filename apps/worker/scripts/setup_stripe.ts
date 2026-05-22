@@ -69,6 +69,7 @@ async function findOrCreateProduct(
   return stripeReq<{ id: string }>('/products', {
     name,
     description: description ?? '',
+    'metadata[project]': 'rupture',
     'metadata[managed_by]': 'rupture-setup',
   });
 }
@@ -89,6 +90,8 @@ async function findOrCreatePrice(
     product: productId,
     unit_amount: String(Math.round(amountUsd * 100)),
     currency: 'usd',
+    'metadata[project]': 'rupture',
+    'metadata[managed_by]': 'rupture-setup',
   };
   if (interval) body['recurring[interval]'] = interval;
   if (lookupKey) body.lookup_key = lookupKey;
@@ -100,6 +103,7 @@ async function createPaymentLink(priceId: string): Promise<{ url: string }> {
     'line_items[0][price]': priceId,
     'line_items[0][quantity]': '1',
     'payment_method_types[0]': 'card',
+    'metadata[project]': 'rupture',
     'metadata[managed_by]': 'rupture-setup',
   });
   return r;
