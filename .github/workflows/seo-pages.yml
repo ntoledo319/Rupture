@@ -23,7 +23,7 @@ jobs:
         run: |
           git config user.name "rupture-bot"
           git config user.email "rupture-bot@users.noreply.github.com"
-          git add docs/migrate docs/vs docs/sitemap.xml docs/deprecations.ics
+          git add docs/migrate docs/vs docs/sitemap.xml docs/deprecations.ics docs/llms.txt docs/robots.txt
           if ! git diff --cached --quiet; then
             git commit -m "chore(seo): nightly regeneration"
             git push

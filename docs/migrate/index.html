@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS deprecation deadlines — migration guides | EOLkits</title>
+    <meta name="description" content="Every AWS platform deprecation deadline we track, ordered by date: Lambda runtimes, Amazon Linux 2, IMDSv1, and more. Each has a cited deadline, breaking changes, and a free migration CLI.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ntoledo319.github.io/EOLkits/migrate/">
+    <link rel="stylesheet" href="/EOLkits/style.css">
+    <link rel="alternate" type="text/calendar" title="AWS Deprecation Deadlines (EOLkits)" href="/EOLkits/deprecations.ics">
+    <meta property="og:title" content="AWS deprecation deadlines — migration guides | EOLkits">
+    <meta property="og:description" content="Every tracked AWS deprecation deadline, with cited facts and free migration tools.">
+    <meta property="og:url" content="https://ntoledo319.github.io/EOLkits/migrate/">
+    <meta property="og:type" content="website">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Tracked AWS deprecation deadlines",
+        "itemListElement": [
+            
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "url": "https://ntoledo319.github.io/EOLkits/migrate/imdsv1-enforcement/",
+                "name": "IMDSv1 Enforcement (deadline 2025-12-31)"
+            },
+            
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "url": "https://ntoledo319.github.io/EOLkits/migrate/lambda-node.js-20-phase-1/",
+                "name": "Lambda Node.js 20 Phase 1 (deadline 2026-04-30)"
+            },
+            
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "url": "https://ntoledo319.github.io/EOLkits/migrate/amazon-linux-2-eol/",
+                "name": "Amazon Linux 2 EOL (deadline 2026-06-30)"
+            },
+            
+            {
+                "@type": "ListItem",
+                "position": 4,
+                "url": "https://ntoledo319.github.io/EOLkits/migrate/lambda-python-3.9-eol/",
+                "name": "Lambda Python 3.9 EOL (deadline 2026-10-31)"
+            },
+            
+            {
+                "@type": "ListItem",
+                "position": 5,
+                "url": "https://ntoledo319.github.io/EOLkits/migrate/lambda-python-3.10-eol/",
+                "name": "Lambda Python 3.10 EOL (deadline 2027-04-30)"
+            },
+            
+            {
+                "@type": "ListItem",
+                "position": 6,
+                "url": "https://ntoledo319.github.io/EOLkits/migrate/lambda-python-3.11-eol/",
+                "name": "Lambda Python 3.11 EOL (deadline 2027-10-31)"
+            }
+            
+        ]
+    }
+    </script>
+</head>
+<body class="migrate-page">
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="/EOLkits/" class="brand"><span class="brand-mark">▸</span> EOLkits</a>
+    <nav>
+      <a href="/EOLkits/migrate/">Deadlines</a>
+      <a href="/EOLkits/#pricing">Pricing</a>
+      <a href="/EOLkits/deprecations.ics">Calendar</a>
+      <a href="https://github.com/ntoledo319/EOLkits" class="btn-ghost">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container article">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/EOLkits/">Home</a> / <span>AWS deprecations</span>
+    </nav>
+
+    <h1>AWS deprecation deadlines</h1>
+    <p class="sub">Every AWS platform deprecation EOLkits tracks, ordered by deadline. Each page carries the exact deadline, breaking changes, and migration facts — taken from a cited primary source. <a href="/EOLkits/deprecations.ics">Subscribe to the calendar (.ics)</a>.</p>
+
+    <div class="deadline-list">
+        
+        <a class="deadline-row passed" href="/EOLkits/migrate/imdsv1-enforcement/">
+            <div class="dl-date">
+                <strong>2025-12-31</strong>
+                <span class="dl-days">passed</span>
+            </div>
+            <div class="dl-body">
+                <div class="dl-name">IMDSv1 Enforcement <span class="severity-badge severity-high">high</span></div>
+                <div class="dl-meta">EC2</div>
+            </div>
+            <div class="dl-arrow">→</div>
+        </a>
+        
+        <a class="deadline-row passed" href="/EOLkits/migrate/lambda-node.js-20-phase-1/">
+            <div class="dl-date">
+                <strong>2026-04-30</strong>
+                <span class="dl-days">passed</span>
+            </div>
+            <div class="dl-body">
+                <div class="dl-name">Lambda Node.js 20 Phase 1 <span class="severity-badge severity-critical">critical</span></div>
+                <div class="dl-meta">AWS Lambda · <code>lambda-lifeline</code></div>
+            </div>
+            <div class="dl-arrow">→</div>
+        </a>
+        
+        <a class="deadline-row soon" href="/EOLkits/migrate/amazon-linux-2-eol/">
+            <div class="dl-date">
+                <strong>2026-06-30</strong>
+                <span class="dl-days">29 days</span>
+            </div>
+            <div class="dl-body">
+                <div class="dl-name">Amazon Linux 2 EOL <span class="severity-badge severity-critical">critical</span></div>
+                <div class="dl-meta">EC2, EKS, ECS, Elastic Beanstalk · <code>al2023-gate</code></div>
+            </div>
+            <div class="dl-arrow">→</div>
+        </a>
+        
+        <a class="deadline-row ahead" href="/EOLkits/migrate/lambda-python-3.9-eol/">
+            <div class="dl-date">
+                <strong>2026-10-31</strong>
+                <span class="dl-days">152 days</span>
+            </div>
+            <div class="dl-body">
+                <div class="dl-name">Lambda Python 3.9 EOL <span class="severity-badge severity-high">high</span></div>
+                <div class="dl-meta">AWS Lambda · <code>python-pivot</code></div>
+            </div>
+            <div class="dl-arrow">→</div>
+        </a>
+        
+        <a class="deadline-row ahead" href="/EOLkits/migrate/lambda-python-3.10-eol/">
+            <div class="dl-date">
+                <strong>2027-04-30</strong>
+                <span class="dl-days">333 days</span>
+            </div>
+            <div class="dl-body">
+                <div class="dl-name">Lambda Python 3.10 EOL <span class="severity-badge severity-medium">medium</span></div>
+                <div class="dl-meta">AWS Lambda · <code>python-pivot</code></div>
+            </div>
+            <div class="dl-arrow">→</div>
+        </a>
+        
+        <a class="deadline-row ahead" href="/EOLkits/migrate/lambda-python-3.11-eol/">
+            <div class="dl-date">
+                <strong>2027-10-31</strong>
+                <span class="dl-days">517 days</span>
+            </div>
+            <div class="dl-body">
+                <div class="dl-name">Lambda Python 3.11 EOL <span class="severity-badge severity-low">low</span></div>
+                <div class="dl-meta">AWS Lambda · <code>python-pivot</code></div>
+            </div>
+            <div class="dl-arrow">→</div>
+        </a>
+        
+    </div>
+
+    <p class="cite-note" style="margin-top:2rem">Dates and breaking changes are sourced from AWS and upstream documentation. EOLkits ships no claim without a primary source.</p>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="brand"><span class="brand-mark">▸</span> EOLkits</div>
+        <p class="muted">Every AWS deprecation deadline deserves a kit.</p>
+      </div>
+      <div>
+        <h5>Deadlines</h5>
+        <a href="/EOLkits/migrate/">All AWS deprecations</a><br>
+        <a href="/EOLkits/deprecations.ics">Deadline calendar (.ics)</a>
+      </div>
+      <div>
+        <h5>Resources</h5>
+        <a href="https://github.com/ntoledo319/EOLkits">GitHub</a><br>
+        <a href="/EOLkits/#pricing">Pricing</a>
+      </div>
+    </div>
+    <div class="muted small">© 2026 EOLkits · MIT-licensed kits · facts cited from primary sources</div>
+  </div>
+</footer>
+
+</body>
+</html>

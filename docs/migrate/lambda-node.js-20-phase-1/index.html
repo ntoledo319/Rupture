@@ -3,247 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lambda Node.js 20 Phase 1 - AWS Deprecation Guide | Rupture</title>
-    <meta name="description" content="Complete migration guide for Lambda Node.js 20 Phase 1. Deadline: 2026-04-30. Free CLI tools and automated migration available.">
-    <link rel="canonical" href="https://ntoledo319.github.io/Rupture/migrate/lambda-node.js-20-phase-1">
-    
+    <title>Lambda Node.js 20 Phase 1 migration guide — deadline 2026-04-30 | EOLkits</title>
+    <meta name="description" content="Lambda Node.js 20 Phase 1 ends 2026-04-30 (deadline passed). AWS Lambda. 4 breaking changes, exact migration facts, and a free CLI (lambda-lifeline) to scan, codemod, and ship before the deadline.">
+    <meta name="keywords" content="Lambda Node.js 20 Phase 1, AWS deprecation, AWS Lambda, lambda, nodejs, runtime, migration, end of life, 2026-04-30">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ntoledo319.github.io/EOLkits/migrate/lambda-node.js-20-phase-1/">
+    <link rel="stylesheet" href="/EOLkits/style.css">
+    <link rel="alternate" type="text/calendar" title="AWS Deprecation Deadlines (EOLkits)" href="/EOLkits/deprecations.ics">
+
     <!-- Open Graph -->
-    <meta property="og:title" content="Lambda Node.js 20 Phase 1 - AWS Deprecation Guide">
-    <meta property="og:description" content="Migration guide and tools for Lambda Node.js 20 Phase 1. EOL: 2026-04-30">
-    <meta property="og:url" content="https://ntoledo319.github.io/Rupture/migrate/lambda-node.js-20-phase-1">
+    <meta property="og:title" content="Lambda Node.js 20 Phase 1 — AWS deprecation migration guide (deadline 2026-04-30)">
+    <meta property="og:description" content="Lambda functions using Node.js 20 runtime will fail to update. Phase 1: CreateFunction and UpdateFunctionConfiguration blocked.">
+    <meta property="og:url" content="https://ntoledo319.github.io/EOLkits/migrate/lambda-node.js-20-phase-1/">
     <meta property="og:type" content="article">
-    
+    <meta property="og:site_name" content="EOLkits">
+    <meta property="article:published_time" content="2026-05-31T08:22:55.460266+00:00">
+    <meta property="article:modified_time" content="2026-05-31T08:22:55.460266+00:00">
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Lambda Node.js 20 Phase 1 - Migration Guide">
-    <meta name="twitter:description" content="Complete migration guide for Lambda Node.js 20 Phase 1">
-    
-    <!-- Schema.org Article markup -->
+    <meta name="twitter:title" content="Lambda Node.js 20 Phase 1 — Migration Guide">
+    <meta name="twitter:description" content="Deadline 2026-04-30 (-32 days). 4 breaking changes, cited from AWS docs.">
+
+    <!-- Schema.org: TechArticle (every fact cited to deprecation.url) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "TechArticle",
-        "headline": "Lambda Node.js 20 Phase 1 - AWS Deprecation Migration Guide",
-        "description": "Complete migration guide for Lambda Node.js 20 Phase 1",
-        "datePublished": "",
-        "dateModified": "",
-        "author": {
-            "@type": "Organization",
-            "name": "Rupture"
-        },
+        "headline": "Lambda Node.js 20 Phase 1 \u2014 AWS Deprecation Migration Guide",
+        "description": "Lambda functions using Node.js 20 runtime will fail to update. Phase 1: CreateFunction and UpdateFunctionConfiguration blocked.",
+        "datePublished": "2026-05-31T08:22:55.460266+00:00",
+        "dateModified": "2026-05-31T08:22:55.460266+00:00",
+        "proficiencyLevel": "Expert",
+        "keywords": "lambda, nodejs, runtime",
+        "citation": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html",
+        "author": { "@type": "Organization", "name": "EOLkits", "url": "https://ntoledo319.github.io/EOLkits" },
         "publisher": {
             "@type": "Organization",
-            "name": "Rupture",
-            "url": "https://ntoledo319.github.io/Rupture"
-        }
+            "name": "EOLkits",
+            "url": "https://ntoledo319.github.io/EOLkits"
+        },
+        "about": {
+            "@type": "SoftwareApplication",
+            "name": "AWS Lambda",
+            "applicationCategory": "CloudComputing"
+        },
+        "mainEntityOfPage": "https://ntoledo319.github.io/EOLkits/migrate/lambda-node.js-20-phase-1/"
     }
     </script>
-    
-    <style>
-        :root {
-            --primary: #2563eb;
-            --critical: #dc2626;
-            --high: #ea580c;
-            --warning: #ca8a04;
-            --success: #16a34a;
-        }
-        
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            color: #1f2937;
-        }
-        
-        .deadline-banner {
-            background: linear-gradient(135deg, var(--critical), var(--high));
-            color: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        
-        .deadline-banner h1 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.5rem;
-        }
-        
-        .countdown {
-            font-size: 2rem;
-            font-weight: bold;
-        }
-        
-        .severity-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        
-        .severity-critical { background: #fef2f2; color: var(--critical); }
-        .severity-high { background: #fff7ed; color: var(--high); }
-        .severity-medium { background: #fefce8; color: var(--warning); }
-        .severity-low { background: #f0fdf4; color: var(--success); }
-        
-        .breaking-changes {
-            background: #fef2f2;
-            border-left: 4px solid var(--critical);
-            padding: 1rem;
-            margin: 1.5rem 0;
-        }
-        
-        .breaking-changes h3 {
-            color: var(--critical);
-            margin-top: 0;
-        }
-        
-        .breaking-changes ul {
-            margin: 0;
-            padding-left: 1.5rem;
-        }
-        
-        .breaking-changes li {
-            margin: 0.5rem 0;
-        }
-        
-        .migration-steps {
-            counter-reset: step;
-        }
-        
-        .step {
-            position: relative;
-            padding-left: 3rem;
-            margin: 1.5rem 0;
-        }
-        
-        .step::before {
-            counter-increment: step;
-            content: counter(step);
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 2rem;
-            height: 2rem;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        .code-block {
-            background: #1f2937;
-            color: #e5e7eb;
-            padding: 1rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 1rem 0;
-        }
-        
-        .code-block code {
-            font-family: 'Monaco', 'Menlo', monospace;
-            font-size: 0.875rem;
-        }
-        
-        .cta {
-            background: var(--primary);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-block;
-            margin: 1rem 0.5rem 0 0;
-            font-weight: 600;
-        }
-        
-        .cta-secondary {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-        
-        .pricing-card {
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-        }
-        
-        .pricing-card h3 {
-            margin-top: 0;
-        }
-        
-        .price {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-        
-        nav.breadcrumb {
-            margin-bottom: 1rem;
-            font-size: 0.875rem;
-        }
-        
-        nav.breadcrumb a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-        
-        .faq {
-            margin-top: 3rem;
-        }
-        
-        .faq-item {
-            border-bottom: 1px solid #e5e7eb;
-            padding: 1rem 0;
-        }
-        
-        .faq-question {
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        footer {
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e5e7eb;
-            color: #6b7280;
-            font-size: 0.875rem;
-        }
-    </style>
+
+    <!-- Schema.org: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ntoledo319.github.io/EOLkits/" },
+            { "@type": "ListItem", "position": 2, "name": "AWS deprecations", "item": "https://ntoledo319.github.io/EOLkits/migrate/" },
+            { "@type": "ListItem", "position": 3, "name": "Lambda Node.js 20 Phase 1", "item": "https://ntoledo319.github.io/EOLkits/migrate/lambda-node.js-20-phase-1/" }
+        ]
+    }
+    </script>
+
+    <!-- Schema.org: FAQPage (answers are deterministic, grounded in the YAML) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "When is the Lambda Node.js 20 Phase 1 deadline?",
+                "acceptedAnswer": { "@type": "Answer", "text": "The deadline is 2026-04-30. Lambda functions using Node.js 20 runtime will fail to update. Phase 1: CreateFunction and UpdateFunctionConfiguration blocked. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html" }
+            },
+            {
+                "@type": "Question",
+                "name": "What breaks when Lambda Node.js 20 Phase 1 reaches end of life?",
+                "acceptedAnswer": { "@type": "Answer", "text": "CreateFunction and UpdateFunctionConfiguration API calls fail; aws-sdk v2 not available (use v3); OpenSSL 3 hash changes; URL vs require() for imports. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html" }
+            },
+            {
+                "@type": "Question",
+                "name": "Which AWS services are affected by Lambda Node.js 20 Phase 1?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Affected services: AWS Lambda. Affected resource types: function. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html" }
+            },
+            {
+                "@type": "Question",
+                "name": "Is there a free tool to migrate off Lambda Node.js 20 Phase 1?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Yes. lambda-lifeline is an MIT-licensed CLI that scans, codemods, and patches IaC for this deprecation. Paid Audit ($299) and Migration Pack ($1499) tiers add automated reports and PRs." }
+            }
+        ]
+    }
+    </script>
 </head>
-<body>
-    <nav class="breadcrumb">
-        <a href="/Rupture/">Home</a> / <a href="/Rupture/deprecations">Deprecations</a> / Lambda Node.js 20 Phase 1
+<body class="migrate-page">
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="/EOLkits/" class="brand"><span class="brand-mark">▸</span> EOLkits</a>
+    <nav>
+      <a href="/EOLkits/migrate/">Deadlines</a>
+      <a href="/EOLkits/#pricing">Pricing</a>
+      <a href="/EOLkits/deprecations.ics">Calendar</a>
+      <a href="https://github.com/ntoledo319/EOLkits" class="btn-ghost">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container article">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/EOLkits/">Home</a> / <a href="/EOLkits/migrate/">AWS deprecations</a> / <span>Lambda Node.js 20 Phase 1</span>
     </nav>
 
     <article>
-        <div class="deadline-banner">
+        <div class="deadline-banner passed">
             <span class="severity-badge severity-critical">critical</span>
             <h1>Lambda Node.js 20 Phase 1</h1>
-            <p>End of Life Deadline</p>
+            <p class="banner-sub">AWS Lambda — end-of-life deadline</p>
             <div class="countdown" data-deadline="2026-04-30">2026-04-30</div>
+            <p class="urgency">This deadline passed on 2026-04-30. Affected resources are now in the post-deadline window — clean up before the next enforcement phase.</p>
         </div>
 
-        <h2>What is being deprecated?</h2>
-        <p>Lambda functions using Node.js 20 runtime will fail to update. Phase 1: CreateFunction and UpdateFunctionConfiguration blocked.</p>
-        
-        <p><strong>Service:</strong> AWS Lambda</p>
-        <p><strong>Affected Resources:</strong> function</p>
-        
-        
-        <p><a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html" target="_blank" rel="noopener">Official AWS Documentation →</a></p>
-        
+        <section>
+            <h2>What is being deprecated?</h2>
+            <p>Lambda functions using Node.js 20 runtime will fail to update. Phase 1: CreateFunction and UpdateFunctionConfiguration blocked.</p>
+            <table class="facts">
+                <tr><th>Deadline</th><td><strong>2026-04-30</strong> (-32 days from build date 2026-05-31)</td></tr>
+                <tr><th>Service</th><td>AWS Lambda</td></tr>
+                <tr><th>Affected resources</th><td><code>function</code></td></tr>
+                <tr><th>Severity</th><td><span class="severity-badge severity-critical">critical</span></td></tr>
+                <tr><th>Migration kit</th><td><code>lambda-lifeline</code> (free, MIT)</td></tr>
+                <tr><th>Primary source</th><td><a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html" target="_blank" rel="noopener nofollow">https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html</a></td></tr>
+            </table>
+            <p class="cite-note">Every fact on this page is taken from the cited AWS / upstream source above. EOLkits ships no claim without a primary source.</p>
+        </section>
 
-        <div class="breaking-changes">
-            <h3>⚠️ Breaking Changes</h3>
+        <section class="breaking-changes">
+            <h2>Breaking changes</h2>
+            <p>The following changes take effect at or before the 2026-04-30 deadline. <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html" target="_blank" rel="noopener nofollow">[source]</a></p>
             <ul>
                 
                 <li>CreateFunction and UpdateFunctionConfiguration API calls fail</li>
@@ -255,99 +151,144 @@
                 <li>URL vs require() for imports</li>
                 
             </ul>
-        </div>
+        </section>
 
-        <h2>Migration Steps</h2>
-        <div class="migration-steps">
-            <div class="step">
-                <h4>Scan Your Infrastructure</h4>
-                <p>Identify all affected resources using the Rupture CLI:</p>
-                <div class="code-block">
-                    <code>pip install lambda-lifeline<br>lambda-lifeline scan --region us-east-1</code>
-                </div>
-            </div>
-            
-            <div class="step">
-                <h4>Review Findings</h4>
-                <p>The scan will output a table of affected resources sorted by severity × blast radius.</p>
-            </div>
-            
-            <div class="step">
-                <h4>Apply Automated Fixes</h4>
-                <p>Run codemods to apply safe transformations:</p>
-                <div class="code-block">
-                    <code>lambda-lifeline apply --dry-run<br>lambda-lifeline apply</code>
-                </div>
-            </div>
-            
-            <div class="step">
-                <h4>Deploy with Canary</h4>
-                <p>Use the included canary deployment plan to minimize risk:</p>
-                <div class="code-block">
-                    <code>aws cloudformation deploy --template-file canary.yaml</code>
-                </div>
-            </div>
-        </div>
-
-        <h2>Need Help?</h2>
         
-        <div class="pricing-card">
-            <h3>Audit PDF Report</h3>
-            <div class="price">$299</div>
-            <p>Professional PDF report with hash-anchored verification and executive summary.</p>
-            <a href="https://ntoledo319.github.io/Rupture/audit" class="cta">Order Audit</a>
-        </div>
+        <section>
+            <h2>Migrate with the free <code>lambda-lifeline</code> CLI</h2>
+            <p>The MIT-licensed CLI runs the same five-step migration on every deprecation: scan, fix, test, deploy canary, rollback. No AWS credentials needed for the offline fixture run.</p>
+            <div class="migration-steps">
+                <div class="step">
+                    <h4>Scan your infrastructure</h4>
+                    <p>Enumerate every resource still on the deprecated runtime.</p>
+                    <pre class="code-block"><code>npm install -g lambda-lifeline
+lambda-lifeline scan --region us-east-1</code></pre>
+                </div>
+                <div class="step">
+                    <h4>Review findings by severity × blast radius</h4>
+                    <p>The scan prints a table ordered by how much breaks and how soon.</p>
+                </div>
+                <div class="step">
+                    <h4>Apply codemods (dry-run first)</h4>
+                    <p>Mechanically-safe rewrites for the breaking changes above. Everything ambiguous is flagged, not auto-changed.</p>
+                    <pre class="code-block"><code>lambda-lifeline apply --dry-run
+lambda-lifeline apply</code></pre>
+                </div>
+                <div class="step">
+                    <h4>Deploy with a staged canary + auto-rollback</h4>
+                    <p>5% → 25% → 50% → 100%, with a CloudWatch-alarm trip reverting instantly.</p>
+                </div>
+            </div>
+        </section>
         
-        <div class="pricing-card">
-            <h3>Migration Pack</h3>
-            <div class="price">$1499</div>
-            <p>Automated PR opened on your repository. Includes codemods, IaC patches, and canary plan.</p>
-            <p><strong>Refund guarantee:</strong> Auto-refund if CI fails within 7 days.</p>
-            <a href="https://ntoledo319.github.io/Rupture/pack" class="cta">Get Migration Pack</a>
-            <a href="https://github.com/ntoledo319/Rupture/discussions" class="cta cta-secondary">Ask Questions</a>
-        </div>
 
-        <div class="faq">
-            <h2>Frequently Asked Questions</h2>
-            
-            <div class="faq-item">
-                <p class="faq-question">What happens if I don't migrate by the deadline?</p>
-                <p>AWS will block updates to affected resources. Existing resources may continue running but cannot be modified.</p>
+        <section class="conversion">
+            <h2>Want it done for you before 2026-04-30?</h2>
+            <div class="pricing-grid-2">
+                <div class="pricing-card">
+                    <h3>Audit PDF</h3>
+                    <div class="price">$299</div>
+                    <p>Hash-anchored deterministic report scoring every Lambda Node.js 20 Phase 1 finding by severity × blast-radius, with a roll-forward roadmap and cost-of-not-fixing estimate. Delivered by email in 5 minutes.</p>
+                    <a href="https://buy.stripe.com/3cIeVd4nYfRK4td4AQ87K02" class="btn-primary">Order Audit — $299</a>
+                </div>
+                <div class="pricing-card featured">
+                    <h3>Migration Pack</h3>
+                    <div class="price">$1,499</div>
+                    <p>A real PR opened on your repo: lambda-lifeline codemods + IaC patches + canary plan + rollback. <strong>Auto-refund if your CI fails within 7 days.</strong></p>
+                    <a href="https://buy.stripe.com/cNi5kD07IbBu7Fp5EU87K03" class="btn-primary">Get Migration Pack — $1,499</a>
+                    <a href="/EOLkits/pack/" class="btn-outline">How it works</a>
+                </div>
             </div>
+        </section>
+
+        
+        <section class="related">
+            <h2>Related AWS deprecations</h2>
+            <p>Same service family or migration kit — each with cited deadlines and breaking changes.</p>
+            <ul class="related-list">
+                
+                <li>
+                    <a href="/EOLkits/migrate/lambda-python-3.9-eol/">Lambda Python 3.9 EOL</a>
+                    <span class="rel-meta">— deadline <strong>2026-10-31</strong> · high · <code>python-pivot</code></span>
+                </li>
+                
+                <li>
+                    <a href="/EOLkits/migrate/lambda-python-3.10-eol/">Lambda Python 3.10 EOL</a>
+                    <span class="rel-meta">— deadline <strong>2027-04-30</strong> · medium · <code>python-pivot</code></span>
+                </li>
+                
+                <li>
+                    <a href="/EOLkits/migrate/lambda-python-3.11-eol/">Lambda Python 3.11 EOL</a>
+                    <span class="rel-meta">— deadline <strong>2027-10-31</strong> · low · <code>python-pivot</code></span>
+                </li>
+                
+            </ul>
+            <p><a href="/EOLkits/migrate/" class="kit-link">See all tracked AWS deadlines →</a> · <a href="/EOLkits/deprecations.ics" class="kit-link">Subscribe to the deadline calendar (.ics) →</a></p>
+        </section>
+        
+
+        <section class="faq" id="faq">
+            <h2>Frequently asked questions</h2>
+            <details open>
+                <summary>When is the Lambda Node.js 20 Phase 1 deadline?</summary>
+                <p>2026-04-30. Lambda functions using Node.js 20 runtime will fail to update. Phase 1: CreateFunction and UpdateFunctionConfiguration blocked. <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html" target="_blank" rel="noopener nofollow">[AWS source]</a></p>
+            </details>
+            <details>
+                <summary>What happens if I don't migrate by 2026-04-30?</summary>
+                <p>The breaking changes listed above take effect: CreateFunction and UpdateFunctionConfiguration API calls fail; aws-sdk v2 not available (use v3); OpenSSL 3 hash changes; URL vs require() for imports. <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html" target="_blank" rel="noopener nofollow">[source]</a></p>
+            </details>
+            <details>
+                <summary>Which AWS services does this affect?</summary>
+                <p>AWS Lambda — specifically <code>function</code> resources.</p>
+            </details>
             
-            <div class="faq-item">
-                <p class="faq-question">Is the CLI free to use?</p>
-                <p>Yes. All Rupture kits are MIT licensed and free. Paid tiers add automation and professional reports.</p>
-            </div>
+            <details>
+                <summary>Is there a free way to migrate?</summary>
+                <p>Yes — the <code>lambda-lifeline</code> CLI is MIT-licensed and free for unlimited runs. The paid Audit ($299) and Migration Pack ($1,499) tiers add a hash-anchored report and an automated PR with a CI-failure refund guarantee.</p>
+            </details>
             
-            <div class="faq-item">
-                <p class="faq-question">Will the codemods break my code?</p>
-                <p>No. All codemods are dry-run by default. Review changes before applying. Each kit includes 100+ tests.</p>
-            </div>
-        </div>
+        </section>
     </article>
+</main>
 
-    <footer>
-        <p>Generated by Rupture | <a href="https://ntoledo319.github.io/Rupture">ntoledo319.github.io/Rupture</a></p>
-        <p><a href="/Rupture/legal/terms">Terms</a> · <a href="/Rupture/legal/privacy">Privacy</a> · <a href="/Rupture/legal/SECURITY">Security</a></p>
-    </footer>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="brand"><span class="brand-mark">▸</span> EOLkits</div>
+        <p class="muted">Every AWS deprecation deadline deserves a kit.</p>
+      </div>
+      <div>
+        <h5>Deadlines</h5>
+        <a href="/EOLkits/migrate/">All AWS deprecations</a><br>
+        <a href="/EOLkits/deprecations.ics">Deadline calendar (.ics)</a>
+      </div>
+      <div>
+        <h5>Resources</h5>
+        <a href="https://github.com/ntoledo319/EOLkits">GitHub</a><br>
+        <a href="/EOLkits/#pricing">Pricing</a><br>
+        <a href="/EOLkits/legal/terms">Terms</a> · <a href="/EOLkits/legal/privacy">Privacy</a>
+      </div>
+    </div>
+    <div class="muted small">© 2026 EOLkits · MIT-licensed kits · facts cited from primary sources</div>
+  </div>
+</footer>
 
-    <script>
-        // Simple countdown timer
-        function updateCountdown() {
-            const countdownEl = document.querySelector('.countdown');
-            if (!countdownEl) return;
-            
-            const deadline = new Date(countdownEl.dataset.deadline);
-            const now = new Date();
-            const diff = deadline - now;
-            
-            if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                countdownEl.textContent = days + ' days remaining';
-            }
+<script>
+    // Live countdown from the cited deadline date (display-only; the canonical
+    // fact is the server-rendered date above).
+    (function () {
+        var el = document.querySelector('.countdown');
+        if (!el) return;
+        var deadline = new Date(el.dataset.deadline + 'T00:00:00Z');
+        var diff = deadline - new Date();
+        if (diff > 0) {
+            var days = Math.floor(diff / 86400000);
+            el.textContent = el.dataset.deadline + ' · ' + days + ' days left';
+        } else {
+            el.textContent = el.dataset.deadline + ' · deadline passed';
         }
-        updateCountdown();
-    </script>
+    })();
+</script>
 </body>
 </html>

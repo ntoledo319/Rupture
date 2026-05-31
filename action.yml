@@ -1,6 +1,6 @@
-name: "Rupture AWS Deprecation Check"
+name: "EOLkits AWS Deprecation Check"
 description: "Check source and IaC for AWS runtime deprecation risks before they hit production"
-author: "Rupture"
+author: "EOLkits"
 branding:
   icon: "alert-triangle"
   color: "orange"
@@ -40,7 +40,7 @@ runs:
       with:
         node-version: "22"
 
-    - name: Run Rupture check
+    - name: Run EOLkits check
       id: scan
       shell: bash
       env:
@@ -70,5 +70,5 @@ runs:
       if: steps.scan.outputs.should_fail == 'true'
       shell: bash
       run: |
-        echo "::error::Rupture found deprecation risks at or above the configured threshold."
+        echo "::error::EOLkits found deprecation risks at or above the configured threshold."
         exit 1

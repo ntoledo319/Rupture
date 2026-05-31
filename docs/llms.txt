@@ -1,0 +1,23 @@
+# EOLkits
+
+> Deterministic, CI-citation-gated CLIs and migration services for AWS platform deprecation deadlines (Lambda runtimes, Amazon Linux 2, IMDSv1). Every fact below is sourced from a primary AWS or upstream document.
+
+## AWS deprecation deadlines
+
+- [IMDSv1 Enforcement](https://ntoledo319.github.io/EOLkits/migrate/imdsv1-enforcement/): deadline 2025-12-31, severity high, service EC2. Source: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
+- [Lambda Node.js 20 Phase 1](https://ntoledo319.github.io/EOLkits/migrate/lambda-node.js-20-phase-1/): deadline 2026-04-30, severity critical, service AWS Lambda. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+- [Amazon Linux 2 EOL](https://ntoledo319.github.io/EOLkits/migrate/amazon-linux-2-eol/): deadline 2026-06-30, severity critical, service EC2, EKS, ECS, Elastic Beanstalk. Source: https://aws.amazon.com/blogs/aws/update-on-amazon-linux-2-end-of-life/
+- [Lambda Python 3.9 EOL](https://ntoledo319.github.io/EOLkits/migrate/lambda-python-3.9-eol/): deadline 2026-10-31, severity high, service AWS Lambda. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+- [Lambda Python 3.10 EOL](https://ntoledo319.github.io/EOLkits/migrate/lambda-python-3.10-eol/): deadline 2027-04-30, severity medium, service AWS Lambda. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+- [Lambda Python 3.11 EOL](https://ntoledo319.github.io/EOLkits/migrate/lambda-python-3.11-eol/): deadline 2027-10-31, severity low, service AWS Lambda. Source: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+
+## Pricing
+
+- Free CLI: MIT-licensed kits (al2023-gate, python-pivot, lambda-lifeline). git clone https://github.com/ntoledo319/EOLkits
+- [Audit PDF](https://ntoledo319.github.io/EOLkits/audit/): $299 (surges to $399 within 30 days, $599 within 7 days) — hash-anchored deterministic finding report.
+- [Migration Pack](https://ntoledo319.github.io/EOLkits/pack/): $1,499 — automated PR with codemods + IaC patches + canary plan + rollback; auto-refund if CI fails within 7 days.
+
+## Calendar
+
+- [Deadline calendar (.ics)](https://ntoledo319.github.io/EOLkits/deprecations.ics): subscribe to every tracked AWS deprecation deadline.
+

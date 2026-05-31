@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS deprecation deadlines — migration guides | EOLkits</title>
+    <meta name="description" content="Every AWS platform deprecation deadline we track, ordered by date: Lambda runtimes, Amazon Linux 2, IMDSv1, and more. Each has a cited deadline, breaking changes, and a free migration CLI.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ site_url }}/migrate/">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="alternate" type="text/calendar" title="AWS Deprecation Deadlines (EOLkits)" href="/deprecations.ics">
+    <meta property="og:title" content="AWS deprecation deadlines — migration guides | EOLkits">
+    <meta property="og:description" content="Every tracked AWS deprecation deadline, with cited facts and free migration tools.">
+    <meta property="og:url" content="{{ site_url }}/migrate/">
+    <meta property="og:type" content="website">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Tracked AWS deprecation deadlines",
+        "itemListElement": [
+            {% for dep in deprecations %}
+            {
+                "@type": "ListItem",
+                "position": {{ loop.index }},
+                "url": "{{ site_url }}/migrate/{{ dep.slug }}/",
+                "name": {{ (dep.name ~ " (deadline " ~ dep.date ~ ")")|tojson }}
+            }{{ "," if not loop.last }}
+            {% endfor %}
+        ]
+    }
+    </script>
+</head>
+<body class="migrate-page">
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="/" class="brand"><span class="brand-mark">▸</span> EOLkits</a>
+    <nav>
+      <a href="/migrate/">Deadlines</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/deprecations.ics">Calendar</a>
+      <a href="https://github.com/ntoledo319/EOLkits" class="btn-ghost">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container article">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> / <span>AWS deprecations</span>
+    </nav>
+
+    <h1>AWS deprecation deadlines</h1>
+    <p class="sub">Every AWS platform deprecation EOLkits tracks, ordered by deadline. Each page carries the exact deadline, breaking changes, and migration facts — taken from a cited primary source. <a href="/deprecations.ics">Subscribe to the calendar (.ics)</a>.</p>
+
+    <div class="deadline-list">
+        {% for dep in deprecations %}
+        <a class="deadline-row {{ dep.tier }}" href="/migrate/{{ dep.slug }}/">
+            <div class="dl-date">
+                <strong>{{ dep.date }}</strong>
+                <span class="dl-days">{% if dep.days_until < 0 %}passed{% else %}{{ dep.days_until }} days{% endif %}</span>
+            </div>
+            <div class="dl-body">
+                <div class="dl-name">{{ dep.name }} <span class="severity-badge severity-{{ dep.severity }}">{{ dep.severity }}</span></div>
+                <div class="dl-meta">{{ dep.service }}{% if dep.kit %} · <code>{{ dep.kit }}</code>{% endif %}</div>
+            </div>
+            <div class="dl-arrow">→</div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <p class="cite-note" style="margin-top:2rem">Dates and breaking changes are sourced from AWS and upstream documentation. EOLkits ships no claim without a primary source.</p>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="brand"><span class="brand-mark">▸</span> EOLkits</div>
+        <p class="muted">Every AWS deprecation deadline deserves a kit.</p>
+      </div>
+      <div>
+        <h5>Deadlines</h5>
+        <a href="/migrate/">All AWS deprecations</a><br>
+        <a href="/deprecations.ics">Deadline calendar (.ics)</a>
+      </div>
+      <div>
+        <h5>Resources</h5>
+        <a href="https://github.com/ntoledo319/EOLkits">GitHub</a><br>
+        <a href="/#pricing">Pricing</a>
+      </div>
+    </div>
+    <div class="muted small">© 2026 EOLkits · MIT-licensed kits · facts cited from primary sources</div>
+  </div>
+</footer>
+
+</body>
+</html>

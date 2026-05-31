@@ -1,6 +1,11 @@
-name: "Rupture AWS Deprecation Check"
+# Subpath copy of the root action.yml. The repo-root action.yml is the
+# canonical Marketplace listing (uses: ntoledo319/EOLkits@v1). This copy keeps
+# `uses: ntoledo319/EOLkits/apps/github-action@v1` working and MUST have a
+# distinct `name:` — GitHub Marketplace requires globally-unique action names,
+# and a duplicate name in the same repo blocks the listing from publishing.
+name: "EOLkits AWS Deprecation Check (subpath)"
 description: "Check source and IaC for AWS runtime deprecation risks before they hit production"
-author: "Rupture"
+author: "EOLkits"
 branding:
   icon: "alert-triangle"
   color: "orange"
@@ -40,7 +45,7 @@ runs:
       with:
         node-version: "22"
 
-    - name: Run Rupture check
+    - name: Run EOLkits check
       id: scan
       shell: bash
       env:
@@ -71,5 +76,5 @@ runs:
       if: steps.scan.outputs.should_fail == 'true'
       shell: bash
       run: |
-        echo "::error::Rupture found deprecation risks at or above the configured threshold."
+        echo "::error::EOLkits found deprecation risks at or above the configured threshold."
         exit 1

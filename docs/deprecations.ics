@@ -1,13 +1,13 @@
 BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Rupture//AWS Deprecations//EN
+PRODID:-//EOLkits//AWS Deprecations//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
-X-WR-CALNAME:AWS Deprecation Deadlines (Rupture)
+X-WR-CALNAME:AWS Deprecation Deadlines (EOLkits)
 X-WR-TIMEZONE:UTC
 BEGIN:VEVENT
-UID:lambda-node.js-20-phase-1@rupture
-DTSTAMP:20260522T054230Z
+UID:lambda-node.js-20-phase-1@eolkits
+DTSTAMP:20260531T082255Z
 DTSTART;VALUE=DATE:20260430
 DTEND;VALUE=DATE:20260501
 SUMMARY:Lambda Node.js 20 Phase 1
@@ -15,8 +15,8 @@ DESCRIPTION:Lambda functions using Node.js 20 runtime will fail to update. Phase
 URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 END:VEVENT
 BEGIN:VEVENT
-UID:amazon-linux-2-eol@rupture
-DTSTAMP:20260522T054230Z
+UID:amazon-linux-2-eol@eolkits
+DTSTAMP:20260531T082255Z
 DTSTART;VALUE=DATE:20260630
 DTEND;VALUE=DATE:20260701
 SUMMARY:Amazon Linux 2 EOL
@@ -24,8 +24,8 @@ DESCRIPTION:Amazon Linux 2 reaches end of life. No more security patches\, AMI p
 URL:https://aws.amazon.com/blogs/aws/update-on-amazon-linux-2-end-of-life/
 END:VEVENT
 BEGIN:VEVENT
-UID:lambda-python-3.9-eol@rupture
-DTSTAMP:20260522T054230Z
+UID:lambda-python-3.9-eol@eolkits
+DTSTAMP:20260531T082255Z
 DTSTART;VALUE=DATE:20261031
 DTEND;VALUE=DATE:20261101
 SUMMARY:Lambda Python 3.9 EOL
@@ -33,8 +33,8 @@ DESCRIPTION:Lambda functions using Python 3.9 runtime deprecated. Source: https:
 URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 END:VEVENT
 BEGIN:VEVENT
-UID:lambda-python-3.10-eol@rupture
-DTSTAMP:20260522T054230Z
+UID:lambda-python-3.10-eol@eolkits
+DTSTAMP:20260531T082255Z
 DTSTART;VALUE=DATE:20270430
 DTEND;VALUE=DATE:20270501
 SUMMARY:Lambda Python 3.10 EOL
@@ -42,8 +42,8 @@ DESCRIPTION:Lambda functions using Python 3.10 runtime deprecated. Source: https
 URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 END:VEVENT
 BEGIN:VEVENT
-UID:lambda-python-3.11-eol@rupture
-DTSTAMP:20260522T054230Z
+UID:lambda-python-3.11-eol@eolkits
+DTSTAMP:20260531T082255Z
 DTSTART;VALUE=DATE:20271031
 DTEND;VALUE=DATE:20271101
 SUMMARY:Lambda Python 3.11 EOL
@@ -51,8 +51,8 @@ DESCRIPTION:Lambda functions using Python 3.11 runtime deprecated. Source: https
 URL:https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
 END:VEVENT
 BEGIN:VEVENT
-UID:imdsv1-enforcement@rupture
-DTSTAMP:20260522T054230Z
+UID:imdsv1-enforcement@eolkits
+DTSTAMP:20260531T082255Z
 DTSTART;VALUE=DATE:20251231
 DTEND;VALUE=DATE:20260101
 SUMMARY:IMDSv1 Enforcement

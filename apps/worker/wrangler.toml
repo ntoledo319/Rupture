@@ -1,4 +1,4 @@
-name = "rupture-worker"
+name = "eolkits-worker"
 main = "src/index.ts"
 account_id = "19a8d5aafc1d8e775d523704ed558175"
 compatibility_date = "2024-04-01"
@@ -21,22 +21,22 @@ id = "db472b0d7c2f4cdfbc8006732b9475fa"
 
 [[r2_buckets]]
 binding = "UPLOADS"
-bucket_name = "rupture-uploads"
+bucket_name = "eolkits-uploads"
 
 [[queues.producers]]
 binding = "JOBS"
-queue = "rupture-jobs"
+queue = "eolkits-jobs"
 
 [[queues.consumers]]
-queue = "rupture-jobs"
+queue = "eolkits-jobs"
 max_batch_size = 1
 max_batch_timeout = 30
 max_retries = 3
-dead_letter_queue = "rupture-jobs-dlq"
+dead_letter_queue = "eolkits-jobs-dlq"
 
 [[queues.producers]]
 binding = "JOBS_DLQ"
-queue = "rupture-jobs-dlq"
+queue = "eolkits-jobs-dlq"
 
 # AI binding for support bot
 [ai]
