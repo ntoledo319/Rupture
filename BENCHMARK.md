@@ -1,6 +1,6 @@
 # Rupture Public Benchmark
 
-Last updated: 2026-06-07T03:18:38.056061+00:00
+Last updated: 2026-06-08T03:20:17.204986+00:00
 
 ## Results Summary
 
