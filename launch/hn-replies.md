@@ -80,7 +80,7 @@ The kits don't take AWS credentials from anywhere except the standard credential
 ## "Can I see the bot's actual PR diff?"
 
 ```
-Yes — here's the sandbox end-to-end run from yesterday: [paste actual sandbox PR URL when posting]
+Yes — here's a sandbox end-to-end run: [paste the sandbox PR URL at submission time]
 
 The two-file diff is the entire output: template.yaml runtime bumped (twice), processor.mjs assert→with rewritten. Branch name, commit message, PR body, and labels are all in the screenshot.
 ```
@@ -88,7 +88,7 @@ The two-file diff is the entire output: template.yaml runtime bumped (twice), pr
 ## "Is the audit PDF actually verifiable or is the SHA-256 a vibe?"
 
 ```
-Verifiable. Every PDF embeds the SHA-256 of the input artifact, the rule-pack version SHA, the kit version, and a verification URL hosted at ntoledo319.github.io/EOLkits/audit/verify. You paste the embedded hash into the verify page; it returns either a match (bytes-identical) or a mismatch with the diff. If the page is down, the same check is reproducible offline with shasum -a 256 against the inputs the PDF documents.
+Verifiable. Every PDF embeds the SHA-256 of the input artifact, the rule-pack version SHA, the kit version, and a verification URL hosted at eolkits.com/verify. You paste the embedded hash into the verify page; it returns either a match (bytes-identical) or a mismatch with the diff. If the page is down, the same check is reproducible offline with shasum -a 256 against the inputs the PDF documents.
 ```
 
 ## "Why post this now and not before April 30?"
@@ -96,7 +96,7 @@ Verifiable. Every PDF embeds the SHA-256 of the input artifact, the rule-pack ve
 ```
 Honest answer: I had the kits done in February. Posted nothing. Life got in the way and the original launch window in early May passed. The Apr 30 Phase 1 EOL for Node 20 is now history — that's fair criticism and I'd rather own it than dance around it.
 
-What's still live: Amazon Linux 2 EOL is Jun 30 (40 days from this post). Lambda Python 3.9/3.10/3.11 are still in their EOL waves. And the Node 20 hard cliff is actually Sep 30 — Phase 3, when AWS blocks updates to existing functions — so lambda-lifeline is still useful as cleanup if you have functions still on nodejs20.x. The kits don't expire when one of their deadlines does. But the framing on the README and this post leads with what's still ahead of us, not what's behind.
+What's still live: Amazon Linux 2 EOL is Jun 30 (about three weeks from this post). Lambda Python 3.9/3.10/3.11 are still in their EOL waves. And the Node 20 hard cliff is actually Sep 30 — Phase 3, when AWS blocks updates to existing functions — so lambda-lifeline is still useful as cleanup if you have functions still on nodejs20.x. The kits don't expire when one of their deadlines does. But the framing on the README and this post leads with what's still ahead of us, not what's behind.
 ```
 
 ## If someone is hostile

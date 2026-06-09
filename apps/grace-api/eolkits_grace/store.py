@@ -20,6 +20,12 @@ def _now() -> str:
     return datetime.now(UTC).isoformat()
 
 
+def _trunc(value: Any, limit: int = 120) -> str | None:
+    if value is None:
+        return None
+    return str(value)[:limit]
+
+
 class Store:
     def __init__(self, db_path: Path):
         self.db_path = db_path
@@ -115,6 +121,26 @@ class Store:
                 );
                 CREATE INDEX IF NOT EXISTS idx_purchases_pi ON purchases(payment_intent);
                 CREATE INDEX IF NOT EXISTS idx_purchases_repo_pr ON purchases(repo, pr_number);
+
+                -- First-party funnel analytics. No third-party tracker; this is
+                -- the source of truth for source/utm/kit/deadline/sku/outcome so
+                -- conversion drop-offs are visible and attributable.
+                CREATE TABLE IF NOT EXISTS events (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ts TEXT NOT NULL,
+                    name TEXT NOT NULL,
+                    source TEXT,
+                    utm_source TEXT,
+                    utm_medium TEXT,
+                    utm_campaign TEXT,
+                    kit TEXT,
+                    deadline TEXT,
+                    sku TEXT,
+                    path TEXT,
+                    meta TEXT
+                );
+                CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
+                CREATE INDEX IF NOT EXISTS idx_events_name ON events(name);
                 """
             )
             self._migrate_jobs_columns(conn)
@@ -248,6 +274,41 @@ class Store:
         with self.connect() as conn:
             row = conn.execute(sql, params).fetchone()
             return dict(row) if row else None
+
+    # ---- funnel analytics ------------------------------------------------- #
+
+    def record_event(self, name: str, fields: dict[str, Any]) -> int:
+        with self.connect() as conn:
+            cur = conn.execute(
+                """
+                INSERT INTO events(ts, name, source, utm_source, utm_medium,
+                                   utm_campaign, kit, deadline, sku, path, meta)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    _now(),
+                    name[:64],
+                    _trunc(fields.get("source")),
+                    _trunc(fields.get("utm_source")),
+                    _trunc(fields.get("utm_medium")),
+                    _trunc(fields.get("utm_campaign")),
+                    _trunc(fields.get("kit")),
+                    _trunc(fields.get("deadline")),
+                    _trunc(fields.get("sku")),
+                    _trunc(fields.get("path"), 256),
+                    json.dumps(fields.get("meta") or {})[:2000],
+                ),
+            )
+            return int(cur.lastrowid)
+
+    def event_counts(self, since_days: int = 7) -> dict[str, int]:
+        cutoff = (datetime.now(UTC) - timedelta(days=since_days)).isoformat()
+        with self.connect() as conn:
+            rows = conn.execute(
+                "SELECT name, COUNT(*) AS n FROM events WHERE ts >= ? GROUP BY name",
+                (cutoff,),
+            ).fetchall()
+            return {row["name"]: int(row["n"]) for row in rows}
 
     def mark_refunded(self, session_id: str, refund_id: str) -> bool:
         """Mark a purchase refunded. Returns True if this call performed the

@@ -64,21 +64,44 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 </form>
 
 <script>
+const API = 'https://eolkits.com';
+const qp = new URLSearchParams(location.search);
+function attribution() {
+  return {
+    source: qp.get('source') || 'audit_page',
+    utm_source: qp.get('utm_source') || '',
+    utm_medium: qp.get('utm_medium') || '',
+    utm_campaign: qp.get('utm_campaign') || '',
+    kit: qp.get('kit') || ''
+  };
+}
+function track(eventName, extra) {
+  try {
+    const payload = Object.assign({ event: eventName, sku: 'audit', path: location.pathname }, attribution(), extra || {});
+    navigator.sendBeacon(API + '/api/events', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+  } catch (e) {}
+}
 const auditForm = document.getElementById('auditForm');
 const auditStatus = document.getElementById('auditStatus');
 const auditSubmit = document.getElementById('auditSubmit');
+const deadlineInput = document.getElementById('auditDeadline');
+// Prefill the deadline from a deadline-tagged migrate-page link so surge pricing
+// is consistent between the page the buyer came from and what we charge.
+if (qp.get('deadline') && deadlineInput) deadlineInput.value = qp.get('deadline');
+if (qp.get('cancelled')) auditStatus.textContent = 'Checkout cancelled — finish whenever you are ready.';
+track('view');
 auditForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const file = document.getElementById('auditFile').files[0];
   const email = document.getElementById('auditEmail').value;
-  const deadline = document.getElementById('auditDeadline').value;
+  const deadline = deadlineInput ? deadlineInput.value : '';
   if (!file || !email) return;
 
   auditSubmit.disabled = true;
   auditStatus.textContent = 'Requesting upload URL...';
 
   try {
-    const presign = await fetch('https://eolkits.com/upload/presign', {
+    const presign = await fetch(API + '/upload/presign', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -99,12 +122,14 @@ auditForm.addEventListener('submit', async (event) => {
     if (!upload.ok) throw new Error('Upload failed');
 
     auditStatus.textContent = 'Opening secure checkout...';
-    const checkoutBody = new URLSearchParams({
-      email,
-      upload_url: presignData.uploadUrl
-    });
+    track('checkout_click', { deadline: deadline });
+    const a = attribution();
+    const checkoutBody = new URLSearchParams({ email: email, upload_id: presignData.uploadId });
     if (deadline) checkoutBody.set('deadline', deadline);
-    const checkout = await fetch('https://eolkits.com/api/audit/checkout', {
+    for (const k of ['source', 'utm_source', 'utm_medium', 'utm_campaign', 'kit']) {
+      if (a[k]) checkoutBody.set(k, a[k]);
+    }
+    const checkout = await fetch(API + '/api/audit/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: checkoutBody

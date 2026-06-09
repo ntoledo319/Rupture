@@ -93,6 +93,7 @@ async def status() -> dict[str, Any]:
             "runner": {"ok": bool(settings.runner_url or settings.enable_inline_runner), "url": bool(settings.runner_url)},
         },
         "recent_jobs": store.recent_jobs(20),
+        "funnel_7d": store.event_counts(7),
     }
 
 
@@ -180,6 +181,11 @@ async def audit_checkout(
     deadline: str | None = Form(None),
     upload_id: str | None = Form(None),
     upload_url: str | None = Form(None),
+    source: str | None = Form(None),
+    utm_source: str | None = Form(None),
+    utm_medium: str | None = Form(None),
+    utm_campaign: str | None = Form(None),
+    kit: str | None = Form(None),
 ) -> Response:
     # SSRF hardening: never trust an arbitrary upload_url. Accept an upload_id
     # (preferred) or extract one only from a URL that points at our own host,
@@ -194,16 +200,18 @@ async def audit_checkout(
     tier = pricing.audit_price_for_deadline(deadline)
     price_id = tier["stripe_price_id"]
     price = int(tier["price_usd"])
+    attribution = _attribution(source, utm_source, utm_medium, utm_campaign, kit)
     session = create_checkout_session(
         settings,
         sku="audit",
         email=email,
         price_id=price_id,
         price_usd=price,
-        metadata={"upload_id": resolved_id, "deadline": deadline or ""},
-        success_path="/verify/?session_id={CHECKOUT_SESSION_ID}",
-        cancel_path="/audit/",
+        metadata={"upload_id": resolved_id, "deadline": deadline or "", **attribution},
+        success_path="/success/?sku=audit&session_id={CHECKOUT_SESSION_ID}",
+        cancel_path="/audit/?cancelled=1",
     )
+    store.record_event("checkout_started", {"sku": "audit", "deadline": deadline, **attribution})
     return _checkout_response(request, session["url"], price, session["mode"])
 
 
@@ -213,23 +221,86 @@ async def pack_checkout(
     email: str = Form(...),
     repo: str = Form(...),
     installation_id: str | None = Form(None),
+    source: str | None = Form(None),
+    utm_source: str | None = Form(None),
+    utm_medium: str | None = Form(None),
+    utm_campaign: str | None = Form(None),
+    kit: str | None = Form(None),
 ) -> Response:
     # Require the GitHub App to be installed on the repo BEFORE charging, so we
     # never take money for a PR we cannot open.
     _require_repo_installed(repo, installation_id)
     price_id = pricing.price_id_for_sku("migration_pack")
     price = int(pricing.expected_amount_cents("migration_pack") or 149900) // 100
+    attribution = _attribution(source, utm_source, utm_medium, utm_campaign, kit)
     session = create_checkout_session(
         settings,
         sku="migration_pack",
         email=email,
         price_id=price_id,
         price_usd=price,
-        metadata={"repo": repo, "installation_id": installation_id or ""},
-        success_path="/status/?session_id={CHECKOUT_SESSION_ID}",
-        cancel_path="/pack/",
+        metadata={"repo": repo, "installation_id": installation_id or "", **attribution},
+        success_path="/success/?sku=pack&session_id={CHECKOUT_SESSION_ID}",
+        cancel_path="/pack/?cancelled=1",
     )
+    store.record_event("checkout_started", {"sku": "migration_pack", **attribution})
     return _checkout_response(request, session["url"], price, session["mode"])
+
+
+@app.post("/api/drift/checkout")
+async def drift_checkout(
+    request: Request,
+    email: str = Form(...),
+    repo: str | None = Form(None),
+    iam_role: str | None = Form(None),
+    source: str | None = Form(None),
+    utm_source: str | None = Form(None),
+    utm_medium: str | None = Form(None),
+    utm_campaign: str | None = Form(None),
+) -> Response:
+    # Drift Watch is recurring ($19/mo) -> subscription-mode Checkout Session.
+    price_id = pricing.price_id_for_sku("drift_watch")
+    price = int(pricing.expected_amount_cents("drift_watch") or 1900) // 100
+    attribution = _attribution(source, utm_source, utm_medium, utm_campaign, None)
+    session = create_checkout_session(
+        settings,
+        sku="drift_watch",
+        email=email,
+        price_id=price_id,
+        price_usd=price,
+        metadata={"repo": repo or "", "iam_role": iam_role or "", **attribution},
+        success_path="/success/?sku=drift&session_id={CHECKOUT_SESSION_ID}",
+        cancel_path="/drift/?cancelled=1",
+        mode="subscription",
+    )
+    store.record_event("checkout_started", {"sku": "drift_watch", **attribution})
+    return _checkout_response(request, session["url"], price, session["mode"])
+
+
+@app.post("/api/events")
+async def record_event(request: Request) -> dict[str, Any]:
+    """First-party funnel beacon. No third-party tracker; stores source/utm/kit/
+    deadline/sku so conversion drop-offs are visible and attributable."""
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    name = str(body.get("event") or body.get("name") or "view")[:64]
+    store.record_event(
+        name,
+        {
+            "source": body.get("source"),
+            "utm_source": body.get("utm_source"),
+            "utm_medium": body.get("utm_medium"),
+            "utm_campaign": body.get("utm_campaign"),
+            "kit": body.get("kit"),
+            "deadline": body.get("deadline"),
+            "sku": body.get("sku"),
+            "path": body.get("path"),
+            "meta": body.get("meta"),
+        },
+    )
+    return {"ok": True}
 
 
 # ---- webhooks ---------------------------------------------------------------- #
@@ -577,6 +648,25 @@ def _resolve_upload_id(upload_id: str | None, upload_url: str | None) -> str | N
 
 def _slugify(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")[:32]
+
+
+def _attribution(
+    source: str | None,
+    utm_source: str | None,
+    utm_medium: str | None,
+    utm_campaign: str | None,
+    kit: str | None,
+) -> dict[str, str]:
+    """Build the non-empty attribution metadata that rides along on the Stripe
+    session so source/utm/kit survive into the purchase row and analytics."""
+    fields = {
+        "source": source,
+        "utm_source": utm_source,
+        "utm_medium": utm_medium,
+        "utm_campaign": utm_campaign,
+        "kit": kit,
+    }
+    return {key: str(value)[:200] for key, value in fields.items() if value}
 
 
 def _partner_secret_ok(record: dict[str, Any], provided: str | None) -> bool:

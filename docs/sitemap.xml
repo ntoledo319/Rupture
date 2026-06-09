@@ -2,44 +2,45 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <!-- Core pages (root-relative to the canonical host) -->
-    <url><loc>https://eolkits.com/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-    <url><loc>https://eolkits.com/migrate/</loc><lastmod>2026-06-08</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
-    <url><loc>https://eolkits.com/audit/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-    <url><loc>https://eolkits.com/pack/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-    <url><loc>https://eolkits.com/license/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-    <url><loc>https://eolkits.com/partners/</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-    <url><loc>https://eolkits.com/vs/</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+    <url><loc>https://eolkits.com/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+    <url><loc>https://eolkits.com/migrate/</loc><lastmod>2026-06-09</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+    <url><loc>https://eolkits.com/audit/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+    <url><loc>https://eolkits.com/pack/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+    <url><loc>https://eolkits.com/license/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://eolkits.com/drift/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+    <url><loc>https://eolkits.com/partners/</loc><lastmod>2026-06-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+    <url><loc>https://eolkits.com/vs/</loc><lastmod>2026-06-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
     
-    <url><loc>https://eolkits.com/vs/cloudquery/</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+    <url><loc>https://eolkits.com/vs/cloudquery/</loc><lastmod>2026-06-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
     
-    <url><loc>https://eolkits.com/vs/herodevs/</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+    <url><loc>https://eolkits.com/vs/herodevs/</loc><lastmod>2026-06-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
     
-    <url><loc>https://eolkits.com/vs/aws-samples-runtime-update-helper/</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+    <url><loc>https://eolkits.com/vs/aws-samples-runtime-update-helper/</loc><lastmod>2026-06-09</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
     
 
     <!-- Deprecation migration guides (one per cited deprecation in deprecations.yml) -->
     
-    <url><loc>https://eolkits.com/migrate/lambda-node.js-20-phase-1/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://eolkits.com/migrate/lambda-node.js-20-phase-1/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
     
-    <url><loc>https://eolkits.com/migrate/amazon-linux-2-eol/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://eolkits.com/migrate/amazon-linux-2-eol/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
     
-    <url><loc>https://eolkits.com/migrate/lambda-python-3.9-eol/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://eolkits.com/migrate/lambda-python-3.9-eol/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
     
-    <url><loc>https://eolkits.com/migrate/lambda-python-3.10-eol/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://eolkits.com/migrate/lambda-python-3.10-eol/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
     
-    <url><loc>https://eolkits.com/migrate/lambda-python-3.11-eol/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://eolkits.com/migrate/lambda-python-3.11-eol/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
     
-    <url><loc>https://eolkits.com/migrate/imdsv1-enforcement/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+    <url><loc>https://eolkits.com/migrate/imdsv1-enforcement/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
     
 
     <!-- Content + system pages -->
-    <url><loc>https://eolkits.com/blog/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
-    <url><loc>https://eolkits.com/status/</loc><lastmod>2026-06-08</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
+    <url><loc>https://eolkits.com/blog/</loc><lastmod>2026-06-09</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
+    <url><loc>https://eolkits.com/status/</loc><lastmod>2026-06-09</lastmod><changefreq>hourly</changefreq><priority>0.6</priority></url>
 
     <!-- Legal (served as real HTML files) -->
-    <url><loc>https://eolkits.com/legal/terms.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
-    <url><loc>https://eolkits.com/legal/privacy.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
-    <url><loc>https://eolkits.com/legal/dpa.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
-    <url><loc>https://eolkits.com/legal/SECURITY.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+    <url><loc>https://eolkits.com/legal/terms.html</loc><lastmod>2026-06-09</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+    <url><loc>https://eolkits.com/legal/privacy.html</loc><lastmod>2026-06-09</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+    <url><loc>https://eolkits.com/legal/dpa.html</loc><lastmod>2026-06-09</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+    <url><loc>https://eolkits.com/legal/SECURITY.html</loc><lastmod>2026-06-09</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
 
 </urlset>

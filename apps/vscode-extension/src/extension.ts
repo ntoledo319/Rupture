@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
             showReport();
         }),
         vscode.commands.registerCommand('eolkits.getAudit', () => {
-            vscode.env.openExternal(vscode.Uri.parse('https://ntoledo319.github.io/EOLkits/audit'));
+            vscode.env.openExternal(vscode.Uri.parse('https://eolkits.com/audit/?utm_source=vscode&utm_medium=extension&source=vscode'));
         })
     );
 
@@ -139,7 +139,7 @@ function generateReportHtml(findings: any[]): string {
             </tr>
             ${rows}
         </table>
-        <p><a href="https://ntoledo319.github.io/EOLkits/audit">Get full audit report →</a></p>
+        <p><a href="https://eolkits.com/audit/?utm_source=vscode&utm_medium=extension&source=vscode">Get full audit report →</a></p>
     </body>
     </html>`;
 }

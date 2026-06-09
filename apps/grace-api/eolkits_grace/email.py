@@ -26,6 +26,11 @@ def render_audit_delivery_email(
 <li>Rule pack version: <code>{rule_pack_version}</code></li>
 <li>Verify authenticity: <a href="{verify_url}">{verify_url}</a></li>
 </ul>
+<div style="background:#ecfdf5;border:1px solid #059669;border-radius:8px;padding:16px;margin-top:24px">
+<h3 style="margin:0 0 6px;font-size:15px;color:#065f46">Want it fixed, not just found?</h3>
+<p style="margin:0 0 10px;font-size:13px;color:#065f46">Upgrade to a <strong>Migration Pack</strong> within 48 hours and we credit this $299 audit toward the $1,499 — a real PR with codemods, IaC patches, a canary plan, and an automatic refund if your CI fails.</p>
+<a href="https://eolkits.com/pack/?utm_source=audit_email&utm_medium=email&utm_campaign=audit48h" style="display:inline-block;background:#059669;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:13px">Apply my $299 credit</a>
+</div>
 <p style="font-size:12px;color:#6b7280;margin-top:32px">This is a transactional message. You are receiving it because you purchased an Audit PDF on EOLkits.</p>
 </body></html>"""
 

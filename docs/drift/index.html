@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drift Watch — EOLkits</title>
+<meta name="description" content="19/mo: weekly re-scan of a read-only IAM role, a delta PDF when a new AWS deprecation touches your stack, and an auto-opened migration PR.">
+<link rel="canonical" href="https://eolkits.com/drift/">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:800px;margin:0 auto;padding:2rem;line-height:1.6}
+.brand{color:#2563eb;font-weight:600}
+h1{margin-top:0}
+.price{font-size:3rem;font-weight:700;color:#0ea5e9}
+.feature{background:#f9fafb;border-radius:8px;padding:1rem;margin:.75rem 0}
+button{background:#2563eb;color:white;border:none;padding:0.75rem 1.5rem;border-radius:6px;font-size:1rem;cursor:pointer}
+button:hover{background:#1d4ed8}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b7280;font-size:0.875rem}
+</style>
+</head>
+<body>
+<a href="/" class="brand">← EOLkits</a>
+<h1>Drift Watch</h1>
+<p class="price">19<span style="font-size:1rem;font-weight:normal;color:#6b7280">/month</span></p>
+<p>Weekly re-scan of a read-only IAM role. Get a delta PDF the moment a new AWS deprecation touches your stack — plus an auto-opened migration PR so the fix starts itself.</p>
+<div class="feature"><strong>Weekly scan</strong> — cron-driven, zero effort after setup.</div>
+<div class="feature"><strong>Delta PDF on change</strong> — only when something actually shifts, so it stays signal, not noise.</div>
+<div class="feature"><strong>Auto-PR on new deprecation</strong> — the migration is opened for you, with the same CI-failure refund stance as the Migration Pack.</div>
+<h3>Subscribe</h3>
+<form id="driftForm">
+  <p><input type="email" id="driftEmail" name="email" placeholder="your@email.com" required style="padding:0.5rem;width:300px"></p>
+  <p><input type="text" id="driftRepo" name="repo" placeholder="owner/repo (optional)" style="padding:0.5rem;width:300px"></p>
+  <button id="driftSubmit" type="submit">Subscribe — 19/mo</button>
+  <p id="driftStatus" style="color:#6b7280;font-size:.875rem"></p>
+</form>
+<script>
+const API = 'https://eolkits.com';
+const qp = new URLSearchParams(location.search);
+const f = document.getElementById('driftForm');
+const s = document.getElementById('driftStatus');
+const b = document.getElementById('driftSubmit');
+if (qp.get('cancelled')) s.textContent = 'Checkout cancelled.';
+try { navigator.sendBeacon(API + '/api/events', new Blob([JSON.stringify({ event: 'view', sku: 'drift_watch', path: location.pathname, utm_source: qp.get('utm_source') || '', utm_campaign: qp.get('utm_campaign') || '' })], { type: 'application/json' })); } catch (e) {}
+f.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('driftEmail').value;
+  if (!email) return;
+  b.disabled = true; s.textContent = 'Opening secure checkout...';
+  try {
+    const body = new URLSearchParams({ email: email, repo: document.getElementById('driftRepo').value, source: 'drift_page', utm_source: qp.get('utm_source') || '', utm_campaign: qp.get('utm_campaign') || '' });
+    const r = await fetch(API + '/api/drift/checkout', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body });
+    const d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Checkout failed');
+    window.location.href = d.url;
+  } catch (err) { b.disabled = false; s.textContent = err instanceof Error ? err.message : 'Checkout failed'; }
+});
+</script>
+<footer>
+  <p>Cancel anytime. <a href="/">Home</a> · <a href="/legal/terms.html">Terms</a> · <a href="/legal/privacy.html">Privacy</a></p>
+</footer>
+</body>
+</html>

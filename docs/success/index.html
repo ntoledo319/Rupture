@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thank you — EOLkits</title>
+<meta name="robots" content="noindex">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:720px;margin:0 auto;padding:2rem;line-height:1.6}
+.brand{color:#2563eb;font-weight:600}
+h1{margin-top:0}
+.card{border:1px solid #e5e7eb;border-radius:10px;padding:1.5rem;margin:1.25rem 0}
+.upsell{background:#ecfdf5;border:2px solid #059669}
+.btn{display:inline-block;background:#2563eb;color:#fff;padding:.6rem 1.2rem;border-radius:6px;text-decoration:none;font-weight:600}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b7280;font-size:0.875rem}
+</style>
+</head>
+<body>
+<a href="/" class="brand">← EOLkits</a>
+<h1 id="title">Thank you</h1>
+<div id="body"></div>
+<footer><a href="/">Home</a> · <a href="/status/">Status</a> · <a href="/legal/terms.html">Terms</a></footer>
+<script>
+const qp = new URLSearchParams(location.search);
+const sku = qp.get('sku') || '';
+const sid = qp.get('session_id') || '';
+const title = document.getElementById('title');
+const body = document.getElementById('body');
+function h(html) { body.innerHTML = html; }
+if (sku === 'audit') {
+  title.textContent = 'Your audit is on the way';
+  h('<div class="card"><p>Payment received. Your hash-anchored audit PDF is generating now and lands in your inbox within ~5 minutes.</p><p>Verify authenticity any time at <a href="/verify/">/verify/</a>.</p></div>'
+    + '<div class="card upsell"><h3>Want it fixed, not just found?</h3><p>Upgrade to a <strong>Migration Pack</strong> within 48 hours and we credit your $299 audit toward the $1,499 — a real PR with codemods, IaC patches, canary plan, and a CI-failure refund guarantee.</p><p><a class="btn" href="/pack/?utm_source=audit_upsell&utm_medium=success&utm_campaign=audit48h">Apply my $299 credit →</a></p></div>');
+} else if (sku === 'pack') {
+  title.textContent = 'Migration Pack confirmed';
+  h('<div class="card"><p>Payment received. We are opening your migration PR now (within ~5 minutes). Watch the repo you authorized.</p><p>If CI fails on the PR within 7 days and you have not added the <code>override:ci-failure</code> label, you are refunded automatically.</p><p>Track fulfillment on the <a href="/status/">status page</a>.</p></div>');
+} else if (sku === 'drift') {
+  title.textContent = 'Drift Watch is on';
+  h('<div class="card"><p>Subscription active. We will scan weekly and email a delta PDF the moment a new AWS deprecation touches your stack.</p></div>');
+} else {
+  h('<div class="card"><p>Payment received. Check your email for next steps.</p></div>');
+}
+try { navigator.sendBeacon('https://eolkits.com/api/events', new Blob([JSON.stringify({ event: 'purchase_success', sku: sku, path: location.pathname, meta: { session_id: sid } })], { type: 'application/json' })); } catch (e) {}
+</script>
+</body>
+</html>

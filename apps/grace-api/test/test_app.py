@@ -215,6 +215,56 @@ def test_stripe_webhook_is_idempotent_and_validates(tmp_path, monkeypatch):
     assert r3.status_code == 400
 
 
+def test_events_beacon_records_funnel(tmp_path, monkeypatch):
+    mod, client = _load_app(tmp_path, monkeypatch)
+    r = client.post(
+        "/api/events",
+        json={"event": "view", "sku": "audit", "utm_source": "migrate", "kit": "al2023-gate"},
+    )
+    assert r.status_code == 200 and r.json() == {"ok": True}
+    assert mod.store.event_counts(7).get("view") == 1
+    status = client.get("/status").json()
+    assert status["funnel_7d"].get("view") == 1
+
+
+def test_drift_checkout_uses_subscription_mode(tmp_path, monkeypatch):
+    mod, client = _load_app(tmp_path, monkeypatch)
+    r = client.post(
+        "/api/drift/checkout",
+        data={"email": "buyer@example.com", "repo": "owner/repo", "utm_source": "home"},
+        headers={"accept": "application/json"},
+    )
+    assert r.status_code == 200
+    # Demo Stripe returns the sandbox URL; the checkout_started event is recorded.
+    assert r.json()["url"].startswith("https://checkout.stripe.com/test")
+    assert mod.store.event_counts(7).get("checkout_started") == 1
+
+
+def test_audit_checkout_propagates_attribution_metadata(tmp_path, monkeypatch):
+    """source/utm/kit must ride along on the Stripe metadata (demo URL echoes it)."""
+    mod, client = _load_app(tmp_path, monkeypatch)
+    presign = client.post(
+        "/upload/presign",
+        json={"filename": "template.yaml", "contentType": "text/yaml", "size": 10},
+    )
+    upload_id = presign.json()["uploadId"]
+    client.put(f"/upload/{upload_id}", content=b"Runtime: nodejs20.x")
+    r = client.post(
+        "/api/audit/checkout",
+        data={
+            "email": "buyer@example.com",
+            "upload_id": upload_id,
+            "deadline": "2026-06-30",
+            "utm_source": "migrate",
+            "kit": "lambda-lifeline",
+        },
+        headers={"accept": "application/json"},
+    )
+    assert r.status_code == 200
+    url = r.json()["url"]
+    assert "utm_source=migrate" in url and "kit=lambda-lifeline" in url
+
+
 def test_surge_tier_matches_pricing(tmp_path, monkeypatch):
     mod, _ = _load_app(tmp_path, monkeypatch)
     from eolkits_grace import pricing

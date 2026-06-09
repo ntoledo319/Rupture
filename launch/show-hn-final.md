@@ -50,21 +50,21 @@ Why I built this: every six months AWS sends the same "your runtime is deprecate
 
 Repo:           https://github.com/ntoledo319/EOLkits
 Action:         ntoledo319/EOLkits@v1
-Benchmark:      https://ntoledo319.github.io/EOLkits/status/
-Sample PDF:     https://ntoledo319.github.io/EOLkits/audit/
-Calendar (.ics): https://ntoledo319.github.io/EOLkits/deprecations.ics
+Benchmark:      https://eolkits.com/status/
+Sample PDF:     https://eolkits.com/audit/
+Calendar (.ics): https://eolkits.com/deprecations.ics
 
 Open to feedback on any of it — codemod rules especially. If you've already done one of these migrations and the kit missed something, tell me. That's the most useful thing anyone can do for me right now.
 ```
 
 ## Submission timing
 
-Window: Tue or Wed, **6:00–9:00 a.m. PT**. Target: **Tue Jun 2 or Wed Jun 3, 2026** — first post-Memorial-Day full work week, gives 27–28 days of pre-AL2023 urgency for the HN audience. (The original 5/5 window was missed; this is the reframed target.)
+Window: Tue or Wed, **6:00–9:00 a.m. PT**. Target: **Tue Jun 9 or Wed Jun 10, 2026** — gives ~20 days of pre-AL2023 (Jun 30) urgency for the HN audience. (Earlier Jun 2/3 target passed; this is the refreshed window.)
 
 After submitting, paste the HN URL into `launched.txt`:
 
 ```
-2026-06-02T13:30:00Z submitted by ntoledo319 link=https://news.ycombinator.com/item?id=...
+2026-06-09T13:30:00Z submitted by ntoledo319 link=https://news.ycombinator.com/item?id=...
 ```
 
 ## Comment posture

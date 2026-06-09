@@ -181,21 +181,44 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
 </form>
 
 <script>
+const API = '{API_URL}';
+const qp = new URLSearchParams(location.search);
+function attribution() {{
+  return {{
+    source: qp.get('source') || 'audit_page',
+    utm_source: qp.get('utm_source') || '',
+    utm_medium: qp.get('utm_medium') || '',
+    utm_campaign: qp.get('utm_campaign') || '',
+    kit: qp.get('kit') || ''
+  }};
+}}
+function track(eventName, extra) {{
+  try {{
+    const payload = Object.assign({{ event: eventName, sku: 'audit', path: location.pathname }}, attribution(), extra || {{}});
+    navigator.sendBeacon(API + '/api/events', new Blob([JSON.stringify(payload)], {{ type: 'application/json' }}));
+  }} catch (e) {{}}
+}}
 const auditForm = document.getElementById('auditForm');
 const auditStatus = document.getElementById('auditStatus');
 const auditSubmit = document.getElementById('auditSubmit');
+const deadlineInput = document.getElementById('auditDeadline');
+// Prefill the deadline from a deadline-tagged migrate-page link so surge pricing
+// is consistent between the page the buyer came from and what we charge.
+if (qp.get('deadline') && deadlineInput) deadlineInput.value = qp.get('deadline');
+if (qp.get('cancelled')) auditStatus.textContent = 'Checkout cancelled — finish whenever you are ready.';
+track('view');
 auditForm.addEventListener('submit', async (event) => {{
   event.preventDefault();
   const file = document.getElementById('auditFile').files[0];
   const email = document.getElementById('auditEmail').value;
-  const deadline = document.getElementById('auditDeadline').value;
+  const deadline = deadlineInput ? deadlineInput.value : '';
   if (!file || !email) return;
 
   auditSubmit.disabled = true;
   auditStatus.textContent = 'Requesting upload URL...';
 
   try {{
-    const presign = await fetch('{API_URL}/upload/presign', {{
+    const presign = await fetch(API + '/upload/presign', {{
       method: 'POST',
       headers: {{ 'Content-Type': 'application/json' }},
       body: JSON.stringify({{
@@ -216,12 +239,14 @@ auditForm.addEventListener('submit', async (event) => {{
     if (!upload.ok) throw new Error('Upload failed');
 
     auditStatus.textContent = 'Opening secure checkout...';
-    const checkoutBody = new URLSearchParams({{
-      email,
-      upload_url: presignData.uploadUrl
-    }});
+    track('checkout_click', {{ deadline: deadline }});
+    const a = attribution();
+    const checkoutBody = new URLSearchParams({{ email: email, upload_id: presignData.uploadId }});
     if (deadline) checkoutBody.set('deadline', deadline);
-    const checkout = await fetch('{API_URL}/api/audit/checkout', {{
+    for (const k of ['source', 'utm_source', 'utm_medium', 'utm_campaign', 'kit']) {{
+      if (a[k]) checkoutBody.set(k, a[k]);
+    }}
+    const checkout = await fetch(API + '/api/audit/checkout', {{
       method: 'POST',
       headers: {{ 'Content-Type': 'application/x-www-form-urlencoded' }},
       body: checkoutBody
@@ -304,6 +329,22 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
   <p>Refund auto-fires if CI fails within 7 days. <a href="/legal/terms.html">Terms</a> apply.</p>
   <p><a href="/">Home</a> · <a href="/legal/terms.html">Terms</a> · <a href="/legal/privacy.html">Privacy</a></p>
 </footer>
+<script>
+(function () {{
+  var qp = new URLSearchParams(location.search);
+  var form = document.querySelector('form[action$="/api/pack/checkout"]');
+  if (form) {{
+    ['source', 'utm_source', 'utm_medium', 'utm_campaign', 'kit'].forEach(function (k) {{
+      var v = qp.get(k);
+      if (v) {{ var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = v; form.appendChild(i); }}
+    }});
+    if (!qp.get('source')) {{ var s = document.createElement('input'); s.type = 'hidden'; s.name = 'source'; s.value = 'pack_page'; form.appendChild(s); }}
+  }}
+  try {{
+    navigator.sendBeacon('{API_URL}/api/events', new Blob([JSON.stringify({{ event: 'view', sku: 'migration_pack', path: location.pathname, utm_source: qp.get('utm_source') || '', utm_campaign: qp.get('utm_campaign') || '', kit: qp.get('kit') || '' }})], {{ type: 'application/json' }}));
+  }} catch (e) {{}}
+}})();
+</script>
 </body>
 </html>"""
     return _interpolate_api(html)
@@ -406,21 +447,51 @@ def build_pricing_view(full_pricing):
 
     pack = skus.get("migration_pack", {})
     pack_base = pack.get("price_usd", 1499)
+    drift = skus.get("drift_watch", {})
 
+    # Always route to the on-site pages, which open server-side Checkout
+    # Sessions. Direct Stripe Payment Links are intentionally NOT used on
+    # customer-facing surfaces: they strip our fulfillment metadata (upload_id,
+    # repo, deadline) and attribution (source/utm/kit), and bypass the
+    # repo-installed gate for the Migration Pack.
     return {
         "audit_pdf": {
             "base": audit_base,
-            "link": standard.get("stripe_payment_link", f"{SITE_URL}/audit/"),
-            "surge_30d_price": surge_30.get("price_usd", int(audit_base * 1.33)),
-            "surge_30d_link": surge_30.get("stripe_payment_link", f"{SITE_URL}/audit/"),
-            "surge_7d_price": surge_7.get("price_usd", audit_base * 2),
-            "surge_7d_link": surge_7.get("stripe_payment_link", f"{SITE_URL}/audit/"),
+            "link": "/audit/",
+            "surge_30d_price": surge_30.get("price_usd", 399),
+            "surge_30d_link": "/audit/",
+            "surge_7d_price": surge_7.get("price_usd", 599),
+            "surge_7d_link": "/audit/",
         },
         "migration_pack": {
             "base": pack_base,
-            "link": pack.get("stripe_payment_link", f"{SITE_URL}/pack/"),
+            "link": "/pack/",
+        },
+        "drift_watch": {
+            "base": drift.get("price_usd", 19),
+            "link": "/drift/",
         },
     }
+
+
+def _audit_checkout_link(dep):
+    """Deadline- and kit-tagged link to the on-site audit page, which carries
+    the deadline into the server Checkout Session (so surge pricing + attribution
+    survive). Replaces per-tier direct Stripe Payment Links."""
+    q = (
+        f"deadline={dep['date']}"
+        f"&utm_source=migrate&utm_medium=cta&utm_campaign={dep.get('slug', '')}"
+    )
+    if dep.get("kit"):
+        q += f"&kit={dep['kit']}"
+    return f"/audit/?{q}"
+
+
+def _pack_checkout_link(dep):
+    q = f"utm_source=migrate&utm_medium=cta&utm_campaign={dep.get('slug', '')}"
+    if dep.get("kit"):
+        q += f"&kit={dep['kit']}"
+    return f"/pack/?{q}"
 
 
 def compute_urgency(dep, pricing_view):
@@ -435,19 +506,19 @@ def compute_urgency(dep, pricing_view):
             f"This deadline passed on {dep['date']}. "
             "Affected resources are now in the post-deadline window — clean up before the next enforcement phase."
         )
-        audit_price, audit_link = audit["base"], audit["link"]
+        audit_price = audit["base"]
     elif days <= 7:
         tier, label = "urgent", "less than 7 days"
         headline = f"Only {days} days until the {dep['date']} deadline. This is the final week."
-        audit_price, audit_link = audit["surge_7d_price"], audit["surge_7d_link"]
+        audit_price = audit["surge_7d_price"]
     elif days <= 30:
         tier, label = "soon", "within 30 days"
         headline = f"{days} days until the {dep['date']} deadline."
-        audit_price, audit_link = audit["surge_30d_price"], audit["surge_30d_link"]
+        audit_price = audit["surge_30d_price"]
     else:
         tier, label = "ahead", "more than 30 days out"
         headline = f"{days} days until the {dep['date']} deadline — enough runway to migrate safely."
-        audit_price, audit_link = audit["base"], audit["link"]
+        audit_price = audit["base"]
 
     return {
         "tier": tier,
@@ -455,7 +526,10 @@ def compute_urgency(dep, pricing_view):
         "headline": headline,
         "days_until": days,
         "audit_price": audit_price,
-        "audit_link": audit_link,
+        # Server-routed, deadline+kit+utm tagged (price is recomputed server-side
+        # from the deadline, so the charged price matches audit_price shown here).
+        "audit_link": _audit_checkout_link(dep),
+        "pack_link": _pack_checkout_link(dep),
     }
 
 
@@ -647,6 +721,9 @@ def build_index_page(pricing):
     pricing_view = build_pricing_view(pricing)
     audit = pricing_view["audit_pdf"]
     pack = pricing_view["migration_pack"]
+    skus = pricing.get("skus", pricing)
+    drift_base = skus.get("drift_watch", {}).get("price_usd", 19)
+    org_base = skus.get("org_license", {}).get("price_usd", 14999)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -736,6 +813,18 @@ def build_index_page(pricing):
           <p>GitHub App PR with codemods, IaC patches, canary plan, rollback, and CI-failure refund policy.</p>
           <a class="btn-outline" href="/pack/">Get pack</a>
         </article>
+        <article class="pricing-card">
+          <h3>Drift Watch</h3>
+          <div class="price">${drift_base}<span class="per">/mo</span></div>
+          <p>Weekly re-scan of a read-only IAM role, delta PDF on change, and an auto-PR on each new deprecation.</p>
+          <a class="btn-outline" href="/drift/">Start watching</a>
+        </article>
+        <article class="pricing-card">
+          <h3>Org License</h3>
+          <div class="price">${org_base:,}<span class="per">/yr</span></div>
+          <p>Live rule-pack feed, private rule extensions, and unlimited runs across your whole org.</p>
+          <a class="btn-outline" href="/license/">Get a license</a>
+        </article>
       </div>
     </div>
   </section>
@@ -778,10 +867,13 @@ def build_widget_js():
   container.innerHTML = `
     <h3>${{repo}}</h3>
     <p>Check this repository for AWS runtime and platform deprecation risks.</p>
-    <a href="{SITE_URL}/audit/?repo=${{encodeURIComponent(repo)}}" target="_blank" rel="noopener">Run EOLkits audit</a>
+    <a href="{SITE_URL}/audit/?repo=${{encodeURIComponent(repo)}}&utm_source=widget&utm_medium=embed&source=widget" target="_blank" rel="noopener">Run EOLkits audit</a>
     <div class="powered">Powered by EOLkits</div>
   `;
   script.parentNode.insertBefore(container, script.nextSibling);
+  try {{
+    navigator.sendBeacon('{SITE_URL}/api/events', new Blob([JSON.stringify({{ event: 'widget_view', source: 'widget', sku: 'audit', meta: {{ repo: repo }} }})], {{ type: 'application/json' }}));
+  }} catch (e) {{}}
 }})();
 """
 
@@ -802,6 +894,125 @@ def build_partners_page():
 <p><input type="text" name="domain" placeholder="yourcompany.com" required style="padding:.5rem;width:300px"></p>
 <button type="submit">Start partner signup</button></form>
 <footer style="margin-top:3rem;color:#6b7280;font-size:.85rem"><a href="/">Home</a> · <a href="/legal/terms.html">Terms</a></footer></body></html>""")
+
+
+def build_drift_page(pricing):
+    """Self-serve Drift Watch ($19/mo MRR) subscription checkout page."""
+    skus = pricing.get("skus", pricing)
+    price = skus.get("drift_watch", {}).get("price_usd", 19)
+    html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drift Watch — EOLkits</title>
+<meta name="description" content="$PRICE/mo: weekly re-scan of a read-only IAM role, a delta PDF when a new AWS deprecation touches your stack, and an auto-opened migration PR.">
+<link rel="canonical" href="https://eolkits.com/drift/">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:800px;margin:0 auto;padding:2rem;line-height:1.6}
+.brand{color:#2563eb;font-weight:600}
+h1{margin-top:0}
+.price{font-size:3rem;font-weight:700;color:#0ea5e9}
+.feature{background:#f9fafb;border-radius:8px;padding:1rem;margin:.75rem 0}
+button{background:#2563eb;color:white;border:none;padding:0.75rem 1.5rem;border-radius:6px;font-size:1rem;cursor:pointer}
+button:hover{background:#1d4ed8}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b7280;font-size:0.875rem}
+</style>
+</head>
+<body>
+<a href="/" class="brand">← EOLkits</a>
+<h1>Drift Watch</h1>
+<p class="price">$PRICE<span style="font-size:1rem;font-weight:normal;color:#6b7280">/month</span></p>
+<p>Weekly re-scan of a read-only IAM role. Get a delta PDF the moment a new AWS deprecation touches your stack — plus an auto-opened migration PR so the fix starts itself.</p>
+<div class="feature"><strong>Weekly scan</strong> — cron-driven, zero effort after setup.</div>
+<div class="feature"><strong>Delta PDF on change</strong> — only when something actually shifts, so it stays signal, not noise.</div>
+<div class="feature"><strong>Auto-PR on new deprecation</strong> — the migration is opened for you, with the same CI-failure refund stance as the Migration Pack.</div>
+<h3>Subscribe</h3>
+<form id="driftForm">
+  <p><input type="email" id="driftEmail" name="email" placeholder="your@email.com" required style="padding:0.5rem;width:300px"></p>
+  <p><input type="text" id="driftRepo" name="repo" placeholder="owner/repo (optional)" style="padding:0.5rem;width:300px"></p>
+  <button id="driftSubmit" type="submit">Subscribe — $PRICE/mo</button>
+  <p id="driftStatus" style="color:#6b7280;font-size:.875rem"></p>
+</form>
+<script>
+const API = '{API_URL}';
+const qp = new URLSearchParams(location.search);
+const f = document.getElementById('driftForm');
+const s = document.getElementById('driftStatus');
+const b = document.getElementById('driftSubmit');
+if (qp.get('cancelled')) s.textContent = 'Checkout cancelled.';
+try {{ navigator.sendBeacon(API + '/api/events', new Blob([JSON.stringify({{ event: 'view', sku: 'drift_watch', path: location.pathname, utm_source: qp.get('utm_source') || '', utm_campaign: qp.get('utm_campaign') || '' }})], {{ type: 'application/json' }})); }} catch (e) {{}}
+f.addEventListener('submit', async (e) => {{
+  e.preventDefault();
+  const email = document.getElementById('driftEmail').value;
+  if (!email) return;
+  b.disabled = true; s.textContent = 'Opening secure checkout...';
+  try {{
+    const body = new URLSearchParams({{ email: email, repo: document.getElementById('driftRepo').value, source: 'drift_page', utm_source: qp.get('utm_source') || '', utm_campaign: qp.get('utm_campaign') || '' }});
+    const r = await fetch(API + '/api/drift/checkout', {{ method: 'POST', headers: {{ 'Content-Type': 'application/x-www-form-urlencoded' }}, body: body }});
+    const d = await r.json();
+    if (!r.ok || !d.url) throw new Error(d.error || 'Checkout failed');
+    window.location.href = d.url;
+  }} catch (err) {{ b.disabled = false; s.textContent = err instanceof Error ? err.message : 'Checkout failed'; }}
+}});
+</script>
+<footer>
+  <p>Cancel anytime. <a href="/">Home</a> · <a href="/legal/terms.html">Terms</a> · <a href="/legal/privacy.html">Privacy</a></p>
+</footer>
+</body>
+</html>""".replace("$PRICE", str(price))
+    return _interpolate_api(html)
+
+
+def build_success_page():
+    """Post-checkout success + per-SKU onboarding, with the audit->pack upsell."""
+    html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thank you — EOLkits</title>
+<meta name="robots" content="noindex">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:720px;margin:0 auto;padding:2rem;line-height:1.6}
+.brand{color:#2563eb;font-weight:600}
+h1{margin-top:0}
+.card{border:1px solid #e5e7eb;border-radius:10px;padding:1.5rem;margin:1.25rem 0}
+.upsell{background:#ecfdf5;border:2px solid #059669}
+.btn{display:inline-block;background:#2563eb;color:#fff;padding:.6rem 1.2rem;border-radius:6px;text-decoration:none;font-weight:600}
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b7280;font-size:0.875rem}
+</style>
+</head>
+<body>
+<a href="/" class="brand">← EOLkits</a>
+<h1 id="title">Thank you</h1>
+<div id="body"></div>
+<footer><a href="/">Home</a> · <a href="/status/">Status</a> · <a href="/legal/terms.html">Terms</a></footer>
+<script>
+const qp = new URLSearchParams(location.search);
+const sku = qp.get('sku') || '';
+const sid = qp.get('session_id') || '';
+const title = document.getElementById('title');
+const body = document.getElementById('body');
+function h(html) {{ body.innerHTML = html; }}
+if (sku === 'audit') {{
+  title.textContent = 'Your audit is on the way';
+  h('<div class="card"><p>Payment received. Your hash-anchored audit PDF is generating now and lands in your inbox within ~5 minutes.</p><p>Verify authenticity any time at <a href="/verify/">/verify/</a>.</p></div>'
+    + '<div class="card upsell"><h3>Want it fixed, not just found?</h3><p>Upgrade to a <strong>Migration Pack</strong> within 48 hours and we credit your $299 audit toward the $1,499 — a real PR with codemods, IaC patches, canary plan, and a CI-failure refund guarantee.</p><p><a class="btn" href="/pack/?utm_source=audit_upsell&utm_medium=success&utm_campaign=audit48h">Apply my $299 credit →</a></p></div>');
+}} else if (sku === 'pack') {{
+  title.textContent = 'Migration Pack confirmed';
+  h('<div class="card"><p>Payment received. We are opening your migration PR now (within ~5 minutes). Watch the repo you authorized.</p><p>If CI fails on the PR within 7 days and you have not added the <code>override:ci-failure</code> label, you are refunded automatically.</p><p>Track fulfillment on the <a href="/status/">status page</a>.</p></div>');
+}} else if (sku === 'drift') {{
+  title.textContent = 'Drift Watch is on';
+  h('<div class="card"><p>Subscription active. We will scan weekly and email a delta PDF the moment a new AWS deprecation touches your stack.</p></div>');
+}} else {{
+  h('<div class="card"><p>Payment received. Check your email for next steps.</p></div>');
+}}
+try {{ navigator.sendBeacon('{API_URL}/api/events', new Blob([JSON.stringify({{ event: 'purchase_success', sku: sku, path: location.pathname, meta: {{ session_id: sid }} }})], {{ type: 'application/json' }})); }} catch (e) {{}}
+</script>
+</body>
+</html>"""
+    return _interpolate_api(html)
 
 
 def build_status_page():
@@ -1070,6 +1281,8 @@ def main():
         "audit/index.html": build_audit_page(pricing),
         "pack/index.html": build_pack_page(pricing),
         "license/index.html": build_license_page(pricing),
+        "drift/index.html": build_drift_page(pricing),
+        "success/index.html": build_success_page(),
         "partners/index.html": build_partners_page(),
         "status/index.html": build_status_page(),
         "status/data.json": build_status_data_seed(),

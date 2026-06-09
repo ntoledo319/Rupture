@@ -1,14 +1,14 @@
 {
   "name": "EOLkits Migration Bot",
-  "url": "https://ntoledo319.github.io/EOLkits",
+  "url": "https://eolkits.com",
   "hook_attributes": {
     "url": "https://eolkits.com/webhook/github"
   },
-  "redirect_url": "https://ntoledo319.github.io/EOLkits/pack/installed",
+  "redirect_url": "https://eolkits.com/pack/",
   "callback_urls": [
-    "https://ntoledo319.github.io/EOLkits/pack/callback"
+    "https://eolkits.com/pack/callback"
   ],
-  "setup_url": "https://ntoledo319.github.io/EOLkits/pack/setup",
+  "setup_url": "https://eolkits.com/pack/setup",
   "setup_on_install": true,
   "public": true,
   "default_permissions": {
@@ -21,6 +21,7 @@
     "push",
     "pull_request",
     "check_run",
+    "check_suite",
     "installation",
     "installation_repositories"
   ]

@@ -18,7 +18,7 @@ are polish-and-ship.
 | Surface | Status |
 |---|---|
 | `eolkits-api` (GRACE compose satellite) — `https://eolkits.com/health` | ✅ 200 live on same-host API routing |
-| Landing page — `https://ntoledo319.github.io/EOLkits/` | ✅ 200 (2026-05-15) |
+| Landing page — `https://eolkits.com/` | ✅ 200 (2026-05-15) |
 | Status page — `/status/` | ✅ 200 |
 | Sample audit — `/audit/` | ✅ 200 |
 | Verify tool — `/verify/` | ✅ 200 |

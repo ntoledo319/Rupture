@@ -96,6 +96,8 @@ You should see both:
 - `GET /upload/report/{sha}`
 - `POST /api/audit/checkout`
 - `POST /api/pack/checkout`
+- `POST /api/drift/checkout` (Drift Watch — subscription Checkout Session)
+- `POST /api/events` (first-party funnel beacon; source/utm/kit/deadline/sku)
 - `POST /webhook/stripe`
 - `POST /webhook/github`
 - `GET /pack/install`

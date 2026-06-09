@@ -2,7 +2,7 @@
 
 > CLIs for the AWS deprecation deadlines that break production. Next up: **Amazon Linux 2 (Jun 30, 2026)**. Also: **Lambda Python 3.9/3.10/3.11** waves, and post-deadline cleanup for **Lambda Node.js 20**.
 
-[![landing](https://img.shields.io/badge/landing-live-brightgreen)](https://ntoledo319.github.io/EOLkits)
+[![landing](https://img.shields.io/badge/landing-live-brightgreen)](https://eolkits.com)
 [![tests](https://img.shields.io/badge/tests-126%20passing-brightgreen)](#tests)
 [![license](https://img.shields.io/badge/license-MIT%20(open%20core)-blue)](#license)
 
@@ -120,7 +120,7 @@ Same shape for `python-pivot` and `lambda-lifeline` — see each kit's README fo
 | **Org License** | $14,999 / yr | Live rule-pack feed, private rule extensions, unlimited runs, one-year validity | License key emailed |
 | **Drift Watch** | $19 / mo | Weekly re-scan of a read-only IAM role; delta PDF on change; auto-PR on new deprecation | Cron-driven |
 
-**[→ Pricing page](https://ntoledo319.github.io/EOLkits#pricing)**
+**[→ Pricing page](https://eolkits.com#pricing)**
 
 ---
 
@@ -179,7 +179,7 @@ Open-core: the CLI code in this repo is MIT-licensed. The paid tiers include has
 
 ## Links
 
-- 🌐 [Landing page](https://ntoledo319.github.io/EOLkits)
+- 🌐 [Landing page](https://eolkits.com)
 - 🚀 [Show HN post](./launch/show-hn-final.md)
 - 📝 [Blog post: Migrating Lambda Node.js 20 → 22](./launch/blog-post.md)
 - 💬 [Direct support reply templates](./launch/thread-answers.md)

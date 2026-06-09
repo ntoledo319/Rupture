@@ -193,7 +193,7 @@ elif [[ "$HAS_FINDINGS" = true ]]; then
 fi
 
 {
-  echo "# Rupture AWS Deprecation Check"
+  echo "# EOLkits AWS Deprecation Check"
   echo
   echo "- Kit: \`$KIT\`"
   echo "- Path: \`$PATH_INPUT\`"
@@ -207,7 +207,7 @@ fi
   echo
   echo "</details>"
   echo
-  echo "[Full audit report](https://ntoledo319.github.io/Rupture/audit) · [Migration Pack](https://ntoledo319.github.io/Rupture/pack)"
+  echo "[Get the full audit report](https://eolkits.com/audit/?utm_source=github_action&utm_medium=ci&utm_campaign=$KIT) · [Have it fixed: Migration Pack](https://eolkits.com/pack/?utm_source=github_action&utm_medium=ci&utm_campaign=$KIT)"
 } > "$REPORT"
 
 if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then

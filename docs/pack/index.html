@@ -55,5 +55,21 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e7eb;color:#6b72
   <p>Refund auto-fires if CI fails within 7 days. <a href="/legal/terms.html">Terms</a> apply.</p>
   <p><a href="/">Home</a> · <a href="/legal/terms.html">Terms</a> · <a href="/legal/privacy.html">Privacy</a></p>
 </footer>
+<script>
+(function () {
+  var qp = new URLSearchParams(location.search);
+  var form = document.querySelector('form[action$="/api/pack/checkout"]');
+  if (form) {
+    ['source', 'utm_source', 'utm_medium', 'utm_campaign', 'kit'].forEach(function (k) {
+      var v = qp.get(k);
+      if (v) { var i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = v; form.appendChild(i); }
+    });
+    if (!qp.get('source')) { var s = document.createElement('input'); s.type = 'hidden'; s.name = 'source'; s.value = 'pack_page'; form.appendChild(s); }
+  }
+  try {
+    navigator.sendBeacon('https://eolkits.com/api/events', new Blob([JSON.stringify({ event: 'view', sku: 'migration_pack', path: location.pathname, utm_source: qp.get('utm_source') || '', utm_campaign: qp.get('utm_campaign') || '', kit: qp.get('kit') || '' })], { type: 'application/json' }));
+  } catch (e) {}
+})();
+</script>
 </body>
 </html>

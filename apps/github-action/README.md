@@ -27,7 +27,7 @@ See `action.yml`. All optional with sensible defaults.
 
 ## What it does NOT do
 
-- It does not modify your code. Use the paid **Migration Pack** (`https://ntoledo319.github.io/EOLkits/pack/`) for that.
+- It does not modify your code. Use the paid **Migration Pack** (`https://eolkits.com/pack/?utm_source=github_action&utm_medium=readme`) for that.
 - It does not send any data outside the runner. Install traffic is limited to GitHub Actions setup actions plus local package installs from the checked-out action source.
 
 ## Pricing
