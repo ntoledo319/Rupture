@@ -54,6 +54,12 @@ EOLKITS_API_PORT=8120
 
 Generate the internal-URL secret with `openssl rand -hex 32`.
 
+**Redeploying an already-live host:** the existing `.env.production` already has
+the Stripe/GitHub/Resend secrets — keep them. You only need to **append the two
+vars introduced by the hardening** (`EOLKITS_INTERNAL_URL_SECRET` and
+`GITHUB_APP_SLUG`); the API validates the full set on startup and will refuse to
+boot if either is missing.
+
 Start it:
 
 ```bash

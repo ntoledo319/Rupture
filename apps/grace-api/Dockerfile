@@ -34,9 +34,13 @@ COPY --from=nodekit /usr/local/lib/node_modules/lambda-lifeline /usr/local/lib/n
 
 COPY apps/runner /app/runner
 COPY apps/grace-api/eolkits_grace /app/eolkits_grace
+# pricing.py is the single source of truth for SKU -> Price IDs + surge tiers and
+# is read at request time; it must be present in the image.
+COPY pricing.yml /app/pricing.yml
 
 ENV PYTHONPATH=/app:/app/runner
 ENV EOLKITS_DATA_DIR=/data/eolkits
+ENV EOLKITS_PRICING_FILE=/app/pricing.yml
 EXPOSE 8080
 
 CMD ["uvicorn", "eolkits_grace.app:app", "--host", "0.0.0.0", "--port", "8080"]
