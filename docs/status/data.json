@@ -25,7 +25,6 @@
   "metrics": {
     "audits_delivered_7d": 0,
     "prs_opened_7d": 0,
-    "drift_watch_subscribers": 0,
-    "rules_in_public_pack": 0
+    "drift_watch_subscribers": 0
   }
 }
