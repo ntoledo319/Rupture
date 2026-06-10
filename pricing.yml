@@ -57,6 +57,9 @@ skus:
     delivery: Cron-driven
     stripe_price_id: price_1TRoGmDL3cQl851ofGZyxs6q
     stripe_payment_link: https://buy.stripe.com/5kQeVd2fQ7le3p94AQ87K05
+# LEGACY (pre-GRACE design): these caps sized the retired Cloudflare Worker deployment
+# (apps/worker). The live deployment is eolkits-api on the GRACE VPS — these limits do
+# not apply there and are kept only as historical reference.
 caps:
   cloudflare_workers_requests_per_day: 100000
   cloudflare_r2_storage_gb: 10

@@ -3,7 +3,7 @@
 > CLIs for the AWS deprecation deadlines that break production. Next up: **Amazon Linux 2 (Jun 30, 2026)**. Also: **Lambda Python 3.9/3.10/3.11** waves, and post-deadline cleanup for **Lambda Node.js 20**.
 
 [![landing](https://img.shields.io/badge/landing-live-brightgreen)](https://eolkits.com)
-[![tests](https://img.shields.io/badge/tests-126%20passing-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-149%20passing-brightgreen)](#tests)
 [![license](https://img.shields.io/badge/license-MIT%20(open%20core)-blue)](#license)
 
 AWS is killing runtimes on a hard schedule. When a deadline passes, deploys fail, functions get frozen, AMIs stop receiving patches. Most shops find out in production.
@@ -128,7 +128,7 @@ Same shape for `python-pivot` and `lambda-lifeline` — see each kit's README fo
 
 AWS publishes deprecation notices on a blog. Your deploys will fail on a Tuesday. The fix is usually not one-line — it's native wheels that don't exist for the new runtime, OpenSSL 3 hashes your code depended on, an IMDSv1 call that's now blocked, an `iptables` rule that no longer works on nftables.
 
-EOLkits automates AWS migrations off deprecated runtimes — deterministically, safely, and before the deadline. It's opinionated, well-tested (126 tests across kits + apps), and safe — everything is dry-run by default, everything has a rollback path.
+EOLkits automates AWS migrations off deprecated runtimes — deterministically, safely, and before the deadline. It's opinionated, well-tested (149 tests across kits + apps), and safe — everything is dry-run by default, everything has a rollback path.
 
 ---
 
@@ -151,7 +151,7 @@ cd apps/runner && pytest -q
 cd apps/worker && npm test
 ```
 
-126 passing across kits + apps.
+149 passing across kits + apps (al2023-gate 48, python-pivot 44, lambda-lifeline 29, runner 8, worker 8, grace-api 12 — counted 2026-06-09).
 
 ---
 
