@@ -59,7 +59,7 @@ Open to feedback on any of it — codemod rules especially. If you've already do
 
 ## Submission timing
 
-Window: **8:30–9:30 a.m. ET, Thu Jun 11, 2026** (today). 19 days of pre-AL2 (Jun 30) urgency remain. (Earlier Jun 2/3 and Jun 9/10 targets passed; this is the refreshed window.)
+Window: **8:30–9:30 a.m. ET, Fri Jun 12, 2026**. 18 days of pre-AL2 (Jun 30) urgency remain. (Earlier Jun 2/3 and Jun 9/10 targets passed; Jun 11 prep ran in the afternoon, so Friday morning is the live window.)
 
 After submitting, paste the HN URL into `launched.txt`:
 
