@@ -40,8 +40,8 @@ Primary source: <https://aws.amazon.com/amazon-linux-2/faqs/>
 ```bash
 pip install al2023-gate               # from PyPI (coming soon)
 # or run from source:
-git clone https://github.com/ntoledo319/Rupture.git
-cd Rupture/kits/al2023-gate
+git clone https://github.com/ntoledo319/EOLkits.git
+cd EOLkits/kits/al2023-gate
 pip install -e .
 ```
 
@@ -236,4 +236,4 @@ MIT. See [LICENSE](LICENSE).
 - [EKS AMI types & release lifecycle](https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-amis.html)
 - [Elastic Beanstalk platform deprecation schedule](https://docs.aws.amazon.com/elasticbeanstalk/latest/platforms/platforms-supported.html)
 
-*Built by [EOLkits Kits](https://github.com/ntoledo319/Rupture). Every AWS deprecation deadline deserves a kit.*
+*Built by [EOLkits Kits](https://github.com/ntoledo319/EOLkits). Every AWS deprecation deadline deserves a kit.*

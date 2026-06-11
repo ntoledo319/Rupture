@@ -5,7 +5,7 @@ Free GitHub Action that scans your IaC and source for AWS runtime deprecation is
 ## Usage
 
 ```yaml
-- uses: ntoledo319/Rupture@v1
+- uses: ntoledo319/EOLkits@v1
   with:
     kit: auto          # or: all | lambda-lifeline | al2023-gate | python-pivot
     path: .

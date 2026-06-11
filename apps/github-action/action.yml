@@ -1,6 +1,6 @@
 # Subpath copy of the root action.yml. The repo-root action.yml is the
-# canonical Marketplace listing (uses: ntoledo319/Rupture@v1). This copy keeps
-# `uses: ntoledo319/Rupture/apps/github-action@v1` working and MUST have a
+# canonical Marketplace listing (uses: ntoledo319/EOLkits@v1). This copy keeps
+# `uses: ntoledo319/EOLkits/apps/github-action@v1` working and MUST have a
 # distinct `name:` — GitHub Marketplace requires globally-unique action names,
 # and a duplicate name in the same repo blocks the listing from publishing.
 name: "EOLkits AWS Deprecation Check (subpath)"

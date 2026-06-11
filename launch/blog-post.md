@@ -8,7 +8,7 @@
 - **August 31, 2026**: AWS blocks creating *new* functions on `nodejs20.x` (Phase 2).
 - **September 30, 2026**: AWS blocks *updating* existing functions on `nodejs20.x` (Phase 3, the hard cliff).
 - Migrating to `nodejs22.x` is a semver-breaking change. Most code works. A specific set of patterns will break. This post documents all of them.
-- We built an open-source CLI called [`lambda-lifeline`](https://github.com/ntoledo319/Rupture/tree/main/kits/lambda-lifeline) that automates the whole migration: scan, codemod, audit, IaC patch, canary deploy with auto-rollback.
+- We built an open-source CLI called [`lambda-lifeline`](https://github.com/ntoledo319/EOLkits/tree/main/kits/lambda-lifeline) that automates the whole migration: scan, codemod, audit, IaC patch, canary deploy with auto-rollback.
 
 ---
 
@@ -135,7 +135,7 @@ find . -name '*.js' -o -name '*.mjs' -o -name '*.ts' | \
   xargs sed -i 's/assert { type:/with { type:/g'
 ```
 
-This over-triggers on `assert(...)` function calls. Use a proper AST tool or [`lambda-lifeline codemod`](https://github.com/ntoledo319/Rupture/tree/main/kits/lambda-lifeline) which only matches the import-assertion grammar.
+This over-triggers on `assert(...)` function calls. Use a proper AST tool or [`lambda-lifeline codemod`](https://github.com/ntoledo319/EOLkits/tree/main/kits/lambda-lifeline) which only matches the import-assertion grammar.
 
 ```bash
 npx lambda-lifeline codemod src/ --apply
@@ -251,7 +251,7 @@ We kept getting the same "your runtime is deprecated" email from AWS every 6-8 m
 
 So we scoped it. `lambda-lifeline` only migrates Node.js Lambda runtimes. It does nothing else. It has 24 tests covering every command, every output format, every exit-code path. It defaults to dry-run. The canary deploy refuses to run without an alarm ARN.
 
-Source: https://github.com/ntoledo319/Rupture/tree/main/kits/lambda-lifeline
+Source: https://github.com/ntoledo319/EOLkits/tree/main/kits/lambda-lifeline
 
 It's MIT-licensed. Fork it, use it, resell it.
 
@@ -259,8 +259,8 @@ It's MIT-licensed. Fork it, use it, resell it.
 
 ## Related guides
 
-- [Migrating Amazon Linux 2 to AL2023](https://github.com/ntoledo319/Rupture/tree/main/kits/al2023-gate) — deadline June 30, 2026
-- [Migrating Lambda Python 3.9/3.10 to 3.12](https://github.com/ntoledo319/Rupture/tree/main/kits/python-pivot) — Python 3.9 already past EOL
+- [Migrating Amazon Linux 2 to AL2023](https://github.com/ntoledo319/EOLkits/tree/main/kits/al2023-gate) — deadline June 30, 2026
+- [Migrating Lambda Python 3.9/3.10 to 3.12](https://github.com/ntoledo319/EOLkits/tree/main/kits/python-pivot) — Python 3.9 already past EOL
 
 ---
 

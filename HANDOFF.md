@@ -83,7 +83,7 @@ The `v1` release published 2026-05-02 has not yet been indexed at
 `https://github.com/marketplace/actions/eolkits-aws-deprecation-check` (re-checked
 2026-05-21 — still 404). Manual publication is required:
 
-1. Open `https://github.com/ntoledo319/Rupture/releases/tag/v1` → **Edit release**.
+1. Open `https://github.com/ntoledo319/EOLkits/releases/tag/v1` → **Edit release**.
 2. Tick **"Publish this Action to the GitHub Marketplace"**.
 3. Save. (Requires Marketplace developer terms accepted on the account.)
 

@@ -11,8 +11,8 @@ From zero to "I have a tested AL2023 AMI building in my account."
 ## 1. Install (2 min)
 
 ```bash
-git clone https://github.com/ntoledo319/Rupture.git
-cd Rupture/kits/al2023-gate
+git clone https://github.com/ntoledo319/EOLkits.git
+cd EOLkits/kits/al2023-gate
 pip install -e .
 
 # verify

@@ -77,8 +77,8 @@ urls:
   pack: https://eolkits.com/pack
   license: https://eolkits.com/license
   status: https://eolkits.com/status
-  github_repo: https://github.com/ntoledo319/Rupture
-  discussions: https://github.com/ntoledo319/Rupture/discussions
+  github_repo: https://github.com/ntoledo319/EOLkits
+  discussions: https://github.com/ntoledo319/EOLkits/discussions
 stripe:
   test_mode: false
   account_id: null

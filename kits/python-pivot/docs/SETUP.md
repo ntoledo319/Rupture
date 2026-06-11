@@ -8,8 +8,8 @@
 ## 1. Install
 
 ```bash
-git clone https://github.com/ntoledo319/Rupture.git
-cd Rupture/kits/python-pivot
+git clone https://github.com/ntoledo319/EOLkits.git
+cd EOLkits/kits/python-pivot
 pip install -e '.[aws]'
 
 python-pivot --help

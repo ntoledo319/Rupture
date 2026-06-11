@@ -28,7 +28,7 @@ If you want it run against [repo]: install at github.com/apps/eolkits-migration-
 
 Deadline shows up in production at the worst possible moment. Thought you should know.
 
-github.com/ntoledo319/Rupture
+github.com/ntoledo319/EOLkits
 
 — Nicholas Toledo
 ```
@@ -52,7 +52,7 @@ If you're up for being one of the launch-day case studies, I'll comp the Migrati
 
 Either way, deadline's real and shows up at the worst time.
 
-github.com/ntoledo319/Rupture
+github.com/ntoledo319/EOLkits
 
 — Nikki
 ```
@@ -76,7 +76,7 @@ Two asks, both fully optional:
 
 Either way, thanks for being one of the first.
 
-github.com/ntoledo319/Rupture
+github.com/ntoledo319/EOLkits
 
 — Nicholas
 ```

@@ -42,8 +42,8 @@ Each kit is standalone. `al2023-gate` and `python-pivot` are Python CLIs; `lambd
 For the live deadline (AL2 → AL2023, Jun 30):
 
 ```bash
-git clone https://github.com/ntoledo319/Rupture.git
-cd Rupture/kits/al2023-gate   # or kits/python-pivot
+git clone https://github.com/ntoledo319/EOLkits.git
+cd EOLkits/kits/al2023-gate   # or kits/python-pivot
 pip install -e .
 al2023-gate --help
 ```
@@ -51,7 +51,7 @@ al2023-gate --help
 For Node 20 cleanup (before the Sep 30 Phase 3 cliff):
 
 ```bash
-cd Rupture/kits/lambda-lifeline
+cd EOLkits/kits/lambda-lifeline
 npm install
 npm link
 lambda-lifeline --help
@@ -78,7 +78,7 @@ See [`deploy/grace/README.md`](./deploy/grace/README.md) for the exact no-duplic
 Run the free PR check from GitHub Actions:
 
 ```yaml
-- uses: ntoledo319/Rupture@v1
+- uses: ntoledo319/EOLkits@v1
   with:
     kit: auto
     path: .

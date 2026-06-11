@@ -25,7 +25,7 @@ CLIs for the AWS deprecation deadlines that break prod:
 
 MIT. Deterministic, CI-gated builds. Property- and mutation-tested.
 
-github.com/ntoledo319/Rupture
+github.com/ntoledo319/EOLkits
 ```
 
 ### Post 2 (reply to Post 1)
@@ -65,7 +65,7 @@ The pieces I cared about most: deterministic, CI-gated builds, hash-anchored aud
 
 MIT licensed. Solo built. Repo open.
 
-github.com/ntoledo319/Rupture
+github.com/ntoledo319/EOLkits
 ```
 
 ---

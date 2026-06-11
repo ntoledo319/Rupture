@@ -13,7 +13,7 @@
 
 Instead:
 1. Open a private vulnerability report on GitHub:
-   - Go to https://github.com/ntoledo319/Rupture/security/advisories
+   - Go to https://github.com/ntoledo319/EOLkits/security/advisories
    - Click "Report a vulnerability"
 2. Or contact via GitHub Discussions with "[SECURITY]" prefix
 

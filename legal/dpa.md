@@ -128,7 +128,7 @@ This DPA is governed by the law specified in the main Terms of Service.
 ## 10. Contact
 
 For DPA-related inquiries:
-- GitHub Discussions: https://github.com/ntoledo319/Rupture/discussions
+- GitHub Discussions: https://github.com/ntoledo319/EOLkits/discussions
 - Include "DPA" in the discussion title
 
 ---

@@ -78,7 +78,7 @@ Under GDPR and similar regulations, you have the right to:
 - **Objection:** Object to certain processing
 
 To exercise these rights:
-- GitHub Discussions: https://github.com/ntoledo319/Rupture/discussions
+- GitHub Discussions: https://github.com/ntoledo319/EOLkits/discussions
 - Include "Privacy Request" in subject
 
 ## 8. Security Measures
@@ -109,7 +109,7 @@ We will notify users of significant changes via:
 ## 12. Contact Information
 
 For privacy questions or requests:
-- GitHub Discussions: https://github.com/ntoledo319/Rupture/discussions
+- GitHub Discussions: https://github.com/ntoledo319/EOLkits/discussions
 - Privacy-specific: Open a discussion with "[Privacy]" prefix
 
 ## 13. Data Protection Officer

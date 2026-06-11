@@ -96,7 +96,7 @@ We may update these Terms from time to time. Continued use after changes constit
 ## 12. Contact
 
 For questions about these Terms:
-- GitHub Discussions: https://github.com/ntoledo319/Rupture/discussions
+- GitHub Discussions: https://github.com/ntoledo319/EOLkits/discussions
 - Legal inquiries: See GitHub profile for contact
 
 ## 13. Governing Law

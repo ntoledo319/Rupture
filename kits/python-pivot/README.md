@@ -41,8 +41,8 @@ Primary source: <https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.ht
 ```bash
 pip install python-pivot
 # or from source:
-git clone https://github.com/ntoledo319/Rupture.git
-cd Rupture/kits/python-pivot
+git clone https://github.com/ntoledo319/EOLkits.git
+cd EOLkits/kits/python-pivot
 pip install -e .
 ```
 
@@ -247,4 +247,4 @@ MIT. See [LICENSE](LICENSE).
 - [Python 3.12 What's New](https://docs.python.org/3.12/whatsnew/3.12.html)
 - [PyPI wheel compatibility tags](https://peps.python.org/pep-0425/)
 
-*Built by [EOLkits Kits](https://github.com/ntoledo319/Rupture). Every AWS deprecation deadline deserves a kit.*
+*Built by [EOLkits Kits](https://github.com/ntoledo319/EOLkits). Every AWS deprecation deadline deserves a kit.*

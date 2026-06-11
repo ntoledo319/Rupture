@@ -5,8 +5,8 @@ Captured end-to-end, no edits. Every command is real.
 ## Setup
 
 ```bash
-$ git clone https://github.com/ntoledo319/Rupture.git
-$ cd Rupture/kits/al2023-gate
+$ git clone https://github.com/ntoledo319/EOLkits.git
+$ cd EOLkits/kits/al2023-gate
 $ pip install -e .
 ```
 

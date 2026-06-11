@@ -41,7 +41,7 @@ Contributing new deprecation rules? See the rule bounty program:
 ## Development Setup
 
 ```bash
-git clone https://github.com/ntoledo319/Rupture.git
+git clone https://github.com/ntoledo319/EOLkits.git
 cd EOLkits
 pip install -e kits/lambda-lifeline
 pip install -e kits/al2023-gate
